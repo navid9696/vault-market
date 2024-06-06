@@ -17,6 +17,7 @@ import { Switch } from '@mui/material'
 import Link from 'next/link'
 import TransitionsModal from './TransitionModal'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
+import ExchangeModal from './ExchangeModal'
 
 export default function AccountMenu() {
 	const [modalOpen, setModalOpen] = React.useState(false)
@@ -100,30 +101,25 @@ export default function AccountMenu() {
 					onClick={() =>
 						handleModalOpen(
 							<>
-								<h1 className='text-center font-extrabold'>Caps&Cash Exchange</h1>
-								<p>Hej!</p>
+								<ExchangeModal/>
 							</>
 						)
 					}>
 					<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
 				</MenuItem>
-
 				<Divider />
-
 				<MenuItem>
 					<ListItemIcon>
 						<ContrastIcon fontSize='small' />
 					</ListItemIcon>
 					<Switch />
 				</MenuItem>
-
 				<MenuItem onClick={() => handleModalOpen(<h1 className='text-center font-extrabold'>Wastelander Profile</h1>)}>
 					<ListItemIcon className='mr-2'>
 						<SettingsIcon fontSize='small' />
 					</ListItemIcon>
 					Profile Settings
 				</MenuItem>
-
 				<MenuItem onClick={handleClose}>
 					<Link href={'/auth'}>
 						<ListItemIcon className='mr-2'>

@@ -10,7 +10,7 @@ const style = {
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
-	width: 300,
+	minWidth: 300,
 	bgcolor: 'background.paper',
 	border: '2px solid #000',
 	boxShadow: 24,
@@ -39,7 +39,7 @@ export default function TransitionsModal({ open, handleClose, children }: Transi
 			}}>
 			<Fade in={open}>
 				<Box sx={style}>
-					<div onClick={handleClose} className='absolute top-0 right-0 p-2'>
+					<div onClick={handleClose} className='absolute top-0 right-0 p-2 cursor-pointer'>
 						<CloseIcon fontSize='large' />
 					</div>
 					{children}
