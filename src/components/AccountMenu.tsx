@@ -18,6 +18,7 @@ import Link from 'next/link'
 import TransitionsModal from './TransitionModal'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
 import ExchangeModal from './ExchangeModal'
+import ExchangeModal from './ExchangeModal'
 
 export default function AccountMenu() {
 	const [modalOpen, setModalOpen] = React.useState(false)
