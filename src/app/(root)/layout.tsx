@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body className={shareTechMono.className}>{children}</body>
+			<body className={`${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>{children}</body>
 		</html>
 	)
 }
