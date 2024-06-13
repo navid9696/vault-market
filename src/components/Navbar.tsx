@@ -2,15 +2,15 @@ import Image from 'next/image'
 import ShoppingCart from '@mui/icons-material/ShoppingCartTwoTone'
 import Link from 'next/link'
 import AccountMenu from './AccountMenu'
-import { Badge } from '@mui/material'
+import { Badge, Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { useState } from 'react'
+import { categoriesData } from '@/data/categories'
+import SubCategoryBtn from './SubCategoryBtn'
 
 const Navbar = () => {
-	const [isActive, setIsActive] = useState<null | number>(null)
-
-	const mainCategories = ['WEAPONS', 'ARMOR', 'APPAREL', 'FOOD/DRINK', 'AID', 'JUNK', 'AMMO']
-	const weaponsSubCategories = ['RANGED', 'MELEE','LASER']
+	const [activeCategory, setActiveCategory] = useState<null | number>(null)
+	const [activeSubCategory, setActiveSubCategory] = useState<null | number>(null)
 
 	return (
 		<>
@@ -25,10 +25,10 @@ const Navbar = () => {
 							</div>
 							<div className='ml-7 flex'>
 								<Image
-									className='object-cover'
+									className='object-contain'
 									src={'/imgs/nuka-cap-alt.png'}
-									width={25}
-									height={25}
+									width={15}
+									height={15}
 									alt='nuka cola bottle cap'
 								/>
 								<span className='ml-2 text-green-500 font-extrabold text-lg'>1500</span>
@@ -44,30 +44,40 @@ const Navbar = () => {
 							<AccountMenu />
 						</div>
 					</div>
-					<div className=' flex flex-col items-center'>
-						<div className='flex flex-wrap text-center justify-center gap-x-1'>
-							<span className='w-screen border-b-2 border-b-green-500 border-solid'>
-								{mainCategories.map((btn, index) => (
+					<div className='w-full'>
+						<Tabs
+							className='text-green-500'
+							// value={value}
+							// onChange={handleChange}
+							allowScrollButtonsMobile
+							variant='scrollable'
+							scrollButtons='auto'
+							aria-label='scrollable auto tabs'>
+							<div className='text-nowrap mx-auto'>
+								{categoriesData.categories.map((category, index) => (
 									<CategoryBtn
 										key={index}
-										text={btn}
-										onClick={() => setIsActive(index)}
-										isActive={isActive === index}
+										text={category.name}
+										onClick={() => {
+											setActiveCategory(index)
+											setActiveSubCategory(null)
+										}}
+										isActive={activeCategory === index}
 									/>
 								))}
-							</span>
-						</div>
-						<div className='flex flex-wrap text-center justify-center gap-x-1'>
-							<span className='border-b-2 border-b-green-500 border-solid'>
-								{weaponsSubCategories.map((btn, index) => (
-									<CategoryBtn
+							</div>
+						</Tabs>
+						{/* subcategories styles to improve */}
+						<div className='left-1/2 -mt-7 text-center '>
+							{activeCategory !== null &&
+								categoriesData.categories[activeCategory].subCategories.map((subCategory, index) => (
+									<SubCategoryBtn
 										key={index}
-										text={btn}
-										onClick={() => setIsActive(index)}
-										isActive={isActive === index}
+										text={subCategory}
+										onClick={() => setActiveSubCategory(index)}
+										isActive={activeSubCategory === index}
 									/>
 								))}
-							</span>
 						</div>
 					</div>
 				</nav>

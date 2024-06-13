@@ -40,7 +40,7 @@ export default function AccountMenu() {
 		setModalOpen(false)
 	}
 	return (
-		<React.Fragment>
+		<>
 			<Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
 				<Tooltip title='Account settings'>
 					<IconButton
@@ -101,7 +101,7 @@ export default function AccountMenu() {
 					onClick={() =>
 						handleModalOpen(
 							<>
-								<ExchangeModal/>
+								<ExchangeModal />
 							</>
 						)
 					}>
@@ -132,6 +132,6 @@ export default function AccountMenu() {
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				{contentModal}
 			</TransitionsModal>
-		</React.Fragment>
+		</>
 	)
 }

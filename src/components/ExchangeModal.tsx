@@ -17,13 +17,12 @@ const ExchangeModal = () => {
 		}
 	}
 
-
 	return (
 		<div className='text-center'>
 			<Typography component={'h3'} variant='h3' gutterBottom>
 				Caps&Cash Exchange
 			</Typography>
-			<Typography component={'h4'} variant='h5' gutterBottom>
+			<Typography component={'h4'} variant='h6' gutterBottom>
 				How many caps are you looking to acquire?
 			</Typography>
 			<div className='flex items-center justify-between'>
@@ -34,7 +33,7 @@ const ExchangeModal = () => {
 			</div>
 			<div>
 				<Typography className='flex items-center justify-center' paragraph variant='body1' gutterBottom>
-					<Image className='mr-1' src={'/imgs/nuka-cap-alt.png'} width={20} height={20} alt='nuka cola bottle cap' />1
+					<Image className='mr-1' src={'/imgs/nuka-cap-alt.png'} width={15} height={15} alt='nuka cola bottle cap' />1
 				</Typography>
 				<Divider className='my-4'>
 					<Equals className='rotate-90 scale-150' />
