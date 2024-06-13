@@ -49,7 +49,7 @@ const ExchangeModal = () => {
 				</Typography>
 				<ExchangeInput icon={'$'} inputProp={{ readOnly: true, value: inputValue }} />
 			</div>
-			{/* add integration with DB */}
+			{/* add integration with database */}
 			<Button className='mt-5 font-extrabold' variant='outlined' size='large' endIcon={<GiBottleCap />}>
 				BUY
 			</Button>
