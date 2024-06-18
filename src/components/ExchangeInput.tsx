@@ -1,5 +1,11 @@
-import { ExchangeInputProps } from '@/lib/types'
+import { ChangeEventHandler } from 'react'
 import { FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
+
+interface ExchangeInputProps {
+	icon: React.ReactNode
+	inputProp?: { [key: string]: string | number | boolean | null }
+	onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+}
 
 const ExchangeInput = ({ icon, inputProp, onChange }: ExchangeInputProps) => {
 	return (
