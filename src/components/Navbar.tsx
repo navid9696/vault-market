@@ -2,14 +2,23 @@ import Image from 'next/image'
 import ShoppingCart from '@mui/icons-material/ShoppingCartTwoTone'
 import Link from 'next/link'
 import AccountMenu from './AccountMenu'
-import { Badge } from '@mui/material'
-import { useState } from 'react'
-
+import { Badge, Skeleton } from '@mui/material'
+import { useEffect, useState } from 'react'
+import { URL } from '@/api/constans'
 import CategoriesTabs from './CategoriesTabs'
 
 const Navbar = () => {
+	const [isLoading, setIsLoading] = useState(true)
 	const [activeCategory, setActiveCategory] = useState<null | number>(0)
 	const [activeSubCategory, setActiveSubCategory] = useState<null | number>(null)
+
+	useEffect(() => {
+		const getPageContent = async () => {
+			const res = await fetch(`${URL.SERVER}/_next/static/chunks/app/(root)/page.js`)
+			res.ok && setIsLoading(false)
+		}
+		getPageContent()
+	}, [])
 
 	return (
 		<div className='sticky top-0 '>
@@ -43,12 +52,16 @@ const Navbar = () => {
 					</div>
 				</div>
 				<div>
-					<CategoriesTabs
-						activeCategory={activeCategory}
-						setActiveCategory={setActiveCategory}
-						activeSubCategory={activeSubCategory}
-						setActiveSubCategory={setActiveSubCategory}
-					/>
+					{isLoading ? (
+						<Skeleton className='h-full bg-green-950' variant='rectangular' height={70} />
+					) : (
+						<CategoriesTabs
+							activeCategory={activeCategory}
+							setActiveCategory={setActiveCategory}
+							activeSubCategory={activeSubCategory}
+							setActiveSubCategory={setActiveSubCategory}
+						/>
+					)}
 				</div>
 			</nav>
 			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-1 mx-auto rounded-full -z-10'></div>
