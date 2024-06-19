@@ -26,7 +26,8 @@ const CategoryBtn = ({ onClick, text, isActive, isSubCategory = false }: Categor
 					} `}>
 					<Button
 						onClick={onClick}
-						className={`before:w-3 before:h-[2px] after:w-3 after:h-[2px] -mx-[10px] mb-5 text-lg font-extrabold ${
+						sx={{ margin: '0px -10px 20px', fontSize: '18px', fontWeight: 'bold' }}
+						className={`before:w-3 before:h-[2px] after:w-3 after:h-[2px] ${
 							isActive && 'before:bg-green-500 after:bg-green-500 text-green-500'
 						} `}
 						color='success'
