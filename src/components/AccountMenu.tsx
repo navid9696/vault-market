@@ -1,5 +1,3 @@
-'use client'
-import * as React from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
@@ -13,33 +11,61 @@ import LogoutIcon from '@mui/icons-material/LogoutTwoTone'
 import FavoriteIcon from '@mui/icons-material/FavoriteTwoTone'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasketTwoTone'
 import ContrastIcon from '@mui/icons-material/ContrastTwoTone'
-import { Switch } from '@mui/material'
+import { Skeleton, Switch } from '@mui/material'
 import Link from 'next/link'
 import TransitionsModal from './TransitionModal'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
-import ExchangeModal from './ExchangeModal'
-import ExchangeModal from './ExchangeModal'
+import { useCallback, useState } from 'react'
+import dynamic from 'next/dynamic'
+import ProfileSettings from './ProfileSettings'
+
+const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
+	ssr: false,
+	loading: () => (
+		<Box>
+			<Skeleton variant='text' sx={{ fontSize: '5rem' }} />
+			<Skeleton variant='text' sx={{ fontSize: '3rem' }} />
+			<Skeleton variant='rectangular' width={450} height={300} />
+		</Box>
+	),
+})
 
 export default function AccountMenu() {
-	const [modalOpen, setModalOpen] = React.useState(false)
-	const [contentModal, setContentModal] = React.useState<React.ReactNode>(null)
+	const [modalOpen, setModalOpen] = useState(false)
+	const [contentId, setContentId] = useState<string | null>(null)
 
-	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
-	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget)
-	}
-	const handleClose = () => {
+
+	const handleClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(e.currentTarget)
+	}, [])
+
+	const handleClose = useCallback(() => {
 		setAnchorEl(null)
-	}
-	const handleModalOpen = (content: React.ReactNode) => {
-		setContentModal(content)
+	}, [])
+
+	const handleModalOpen = useCallback((id: string) => {
 		setModalOpen(true)
-	}
-	const handleModalClose = () => {
-		setContentModal(null)
+		setContentId(id)
+	}, [])
+
+	const handleModalClose = useCallback(() => {
 		setModalOpen(false)
+		setContentId(null)
+	}, [])
+
+	const renderModalContent = () => {
+		switch (contentId) {
+			case 'exchange':
+				return <ExchangeModal/>
+			case 'profile':
+				return <ProfileSettings />
+			default:
+				return null
+		}
 	}
+
 	return (
 		<>
 			<Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -60,29 +86,31 @@ export default function AccountMenu() {
 				id='account-menu'
 				open={open}
 				onClose={handleClose}
-				PaperProps={{
-					elevation: 0,
-					sx: {
-						overflow: 'visible',
-						filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-						mt: 1.5,
-						'& .MuiAvatar-root': {
-							width: 32,
-							height: 32,
-							ml: -0.5,
-							mr: 1,
-						},
-						'&::before': {
-							content: '""',
-							display: 'block',
-							position: 'absolute',
-							top: 0,
-							right: 14,
-							width: 10,
-							height: 10,
-							bgcolor: 'background.paper',
-							transform: 'translateY(-50%) rotate(45deg)',
-							zIndex: 0,
+				slotProps={{
+					paper: {
+						elevation: 0,
+						sx: {
+							overflow: 'visible',
+							filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+							mt: 1.5,
+							'& .MuiAvatar-root': {
+								width: 32,
+								height: 32,
+								ml: -0.5,
+								mr: 1,
+							},
+							'&::before': {
+								content: '""',
+								display: 'block',
+								position: 'absolute',
+								top: 0,
+								right: 14,
+								width: 10,
+								height: 10,
+								bgcolor: 'background.paper',
+								transform: 'translateY(-50%) rotate(45deg)',
+								zIndex: 0,
+							},
 						},
 					},
 				}}
@@ -98,14 +126,7 @@ export default function AccountMenu() {
 						<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
 					</Link>
 				</MenuItem>
-				<MenuItem
-					onClick={() =>
-						handleModalOpen(
-							<>
-								<ExchangeModal />
-							</>
-						)
-					}>
+				<MenuItem onClick={() => handleModalOpen('exchange')}>
 					<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
 				</MenuItem>
 				<Divider />
@@ -115,7 +136,7 @@ export default function AccountMenu() {
 					</ListItemIcon>
 					<Switch />
 				</MenuItem>
-				<MenuItem onClick={() => handleModalOpen(<h1 className='text-center font-extrabold'>Wastelander Profile</h1>)}>
+				<MenuItem onClick={() => handleModalOpen('profile')}>
 					<ListItemIcon className='mr-2'>
 						<SettingsIcon fontSize='small' />
 					</ListItemIcon>
@@ -131,7 +152,7 @@ export default function AccountMenu() {
 				</MenuItem>
 			</Menu>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
-				{contentModal}
+				{renderModalContent()}
 			</TransitionsModal>
 		</>
 	)
