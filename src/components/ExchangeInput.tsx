@@ -1,7 +1,14 @@
-import { ExchangeInputProps } from '@/lib/types'
+import { ChangeEventHandler } from 'react'
 import { FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
 
-const ExchangeInput = ({ icon, inputProp, onChange }: ExchangeInputProps) => {
+interface ExchangeInputProps {
+	icon?: React.ReactNode
+	inputProps?: { [key: string]: string | number | boolean | null }
+	onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+	value?: number | string
+}
+
+const ExchangeInput = ({ icon, inputProps, onChange, value }: ExchangeInputProps) => {
 	return (
 		<FormControl sx={{ m: 1, width: '35%' }}>
 			<InputLabel htmlFor='outlined-adornment-amount'>Amount</InputLabel>
@@ -11,8 +18,9 @@ const ExchangeInput = ({ icon, inputProp, onChange }: ExchangeInputProps) => {
 				startAdornment={<InputAdornment position='start'>{icon}</InputAdornment>}
 				onChange={onChange}
 				label='Amount'
-				onKeyDown={e => (e.key === '-' || e.key === '+' || e.key === '.' ? e.preventDefault() : false)}
-				inputProps={{ min: '0', ...inputProp }}
+				value={value}
+				onKeyDown={e => (e.key === '-' || e.key === '+' || e.key === '.' || e.key === 'e' ? e.preventDefault() : false)}
+				inputProps={{ min: '0', ...inputProps }}
 			/>
 		</FormControl>
 	)
