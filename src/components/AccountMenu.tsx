@@ -17,7 +17,7 @@ import TransitionsModal from './TransitionModal'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
 import { useCallback, useState } from 'react'
 import dynamic from 'next/dynamic'
-import ProfileSettings from './ProfileSettings'
+import ProfileSettings from './AccountSettings'
 
 const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	ssr: false,
