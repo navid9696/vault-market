@@ -11,7 +11,7 @@ import LogoutIcon from '@mui/icons-material/LogoutTwoTone'
 import FavoriteIcon from '@mui/icons-material/FavoriteTwoTone'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasketTwoTone'
 import ContrastIcon from '@mui/icons-material/ContrastTwoTone'
-import { Skeleton, Switch } from '@mui/material'
+import { Skeleton, Switch, Typography } from '@mui/material'
 import Link from 'next/link'
 import TransitionsModal from './TransitionModal'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
@@ -22,11 +22,15 @@ import ProfileSettings from './ProfileSettings'
 const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	ssr: false,
 	loading: () => (
-		<Box>
-			<Skeleton variant='text' sx={{ fontSize: '5rem' }} />
+		<>
+			<Skeleton variant='text' height={150}>
+				<Typography component={'h3'} variant='h3'>
+					Caps&Cash Exchange
+				</Typography>
+			</Skeleton>
 			<Skeleton variant='text' sx={{ fontSize: '3rem' }} />
-			<Skeleton variant='rectangular' width={450} height={300} />
-		</Box>
+			<Skeleton variant='rectangular' height={250} />
+		</>
 	),
 })
 
@@ -58,7 +62,7 @@ export default function AccountMenu() {
 	const renderModalContent = () => {
 		switch (contentId) {
 			case 'exchange':
-				return <ExchangeModal/>
+				return <ExchangeModal />
 			case 'profile':
 				return <ProfileSettings />
 			default:
