@@ -1,0 +1,137 @@
+'use client'
+import * as React from 'react'
+import Box from '@mui/material/Box'
+import Avatar from '@mui/material/Avatar'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchangeTwoTone'
+import LogoutIcon from '@mui/icons-material/LogoutTwoTone'
+import FavoriteIcon from '@mui/icons-material/FavoriteTwoTone'
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasketTwoTone'
+import ContrastIcon from '@mui/icons-material/ContrastTwoTone'
+import { Switch } from '@mui/material'
+import Link from 'next/link'
+import TransitionsModal from './TransitionModal'
+import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
+import ExchangeModal from './ExchangeModal'
+
+export default function AccountMenu() {
+	const [modalOpen, setModalOpen] = React.useState(false)
+	const [contentModal, setContentModal] = React.useState<React.ReactNode>(null)
+
+	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+	const open = Boolean(anchorEl)
+	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+		setAnchorEl(event.currentTarget)
+	}
+	const handleClose = () => {
+		setAnchorEl(null)
+	}
+	const handleModalOpen = (content: React.ReactNode) => {
+		setContentModal(content)
+		setModalOpen(true)
+	}
+	const handleModalClose = () => {
+		setContentModal(null)
+		setModalOpen(false)
+	}
+	return (
+		<React.Fragment>
+			<Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+				<Tooltip title='Account settings'>
+					<IconButton
+						onClick={handleClick}
+						size='small'
+						sx={{ ml: 2 }}
+						aria-controls={open ? 'account-menu' : undefined}
+						aria-haspopup='true'
+						aria-expanded={open ? 'true' : undefined}>
+						<Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+					</IconButton>
+				</Tooltip>
+			</Box>
+			<Menu
+				anchorEl={anchorEl}
+				id='account-menu'
+				open={open}
+				onClose={handleClose}
+				PaperProps={{
+					elevation: 0,
+					sx: {
+						overflow: 'visible',
+						filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+						mt: 1.5,
+						'& .MuiAvatar-root': {
+							width: 32,
+							height: 32,
+							ml: -0.5,
+							mr: 1,
+						},
+						'&::before': {
+							content: '""',
+							display: 'block',
+							position: 'absolute',
+							top: 0,
+							right: 14,
+							width: 10,
+							height: 10,
+							bgcolor: 'background.paper',
+							transform: 'translateY(-50%) rotate(45deg)',
+							zIndex: 0,
+						},
+					},
+				}}
+				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+				<MenuItem onClick={handleClose}>
+					<Link className='' href={'/favorites'}>
+						<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
+					</Link>
+				</MenuItem>
+				<MenuItem onClick={handleClose}>
+					<Link href={'/orders'}>
+						<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
+					</Link>
+				</MenuItem>
+				<MenuItem
+					onClick={() =>
+						handleModalOpen(
+							<>
+								<ExchangeModal/>
+							</>
+						)
+					}>
+					<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
+				</MenuItem>
+				<Divider />
+				<MenuItem>
+					<ListItemIcon>
+						<ContrastIcon fontSize='small' />
+					</ListItemIcon>
+					<Switch />
+				</MenuItem>
+				<MenuItem onClick={() => handleModalOpen(<h1 className='text-center font-extrabold'>Wastelander Profile</h1>)}>
+					<ListItemIcon className='mr-2'>
+						<SettingsIcon fontSize='small' />
+					</ListItemIcon>
+					Profile Settings
+				</MenuItem>
+				<MenuItem onClick={handleClose}>
+					<Link href={'/auth'}>
+						<ListItemIcon className='mr-2'>
+							<LogoutIcon fontSize='small' />
+						</ListItemIcon>
+						Sign Out
+					</Link>
+				</MenuItem>
+			</Menu>
+			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
+				{contentModal}
+			</TransitionsModal>
+		</React.Fragment>
+	)
+}
