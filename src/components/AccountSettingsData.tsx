@@ -1,15 +1,12 @@
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Alert, Button, Snackbar, SnackbarOrigin } from '@mui/material'
+import { Button, SnackbarOrigin } from '@mui/material'
 import { useCallback } from 'react'
 import NicknameChange from './NicknameChange'
 import PasswordChange from './PasswordChange'
 import EmailChange from './EmailChange'
 import AddressChange from './AddressChange'
-import AccountSettings from './AccountSettings'
-
-interface State extends SnackbarOrigin {
-	open: boolean
-}
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface AccountSettingsProps {
 	setIsDetailsVisible: Dispatch<SetStateAction<boolean>>
@@ -19,16 +16,9 @@ interface AccountSettingsProps {
 const AccountSettingsData = ({ setIsDetailsVisible, contentId }: AccountSettingsProps) => {
 	const [formSubmit, setFormSubmit] = useState(false)
 
-	const [state, setState] = useState<State>({
-		open: false,
-		vertical: 'top',
-		horizontal: 'center',
-	})
-	const { vertical, horizontal, open } = state
-
-	const handleFormSubmit = (newState: SnackbarOrigin) => {
+	const handleFormSubmit = () => {
+		toast.success('hello')
 		setFormSubmit(true)
-		// setState({ ...newState, open: true })
 	}
 
 	const handleClose = useCallback(() => {
@@ -54,19 +44,9 @@ const AccountSettingsData = ({ setIsDetailsVisible, contentId }: AccountSettings
 		<div className=''>
 			<div>{renderModalContent()}</div>
 			<Button onClick={handleClose}>back</Button>
-			<Button onClick={() => handleFormSubmit({ vertical: 'top', horizontal: 'center' })} type='submit'>
+			<Button onClick={handleFormSubmit} type='submit'>
 				Submit
 			</Button>
-
-			<Snackbar
-				className='fixed -top-10'
-				anchorOrigin={{ vertical, horizontal }}
-				open={formSubmit}
-				autoHideDuration={30000}>
-				<Alert onClose={() => setFormSubmit(false)} severity='success' variant='filled' sx={{ width: '100%' }}>
-					Profile data saved!
-				</Alert>
-			</Snackbar>
 		</div>
 	)
 }
