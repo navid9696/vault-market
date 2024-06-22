@@ -14,7 +14,6 @@ const style = {
 	bgcolor: 'background.paper',
 	border: '2px solid #000',
 	boxShadow: 24,
-	p: 4,
 }
 
 interface TransitionsModalProps {
@@ -39,10 +38,10 @@ export default function TransitionsModal({ open, handleClose, children }: Transi
 			}}>
 			<Fade in={open}>
 				<Box sx={style}>
-					<div onClick={handleClose} className='absolute top-0 right-0 p-2 cursor-pointer'>
+					<div onClick={handleClose} className='absolute top-0 right-0 p-2 cursor-pointer z-10'>
 						<CloseIcon fontSize='large' />
 					</div>
-					{children}
+					<div className='relative overflow-x-hidden overflow-y-visible p-5 mt-5'>{children}</div>
 				</Box>
 			</Fade>
 		</Modal>

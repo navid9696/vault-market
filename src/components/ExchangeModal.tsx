@@ -1,6 +1,6 @@
 import { Button, Divider, Typography } from '@mui/material'
 import { FaEquals as Equals } from 'react-icons/fa'
-import { GiBottleCap } from 'react-icons/gi'
+import { GiBottleCap as Caps } from 'react-icons/gi'
 import ExchangeInput from './ExchangeInput'
 import Image from 'next/image'
 import { ChangeEvent, useState } from 'react'
@@ -29,7 +29,7 @@ const ExchangeModal = () => {
 				<Typography className='m-auto' paragraph variant='h4'>
 					Caps
 				</Typography>
-				<ExchangeInput onChange={convertCurrency} icon={<GiBottleCap />} inputProps={{ required: true }} />
+				<ExchangeInput onChange={convertCurrency} icon={<Caps />} inputProps={{ required: true }} />
 			</div>
 			<div>
 				<Typography className='flex items-center justify-center' paragraph variant='body1' gutterBottom>
@@ -56,10 +56,10 @@ const ExchangeModal = () => {
 				</Typography>
 				<ExchangeInput icon={'$'} value={inputValue} inputProps={{ readOnly: true }} />
 			</div>
-			{/* add integration with database */}
-			<Button className='mt-5 font-extrabold' variant='outlined' size='large' endIcon={<GiBottleCap />}>
+			<Button className='mt-5 font-extrabold' variant='outlined' size='large' endIcon={<Caps />}>
 				BUY
 			</Button>
+			{/* add integration with database  */}
 		</div>
 	)
 }
