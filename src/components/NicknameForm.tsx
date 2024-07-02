@@ -1,78 +1,41 @@
-import { SettingFormsProps } from '@/lib/types'
-import { Button, InputAdornment, TextField, Typography } from '@mui/material'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { FaAngleRight } from 'react-icons/fa6'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import FormBase from './FormBase'
+import { z } from 'zod'
+import { Dispatch, SetStateAction } from 'react'
+import { toast } from 'react-toastify'
 
 const nicknameSchema = z.object({
 	nickname: z
 		.string()
 		.min(1, { message: 'Name cannot be empty!' })
+		.regex(/^[a-zA-Z]/, { message: 'Must start with a letter' })
 		.min(5, { message: 'Must be 5 or more characters long' })
 		.max(15, { message: 'Must be 15 or fewer characters long' }),
 })
 
-interface FormInput {
+interface NicknameFormInput {
 	nickname: string
 }
 
-const NicknameChange = ({ setIsDetailsVisible }: SettingFormsProps) => {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-		clearErrors,
-	} = useForm<FormInput>({
-		resolver: zodResolver(nicknameSchema),
-	})
+interface NicknameFormProps {
+	setIsDetailsVisible: Dispatch<SetStateAction<boolean>>
+}
 
-	const onSubmit: SubmitHandler<FormInput> = data => {
-		console.log(data)
-		toast.success('Nickname updated successfully!')
-	}
-
+const NicknameForm = ({ setIsDetailsVisible }: NicknameFormProps) => {
 	return (
-		<form className='relative h-full' onSubmit={handleSubmit(onSubmit)}>
-			<div>
-				<Typography variant='h3' gutterBottom>
-					Identity Update
-				</Typography>
-				<Typography variant='h6' component='h4' gutterBottom>
-					Choose a New Identity for the Wasteland
-				</Typography>
-			</div>
-			<div className=' mt-10'>
-				<TextField
-					{...register('nickname', {
-						onBlur: () => clearErrors('nickname'),
-					})}
-					InputProps={{
-						startAdornment: (
-							<InputAdornment position='start'>
-								<FaAngleRight />
-							</InputAdornment>
-						),
-					}}
-					error={!!errors.nickname}
-					id='filled-basic'
-					label='Nickname'
-					variant='filled'
-					helperText={errors.nickname?.message}
-				/>
-			</div>
-			<div className='absolute bottom-0 w-full mx-auto'>
-				<Button size='large' className='mr-20' onClick={() => setIsDetailsVisible(false)}>
-					Return
-				</Button>
-				<Button size='large' type='submit'>
-					Submit
-				</Button>
-			</div>
-		</form>
+		<FormBase
+			title='Identity Update'
+			subtitle='Choose a New Identity for the Wasteland'
+			label='Nickname'
+			fieldName='nickname'
+			resolver={zodResolver(nicknameSchema)}
+			onSubmitSuccess={(data: NicknameFormInput) => {
+				toast.success('Success')
+				console.log(data)
+			}}
+			setIsDetailsVisible={setIsDetailsVisible}
+		/>
 	)
 }
 
-export default NicknameChange
+export default NicknameForm

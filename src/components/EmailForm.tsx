@@ -1,33 +1,40 @@
-import { SettingFormsProps } from '@/lib/types'
-import { Button, TextField } from '@mui/material'
-import { useCallback, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import FormBase from './FormBase'
+import { z } from 'zod'
+import { Dispatch, SetStateAction } from 'react'
 import { toast } from 'react-toastify'
 
-const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
-	const [formIsSubmit, setFormIsSubmit] = useState(false)
+const emailSchema = z.object({
+	email: z
+		.string()
+		.min(1, { message: 'Name cannot be empty!' })
+		.regex(/^[a-zA-Z]/, { message: 'Must start with a letter' })
+		.min(5, { message: 'Must be 5 or more characters long' })
+		.max(15, { message: 'Must be 15 or fewer characters long' }),
+})
 
-	const handleFormSubmit = () => {
-		toast.success('hello')
-		setFormIsSubmit(true)
-	}
+interface EmailFormInput {
+	email: string
+}
 
-	const handleReturn = useCallback(() => {
-		setIsDetailsVisible(false)
-		setFormIsSubmit(false)
-	}, [setIsDetailsVisible])
+interface EmailFormProps {
+	setIsDetailsVisible: Dispatch<SetStateAction<boolean>>
+}
 
+const EmailForm = ({ setIsDetailsVisible }: EmailFormProps) => {
 	return (
-		<form action=''>
-			<div></div>
-			<div>
-				<TextField error={false} id='filled-basic' label='Nickname' variant='filled' helperText='' />
-			</div>
-
-			<Button onClick={handleReturn}>back</Button>
-			<Button onClick={handleFormSubmit} type='submit'>
-				Submit
-			</Button>
-		</form>
+		<FormBase
+			title='Email Update'
+			subtitle='Choose a New Identity for the Wasteland'
+			label='Nickname'
+			fieldName='email'
+			resolver={zodResolver(emailSchema)}
+			onSubmitSuccess={(data: EmailFormInput) => {
+				toast.success('Success')
+				console.log(data)
+			}}
+			setIsDetailsVisible={setIsDetailsVisible}
+		/>
 	)
 }
 

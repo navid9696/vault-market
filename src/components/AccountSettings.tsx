@@ -43,9 +43,9 @@ const AccountSettings = () => {
 			case 'email':
 				return <EmailForm setIsDetailsVisible={setIsFormVisible} />
 			case 'password':
-				return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
+				return 
 			case 'address':
-				return <AddressForm setIsDetailsVisible={setIsFormVisible} />
+				return
 			default:
 				return null
 		}
