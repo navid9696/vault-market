@@ -2,7 +2,10 @@ import { Avatar, Badge, Button, Typography, styled } from '@mui/material'
 import { useCallback, useState } from 'react'
 import { AiTwotoneEdit as EditIcon } from 'react-icons/ai'
 import { FaLongArrowAltRight as ArrowRight } from 'react-icons/fa'
-import AccountSettingsData from './AccountSettingsData'
+import NicknameForm from './NicknameForm'
+import PasswordForm from './PasswordForm'
+import EmailForm from './EmailForm'
+import AddressForm from './AddressForm'
 
 const VisuallyHiddenInput = styled('input')({
 	clip: 'rect(0 0 0 0)',
@@ -18,7 +21,7 @@ const VisuallyHiddenInput = styled('input')({
 
 const AccountSettings = () => {
 	const [file, setFile] = useState<string | undefined>(undefined)
-	const [isDetailsVisible, setIsDetailsVisible] = useState(true)
+	const [isFormVisible, setIsFormVisible] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 
 	const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,14 +33,29 @@ const AccountSettings = () => {
 
 	const handleOpenSettings = useCallback((id: string) => {
 		setContentId(id)
-		setIsDetailsVisible(prev => !prev)
+		setIsFormVisible(true)
 	}, [])
+
+	const renderForm = () => {
+		switch (contentId) {
+			case 'nickname':
+				return <NicknameForm setIsDetailsVisible={setIsFormVisible} />
+			case 'email':
+				return <EmailForm setIsDetailsVisible={setIsFormVisible} />
+			case 'password':
+				return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
+			case 'address':
+				return <AddressForm setIsDetailsVisible={setIsFormVisible} />
+			default:
+				return null
+		}
+	}
 
 	return (
 		<>
 			<div
 				className={`top-0 left-0 transition-transform duration-500 ${
-					isDetailsVisible ? 'translate-x-0' : '-translate-x-96'
+					isFormVisible ? '-translate-x-96' : 'translate-x-0'
 				}`}>
 				<div className='text-center'>
 					<Typography variant={'h4'}>Wastelander Profile</Typography>
@@ -90,9 +108,9 @@ const AccountSettings = () => {
 			</div>
 			<div
 				className={`text-center absolute p-5 top-0 left-full w-full h-full transition-transform duration-500 ${
-					isDetailsVisible ? 'translate-x-0' : '-translate-x-full'
+					isFormVisible ? '-translate-x-full' : 'translate-x-0'
 				}`}>
-				<AccountSettingsData contentId={contentId} setIsDetailsVisible={setIsDetailsVisible} />
+				{renderForm()}
 			</div>
 		</>
 	)

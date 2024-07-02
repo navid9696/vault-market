@@ -56,10 +56,12 @@ const ExchangeModal = () => {
 				</Typography>
 				<ExchangeInput icon={'$'} value={inputValue} inputProps={{ readOnly: true }} />
 			</div>
-			<Button className='mt-5 font-extrabold' variant='outlined' size='large' endIcon={<Caps />}>
+			<Button
+				className='mt-5 font-extrabold text-green-500 hover:bg-[#13FF17] hover:text-slate-950'
+				size='large'
+				endIcon={<Caps />}>
 				BUY
 			</Button>
-			{/* add integration with database  */}
 		</div>
 	)
 }
