@@ -1,9 +1,9 @@
-import React from 'react'
+// import React from 'react'
 
-const PasswordForm = () => {
-  return (
-	<div>PasswordForm</div>
-  )
-}
+// const PasswordForm = () => {
+//   return (
+// 	<div>PasswordForm</div>
+//   )
+// }
 
-export default PasswordForm
+// export default PasswordForm

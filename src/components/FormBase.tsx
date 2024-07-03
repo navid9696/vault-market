@@ -1,32 +1,25 @@
-import { Button, InputAdornment, TextField, Typography } from '@mui/material'
+import { InputAdornment, TextField, Typography } from '@mui/material'
 import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler, Resolver } from 'react-hook-form'
 import { FaAngleRight } from 'react-icons/fa6'
-import { Dispatch, SetStateAction, useState } from 'react'
-import { visit } from 'graphql'
+import { useState } from 'react'
 
+interface FieldsConf {
+	name: string
+	label: string
+}
 interface FormBaseProps {
 	title?: string
 	subtitle?: string
-	fieldName: string
-	label: string
+	size: 'small' | 'medium'
+	fields: FieldsConf[]
 	resolver: Resolver<any>
 	onSubmitSuccess: (data: any) => void
 	children?: React.ReactNode
-	setIsDetailsVisible: Dispatch<SetStateAction<boolean>>
 }
 
-const FormBase = ({
-	title,
-	subtitle,
-	label,
-	resolver,
-	fieldName,
-	onSubmitSuccess,
-	children,
-	setIsDetailsVisible,
-}: FormBaseProps) => {
-	const [isFocused, setIsFocused] = useState(false)
+const FormBase = ({ title, subtitle, size, fields, resolver, onSubmitSuccess, children }: FormBaseProps) => {
+	const [focusedField, setFocusedField] = useState<string | null>(null)
 	const {
 		register,
 		handleSubmit,
@@ -41,47 +34,44 @@ const FormBase = ({
 	}
 
 	return (
-		<form className='relative h-full' onSubmit={handleSubmit(onSubmit)}>
+		<form className='flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
 			<div>
-				<Typography variant='h3' gutterBottom>
+				<Typography variant='h4' component={'h3'} gutterBottom>
 					{title}
 				</Typography>
 				<Typography variant='h6' component='h4' gutterBottom>
 					{subtitle}
 				</Typography>
 			</div>
-			<div className=' mt-10'>
-				<TextField
-					{...register(fieldName, {
-						onBlur: () => {
-							setIsFocused(false)
-							clearErrors(fieldName)
-						},
-					})}
-					onFocus={() => setIsFocused(true)}
-					InputProps={{
-						startAdornment: (
-							<InputAdornment className={`invisible ${isFocused && 'visible'}`} position='start'>
-								<FaAngleRight />
-							</InputAdornment>
-						),
-					}}
-					error={!!errors[fieldName]}
-					id='filled-basic'
-					label={label}
-					variant='filled'
-					helperText={(errors[fieldName]?.message as string) || ''}
-				/>
-				{children}
+			<div className='flex flex-wrap justify-center gap-x-5'>
+				{fields.map(field => (
+					<TextField
+						key={field.name}
+						className='relative w-40'
+						size={size}
+						{...register(field.name, {
+							onBlur: () => {
+								setFocusedField(null)
+								clearErrors(field.name)
+							},
+						})}
+						onFocus={() => setFocusedField(field.name)}
+						InputProps={{
+							startAdornment: focusedField === field.name && (
+								<InputAdornment className='-ml-[14px] absolute ' position='start'>
+									<FaAngleRight />
+								</InputAdornment>
+							),
+						}}
+						error={!!errors[field.name]}
+						id={`filled-basic-${field.name}`}
+						label={field.label}
+						variant='filled'
+						helperText={<p className='h-12'>{errors[field.name]?.message as string}</p>}
+					/>
+				))}
 			</div>
-			<div className='absolute bottom-0 w-full mx-auto'>
-				<Button size='large' className='mr-20' onClick={() => setIsDetailsVisible(false)}>
-					Return
-				</Button>
-				<Button size='large' type='submit'>
-					Submit
-				</Button>
-			</div>
+			{children}
 		</form>
 	)
 }

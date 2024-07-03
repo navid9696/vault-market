@@ -3,6 +3,7 @@ import FormBase from './FormBase'
 import { z } from 'zod'
 import { Dispatch, SetStateAction } from 'react'
 import { toast } from 'react-toastify'
+import { Button } from '@mui/material'
 
 const nicknameSchema = z.object({
 	nickname: z
@@ -13,10 +14,6 @@ const nicknameSchema = z.object({
 		.max(15, { message: 'Must be 15 or fewer characters long' }),
 })
 
-interface NicknameFormInput {
-	nickname: string
-}
-
 interface NicknameFormProps {
 	setIsDetailsVisible: Dispatch<SetStateAction<boolean>>
 }
@@ -26,15 +23,27 @@ const NicknameForm = ({ setIsDetailsVisible }: NicknameFormProps) => {
 		<FormBase
 			title='Identity Update'
 			subtitle='Choose a New Identity for the Wasteland'
-			label='Nickname'
-			fieldName='nickname'
+			size='small'
+			fields={[
+				{ name: 'nickname', label: 'Nickname' },
+				{ name: 'nickname', label: 'Nickname' },
+				{ name: 'nickname', label: 'Nickname' },
+				{ name: 'nickname', label: 'Nickname' },
+				{ name: 'nickname', label: 'Nickname' },
+			]}
 			resolver={zodResolver(nicknameSchema)}
-			onSubmitSuccess={(data: NicknameFormInput) => {
+			onSubmitSuccess={(data: any) => {
 				toast.success('Success')
-				console.log(data)
-			}}
-			setIsDetailsVisible={setIsDetailsVisible}
-		/>
+			}}>
+			<div className='flex justify-center  gap-20 '>
+				<Button size='large' onClick={() => setIsDetailsVisible(false)}>
+					Return
+				</Button>
+				<Button size='large' type='submit'>
+					Submit
+				</Button>
+			</div>
+		</FormBase>
 	)
 }
 
