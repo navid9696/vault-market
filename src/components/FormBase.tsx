@@ -12,13 +12,14 @@ interface FormBaseProps {
 	title?: string
 	subtitle?: string
 	size: 'small' | 'medium'
+	className: string | undefined
 	fields: FieldsConf[]
 	resolver: Resolver<any>
 	onSubmitSuccess: (data: any) => void
 	children?: React.ReactNode
 }
 
-const FormBase = ({ title, subtitle, size, fields, resolver, onSubmitSuccess, children }: FormBaseProps) => {
+const FormBase = ({ title, subtitle, size, className, fields, resolver, onSubmitSuccess, children }: FormBaseProps) => {
 	const [focusedField, setFocusedField] = useState<string | null>(null)
 	const {
 		register,
@@ -47,7 +48,7 @@ const FormBase = ({ title, subtitle, size, fields, resolver, onSubmitSuccess, ch
 				{fields.map(field => (
 					<TextField
 						key={field.name}
-						className='relative w-40'
+						className={className}
 						size={size}
 						{...register(field.name, {
 							onBlur: () => {
