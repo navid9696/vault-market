@@ -7,6 +7,8 @@ import NicknameForm from './NicknameForm'
 import EmailForm from './EmailForm'
 import TransitionsModal from './TransitionModal'
 import DeleteAccountModal from './DeleteAccountModal'
+import PasswordForm from './PasswordForm'
+import AddressForm from './AddressForm'
 // import PasswordForm from './PasswordForm'
 // import EmailForm from './EmailForm'
 // import AddressForm from './AddressForm'
@@ -52,9 +54,9 @@ const AccountSettings = () => {
 			case 'email':
 				return <EmailForm setIsDetailsVisible={setIsFormVisible} />
 			case 'password':
-				return
+				return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
 			case 'address':
-				return
+				return <AddressForm setIsDetailsVisible={setIsFormVisible} />
 			default:
 				return null
 		}

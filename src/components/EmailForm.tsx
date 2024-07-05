@@ -39,7 +39,7 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {
 			setIsfocusedField(false)
-			toast.success('Nickname updated successfully')
+			toast.success('Email updated successfully')
 			reset()
 		}
 	}, [formState, reset])
@@ -51,7 +51,7 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 			</Typography>
 			<div className='flex flex-wrap justify-center gap-x-5'>
 				<Typography gutterBottom className='mt-10' variant='h6' component='h4'>
-					Choose a New Email
+					Modify Your Email
 				</Typography>
 				<TextField
 					className='relative w-3/4'
@@ -77,7 +77,7 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					helperText={<span className='block h-4'>{errors.email?.message}</span>}
 				/>
 			</div>
-			<div className='flex justify-center gap-20 mb-10 mt-4'>
+			<div className='flex justify-center gap-20 mt-4'>
 				<Button
 					size='large'
 					onClick={() => {

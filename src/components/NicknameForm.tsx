@@ -54,7 +54,7 @@ const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 			<div className='flex flex-wrap justify-center gap-x-5'>
 				<Typography gutterBottom variant='h6' component='h4'>
-					Choose a New Identity
+					Modify Your Identity
 				</Typography>
 				<TextField
 					className='relative w-3/4'
@@ -80,7 +80,7 @@ const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					helperText={<span className='block h-4'>{errors.nickname?.message}</span>}
 				/>
 			</div>
-			<div className='flex justify-center gap-20 mb-10 mt-4'>
+			<div className='flex justify-center gap-20 mt-4'>
 				<Button
 					size='large'
 					onClick={() => {

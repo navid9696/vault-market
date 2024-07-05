@@ -7,8 +7,17 @@ interface DeleteAccountModalProps {
 const DeleteAccountModal = ({ handleClose }: DeleteAccountModalProps) => {
 	return (
 		<>
-			<Typography variant={'h4'}>Are you sure you want to delete your account?</Typography>
-			<Button onClick={handleClose}>Cancel</Button>
+			<Typography gutterBottom variant={'h4'}>
+				Are you sure you want to delete your account?
+			</Typography>
+			<div className='flex gap-20'>
+				<Button variant='outlined' size='large' onClick={handleClose}>
+					Delete
+				</Button>
+				<Button variant='contained' size='large' onClick={handleClose}>
+					Cancel
+				</Button>
+			</div>
 		</>
 	)
 }
