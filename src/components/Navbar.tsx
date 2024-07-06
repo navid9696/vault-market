@@ -12,8 +12,8 @@ const Navbar = () => {
 	const [activeSubCategory, setActiveSubCategory] = useState<null | number>(null)
 
 	return (
-		<div className='sticky top-0 '>
-			<nav className='mx-auto max-w-screen-md'>
+		<nav className='fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full md:max-w-screen-md '>
+			<div className=' '>
 				<div className='p-2 flex items-center justify-between h-14 border-2 border-green-600 bg-gradient-to-r from-green-950 via-green-900 to-green-950  md:rounded-full z-10'>
 					<div className='flex items-center '>
 						<div>
@@ -42,7 +42,7 @@ const Navbar = () => {
 						<AccountMenu />
 					</div>
 				</div>
-				<div>
+				<div className='bg-zinc-950 rounded-full '>
 					<CategoriesTabs
 						activeCategory={activeCategory}
 						setActiveCategory={setActiveCategory}
@@ -50,11 +50,11 @@ const Navbar = () => {
 						setActiveSubCategory={setActiveSubCategory}
 					/>
 				</div>
-			</nav>
-			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-1 mx-auto rounded-full -z-10'></div>
-			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[1000px] h-2 top-6 mx-auto rounded-full -z-10'></div>
-			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-11 mx-auto rounded-full -z-10'></div>
-		</div>
+			</div>
+			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-1 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
+			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[1000px] h-2 top-6 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
+			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-11 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
+		</nav>
 	)
 }
 

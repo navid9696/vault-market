@@ -9,9 +9,6 @@ import TransitionsModal from './TransitionModal'
 import DeleteAccountModal from './DeleteAccountModal'
 import PasswordForm from './PasswordForm'
 import AddressForm from './AddressForm'
-// import PasswordForm from './PasswordForm'
-// import EmailForm from './EmailForm'
-// import AddressForm from './AddressForm'
 
 const VisuallyHiddenInput = styled('input')({
 	clip: 'rect(0 0 0 0)',
