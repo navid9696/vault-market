@@ -17,8 +17,8 @@ import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
-import { statesOfAmerica } from '@/data/statesOfAmerica'
+import { statesOfUSA } from '~/data/statesOfUSA'
+import { SettingFormsProps } from '~/lib/types'
 
 const addressSchema = z.object({
 	address: z.string().min(1, { message: 'Address cannot be empty.' }),
@@ -177,7 +177,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 							onChange: handleChange,
 						})}
 						onFocus={() => setIsFocusedField('state')}>
-						{statesOfAmerica.map(state => (
+						{statesOfUSA.map(state => (
 							<MenuItem key={state} value={state}>
 								{state}
 							</MenuItem>

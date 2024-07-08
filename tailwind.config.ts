@@ -10,7 +10,7 @@ const config: Config = {
 		extend: {
 			backgroundImage: {},
 			boxShadow: {
-				'custom-inset': 'inset 0px 50px 200px 25px #09090b',
+				'custom-inset': 'inset 0px 150px 100px 25px #09090b',
 			},
 		},
 	},

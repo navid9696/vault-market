@@ -1,4 +1,4 @@
-export const statesOfAmerica = [
+export const statesOfUSA = [
 	'Alabama',
 	'Alaska',
 	'Arizona',

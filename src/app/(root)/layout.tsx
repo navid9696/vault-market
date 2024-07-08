@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'
-import { ApolloWrapper } from '@/providers/ApolloWrapper'
+import { ApolloWrapper } from '~/providers/ApolloWrapper'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],

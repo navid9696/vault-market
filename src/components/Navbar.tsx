@@ -3,14 +3,10 @@ import ShoppingCart from '@mui/icons-material/ShoppingCartTwoTone'
 import Link from 'next/link'
 import AccountMenu from './AccountMenu'
 import { Badge } from '@mui/material'
-import { useState } from 'react'
 
 import CategoriesTabs from './CategoriesTabs'
 
 const Navbar = () => {
-	const [activeCategory, setActiveCategory] = useState<null | number>(0)
-	const [activeSubCategory, setActiveSubCategory] = useState<null | number>(null)
-
 	return (
 		<nav className='fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full md:max-w-screen-md '>
 			<div className=' '>
@@ -42,13 +38,8 @@ const Navbar = () => {
 						<AccountMenu />
 					</div>
 				</div>
-				<div className='bg-zinc-950 rounded-full '>
-					<CategoriesTabs
-						activeCategory={activeCategory}
-						setActiveCategory={setActiveCategory}
-						activeSubCategory={activeSubCategory}
-						setActiveSubCategory={setActiveSubCategory}
-					/>
+				<div>
+					<CategoriesTabs />
 				</div>
 			</div>
 			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-1 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>

@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
+import { SettingFormsProps } from '~/lib/types'
 
 const emailSchema = z.object({
 	email: z
