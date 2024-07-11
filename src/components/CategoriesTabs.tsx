@@ -30,7 +30,7 @@ const CategoriesTabs = () => {
 					))}
 				</Tabs>
 			</div>
-			<div className='-mt-6 text-center '>
+			<div className='-mt-6 flex items-center justify-center'>
 				<Tabs
 					className='text-green-500'
 					value={false}
