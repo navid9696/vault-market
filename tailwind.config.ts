@@ -11,6 +11,9 @@ const config: Config = {
 			backgroundImage: {},
 			boxShadow: {
 				'custom-inset': 'inset 0px 150px 100px 25px #09090b',
+				'inset-1': 'inset 0px 0px 0px 1px #303030',
+				'inset-2': 'inset 0px 0px 0px 2px #303030',
+				'inset-3': 'inset 0px 0px 0px 3px #303030',
 			},
 		},
 	},

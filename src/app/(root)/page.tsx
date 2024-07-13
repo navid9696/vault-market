@@ -29,7 +29,7 @@ const Home = () => {
 					<Header />
 					<SaleList />
 				</div>
-				<main className='mx-auto flex flex-col justify-center items-center w-full max-w-screen-lg'>
+				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-lg'>
 					<ProductsList />
 					<div className='h-[2000px] w-full bg-slate-100'></div>
 				</main>
