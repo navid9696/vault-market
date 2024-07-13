@@ -21,7 +21,7 @@ const ProductCard = () => {
 	const [isOnSale, setisOnSale] = useState(true)
 	return (
 		// container
-		<div className='relative  max-h-64 min-h-52 h-full max-w-52 min-w-48 p-4 transition hover:scale-110 z-0'>
+		<div className='relative max-h-64 min-h-44 h-full max-w-52 min-w-48 w-full p-4 transition hover:scale-105 cursor-pointer z-0'>
 			{/* badge */}
 			{isOnSale && (
 				<>
@@ -37,7 +37,7 @@ const ProductCard = () => {
 				</>
 			)}
 			{/* box */}
-			<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl cursor-pointer bg-orange-200 z-0 overflow-hidden '>
+			<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
 				{/* border-covers  */}
 				{isOnSale && (
 					<>
@@ -50,18 +50,19 @@ const ProductCard = () => {
 					</>
 				)}
 				{/* content */}
-				<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-zinc-900 via-green-400 to-zinc-900 '>
+				<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-zinc-900 via-green-300 to-zinc-900 '>
 					<h4
 						className={`${
 							isOnSale && 'w-11/12 pl-3 rounded-tr-lg'
 						} w-full h-[21px] pl-0 flex items-center justify-center text-md rounded-t-lg bg-green-700 text-orange-200 font-semibold `}>
 						Stimpak
 					</h4>
-					<div className='p-2 flex flex-grow flex-col items-center'>
+					<div className='h-full w-full p-1'>
 						<div className='relative h-full w-full '>
-							<Image className=' object-contain' src={'/imgs/stimpak.webp'} fill alt='Product Image' />
+							<Image className=' object-contain' src={'/imgs/stimpak.webp'} layout='fill' fill alt='Product Image' />
 						</div>
 					</div>
+
 					{/* content-box-info */}
 					<div className='p-2 relative flex flex-col items-start justify-center rounded-md shadow-inset-3 bg-gradient-to-b from-green-400 via-green-200 to-green-500 text-white font-semibold z-0'>
 						{/* ribbon-tip */}

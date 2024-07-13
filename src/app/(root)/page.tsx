@@ -3,10 +3,10 @@
 import Header from '~/components/Header'
 import Navbar from '~/components/Navbar'
 import ProductsList from '~/components/ProductsList'
-import SaleList from '~/components/SaleList'
 import { createTheme, ThemeProvider } from '@mui/material'
 
 import { ToastContainer } from 'react-toastify'
+import OnSaleList from '~/components/OnSaleList'
 const Home = () => {
 	const theme = createTheme({
 		typography: {
@@ -27,7 +27,7 @@ const Home = () => {
 
 				<div className='h-dvh'>
 					<Header />
-					<SaleList />
+					<OnSaleList />
 				</div>
 				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-lg'>
 					<ProductsList />
