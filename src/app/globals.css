@@ -27,6 +27,13 @@ body {
 	}
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	/* display: none; <- Crashes Chrome on hover */
+	-webkit-appearance: none;
+	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
 .chevron {
 	clip-path: polygon(100% 0, 100% 50%, 100% 100%, 0% 100%, 6% 50%, 0% 0%);
 }
@@ -51,6 +58,8 @@ body {
 	height: 100% !important;
 	margin: 0 1em;
 }
+
+
 
 @media (min-width: 1024px) {
 	body::before {
