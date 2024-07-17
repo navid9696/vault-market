@@ -22,8 +22,23 @@ const VisuallyHiddenInput = styled('input')({
 	width: 1,
 })
 
+const renderForm = (contentId: string | null, setIsFormVisible: () => void): React.ReactNode => {
+	switch (contentId) {
+		case 'nickname':
+			return <NicknameForm setIsDetailsVisible={setIsFormVisible} />
+		case 'email':
+			return <EmailForm setIsDetailsVisible={setIsFormVisible} />
+		case 'password':
+			return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
+		case 'address':
+			return <AddressForm setIsDetailsVisible={setIsFormVisible} />
+		default:
+			return null
+	}
+}
+
 const AccountSettings = () => {
-	const [file, setFile] = useState<string | undefined>(undefined)
+	const [avatar, setAvatar] = useState<string | undefined>(undefined)
 	const [isFormVisible, setIsFormVisible] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
@@ -37,27 +52,12 @@ const AccountSettings = () => {
 		setIsFormVisible(true)
 	}, [])
 
-	const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleAvatarChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
-			const file = e.target.files[0]
-			setFile(URL.createObjectURL(file))
+			const avatar = e.target.files[0]
+			setAvatar(URL.createObjectURL(avatar))
 		}
-	}
-
-	const renderForm = () => {
-		switch (contentId) {
-			case 'nickname':
-				return <NicknameForm setIsDetailsVisible={setIsFormVisible} />
-			case 'email':
-				return <EmailForm setIsDetailsVisible={setIsFormVisible} />
-			case 'password':
-				return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
-			case 'address':
-				return <AddressForm setIsDetailsVisible={setIsFormVisible} />
-			default:
-				return null
-		}
-	}
+	}, [])
 
 	return (
 		<>
@@ -74,7 +74,7 @@ const AccountSettings = () => {
 						overlap='circular'
 						anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 						badgeContent={<EditIcon className='mt-3 ml-3' fontSize={32} />}>
-						<Avatar className='h-32 w-32 border-4 border-black bg-slate-200' alt='Remy Sharp' src={file} />
+						<Avatar className='h-32 w-32 border-4 border-black bg-slate-200' alt='Remy Sharp' src={avatar} />
 						<VisuallyHiddenInput type='file' accept='image/*' onChange={handleAvatarChange}></VisuallyHiddenInput>
 					</Badge>
 					<div>
@@ -126,7 +126,7 @@ const AccountSettings = () => {
 				className={`text-center absolute p-10 top-0 left-full w-full h-full transition-transform duration-500 ${
 					isFormVisible ? '-translate-x-full' : 'translate-x-0'
 				}`}>
-				{renderForm()}
+				{renderForm(contentId, () => setIsFormVisible(isFormVisible))}
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				<DeleteAccountModal handleClose={handleModalClose} />
