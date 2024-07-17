@@ -1,11 +1,50 @@
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { categoriesData } from '~/data/categories'
-import { useState } from 'react'
+import { useReducer } from 'react'
+
+enum ActionType {
+	SET_ACTIVE_CATEGORY = 'SET_ACTIVE_CATEGORY',
+	SET_ACTIVE_SUB_CATEGORY = 'SET_ACTIVE_SUB_CATEGORY',
+}
+
+interface Action {
+	type: 'SET_ACTIVE_CATEGORY' | 'SET_ACTIVE_SUB_CATEGORY'
+	payload: number
+}
+interface State {
+	activeCategory: number
+	activeSubCategory: number | null
+}
+
+const initialState = {
+	activeCategory: 0,
+	activeSubCategory: null,
+}
+
+const reducer = (state: State, action: Action): State => {
+	const { type, payload } = action
+	switch (type) {
+		case ActionType.SET_ACTIVE_CATEGORY:
+			return {
+				...state,
+				activeCategory: payload,
+				activeSubCategory: 0,
+			}
+		case ActionType.SET_ACTIVE_SUB_CATEGORY:
+			return {
+				...state,
+				activeSubCategory: payload,
+			}
+
+		default:
+			return state
+	}
+}
 
 const CategoriesTabs = () => {
-	const [activeCategory, setActiveCategory] = useState<null | number>(0)
-	const [activeSubCategory, setActiveSubCategory] = useState<null | number>(null)
+	const [state, dispatch] = useReducer(reducer, initialState)
+
 	return (
 		<>
 			<div className='flex items-center justify-center '>
@@ -22,10 +61,9 @@ const CategoriesTabs = () => {
 							key={category.id}
 							text={category.name}
 							onClick={() => {
-								setActiveCategory(category.id)
-								setActiveSubCategory(0)
+								dispatch({ type: 'SET_ACTIVE_CATEGORY', payload: category.id })
 							}}
-							isActive={activeCategory === category.id}
+							isActive={state.activeCategory === category.id}
 						/>
 					))}
 				</Tabs>
@@ -38,14 +76,14 @@ const CategoriesTabs = () => {
 					variant='scrollable'
 					scrollButtons='auto'
 					aria-label='scrollable auto tabs'>
-					{activeCategory !== null &&
-						categoriesData.categories[activeCategory].subCategories.map(subCategory => (
+					{state.activeCategory !== null &&
+						categoriesData.categories[state.activeCategory].subCategories.map(subCategory => (
 							<CategoryBtn
 								key={subCategory.id}
 								isSubCategory={true}
 								text={subCategory.name}
-								onClick={() => setActiveSubCategory(subCategory.id)}
-								isActive={activeSubCategory === subCategory.id}
+								onClick={() => dispatch({ type: 'SET_ACTIVE_SUB_CATEGORY', payload: subCategory.id })}
+								isActive={state.activeSubCategory === subCategory.id}
 							/>
 						))}
 				</Tabs>
