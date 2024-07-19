@@ -95,7 +95,9 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('address')}
 					InputProps={{
 						startAdornment: isFocusedField === 'address' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -119,7 +121,9 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('addressOptional')}
 					InputProps={{
 						startAdornment: isFocusedField === 'addressOptional' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -143,7 +147,9 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('city')}
 					InputProps={{
 						startAdornment: isFocusedField === 'city' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -200,7 +206,9 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('zipCode')}
 					InputProps={{
 						startAdornment: isFocusedField === 'zipCode' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),

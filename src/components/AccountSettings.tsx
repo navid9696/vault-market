@@ -1,5 +1,5 @@
 import { Avatar, Badge, Button, Typography, styled } from '@mui/material'
-import { useCallback, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { AiTwotoneEdit as EditIcon } from 'react-icons/ai'
 import { FaLongArrowAltRight as ArrowRight } from 'react-icons/fa'
 import { FaTrashAlt as Trash } from 'react-icons/fa'
@@ -22,7 +22,7 @@ const VisuallyHiddenInput = styled('input')({
 	width: 1,
 })
 
-const renderForm = (contentId: string | null, setIsFormVisible: () => void): React.ReactNode => {
+const renderForm = (contentId: string | null, setIsFormVisible: Dispatch<SetStateAction<boolean>>): React.ReactNode => {
 	switch (contentId) {
 		case 'nickname':
 			return <NicknameForm setIsDetailsVisible={setIsFormVisible} />
@@ -126,7 +126,7 @@ const AccountSettings = () => {
 				className={`text-center absolute p-10 top-0 left-full w-full h-full transition-transform duration-500 ${
 					isFormVisible ? '-translate-x-full' : 'translate-x-0'
 				}`}>
-				{renderForm(contentId, () => setIsFormVisible(isFormVisible))}
+				{renderForm(contentId, setIsFormVisible)}
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				<DeleteAccountModal handleClose={handleModalClose} />
