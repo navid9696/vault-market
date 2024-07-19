@@ -1,42 +1,45 @@
+import { useReducer } from 'react'
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { categoriesData } from '~/data/categories'
-import { useReducer } from 'react'
+import { createAction, ActionType, getType } from 'typesafe-actions'
 
-enum ActionType {
-	SET_ACTIVE_CATEGORY = 'SET_ACTIVE_CATEGORY',
-	SET_ACTIVE_SUB_CATEGORY = 'SET_ACTIVE_SUB_CATEGORY',
-}
+const setActiveCategory = createAction('SET_ACTIVE_CATEGORY')<{
+	activeCategory: number
+	activeSubCategory: number
+}>()
 
-interface Action {
-	type: 'SET_ACTIVE_CATEGORY' | 'SET_ACTIVE_SUB_CATEGORY'
-	payload: number
-}
+const setActiveSubCategory = createAction('SET_ACTIVE_SUB_CATEGORY')<{
+	activeSubCategory: number
+}>()
+
+const actions = { setActiveCategory, setActiveSubCategory }
+
+type CategoriesAction = ActionType<typeof actions>
+
 interface State {
 	activeCategory: number
 	activeSubCategory: number | null
 }
 
-const initialState = {
+const initialState: State = {
 	activeCategory: 0,
 	activeSubCategory: null,
 }
 
-const reducer = (state: State, action: Action): State => {
-	const { type, payload } = action
-	switch (type) {
-		case ActionType.SET_ACTIVE_CATEGORY:
+const reducer = (state: State = initialState, action: CategoriesAction): State => {
+	switch (action.type) {
+		case getType(setActiveCategory):
 			return {
 				...state,
-				activeCategory: payload,
-				activeSubCategory: 0,
+				activeCategory: action.payload.activeCategory,
+				activeSubCategory: action.payload.activeSubCategory,
 			}
-		case ActionType.SET_ACTIVE_SUB_CATEGORY:
+		case getType(setActiveSubCategory):
 			return {
 				...state,
-				activeSubCategory: payload,
+				activeSubCategory: action.payload.activeSubCategory,
 			}
-
 		default:
 			return state
 	}
@@ -47,7 +50,7 @@ const CategoriesTabs = () => {
 
 	return (
 		<>
-			<div className='flex items-center justify-center '>
+			<div className='flex items-center justify-center'>
 				<Tabs
 					className='text-green-500'
 					TabScrollButtonProps={{ sx: { marginTop: '-20px' } }}
@@ -61,14 +64,14 @@ const CategoriesTabs = () => {
 							key={category.id}
 							text={category.name}
 							onClick={() => {
-								dispatch({ type: 'SET_ACTIVE_CATEGORY', payload: category.id })
+								dispatch(setActiveCategory({ activeCategory: category.id, activeSubCategory: 0 }))
 							}}
 							isActive={state.activeCategory === category.id}
 						/>
 					))}
 				</Tabs>
 			</div>
-			<div className='-mt-6 flex items-center justify-center'>
+			<div className='-mt-6 text-center'>
 				<Tabs
 					className='text-green-500'
 					value={false}
@@ -82,7 +85,7 @@ const CategoriesTabs = () => {
 								key={subCategory.id}
 								isSubCategory={true}
 								text={subCategory.name}
-								onClick={() => dispatch({ type: 'SET_ACTIVE_SUB_CATEGORY', payload: subCategory.id })}
+								onClick={() => dispatch(setActiveSubCategory({ activeSubCategory: subCategory.id }))}
 								isActive={state.activeSubCategory === subCategory.id}
 							/>
 						))}

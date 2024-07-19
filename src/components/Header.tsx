@@ -3,18 +3,19 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { adSlogans } from '~/data/adSlogans'
 
+const settings = {
+	accessibility: false,
+	adaptiveHeight: true,
+	arrows: false,
+	autoplaySpeed: 5000,
+	infinite: true,
+	speed: 1500,
+	slidesToShow: 1,
+	slidesToScroll: 1,
+	autoplay: true,
+}
+
 const Header = () => {
-	const settings = {
-		accessibility: false,
-		adaptiveHeight: true,
-		arrows: false,
-		autoplaySpeed: 5000,
-		infinite: true,
-		speed: 1500,
-		slidesToShow: 1,
-		slidesToScroll: 1,
-		autoplay: true,
-	}
 	return (
 		<>
 			<header className=" h-3/4 bg-[url('/imgs/header.png')] bg-scroll bg-center bg-no-repeat bg-cover -z-10">
