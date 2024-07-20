@@ -3,15 +3,6 @@ import { useState } from 'react'
 import { FaPlus as Plus } from 'react-icons/fa'
 import { FaMinus as Minus } from 'react-icons/fa'
 
-const StyledInput = styled(OutlinedInput)({
-	'& .MuiInputBase-input': {
-		textAlign: 'center',
-	},
-	'& .Mui-disabled': {
-		'-webkitTextFillColor': '#000',
-	},
-})
-
 const QuantitySelector = () => {
 	const [productQuantity, setProductQuantity] = useState(1)
 
@@ -36,7 +27,7 @@ const QuantitySelector = () => {
 				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
 					Amount
 				</InputLabel>
-				<StyledInput
+				<OutlinedInput
 					className='rounded-none hover:border-red-400 font-semibold'
 					value={productQuantity}
 					id='input-adornment-amount'
@@ -44,7 +35,11 @@ const QuantitySelector = () => {
 					readOnly
 					disabled
 					label='Amount'
-					inputProps={{ min: '1', disabledUnderline: true }}
+					inputProps={{
+						min: '1',
+						disabledUnderline: true,
+						style: { WebkitTextFillColor: 'rgba(0, 0, 0, 1.0)', textAlign: 'center' },
+					}}
 				/>
 			</FormControl>
 
