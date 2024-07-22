@@ -2,7 +2,7 @@ import { useReducer } from 'react'
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { categoriesData } from '~/data/categories'
-import { createAction, ActionType, getType } from 'typesafe-actions'
+import { createAction, ActionType, createReducer } from 'typesafe-actions'
 
 const setActiveCategory = createAction('SET_ACTIVE_CATEGORY')<{
 	activeCategory: number
@@ -19,31 +19,24 @@ type CategoriesAction = ActionType<typeof actions>
 
 interface State {
 	activeCategory: number
-	activeSubCategory: number | null
+	activeSubCategory: number
 }
 
 const initialState: State = {
 	activeCategory: 0,
-	activeSubCategory: null,
+	activeSubCategory: 0,
 }
 
-const reducer = (state: State = initialState, action: CategoriesAction): State => {
-	switch (action.type) {
-		case getType(setActiveCategory):
-			return {
-				...state,
-				activeCategory: action.payload.activeCategory,
-				activeSubCategory: action.payload.activeSubCategory,
-			}
-		case getType(setActiveSubCategory):
-			return {
-				...state,
-				activeSubCategory: action.payload.activeSubCategory,
-			}
-		default:
-			return state
-	}
-}
+const reducer = createReducer<State, CategoriesAction>(initialState)
+	.handleAction(setActiveCategory, (state, action) => ({
+		...state,
+		activeCategory: action.payload.activeCategory,
+		activeSubCategory: action.payload.activeSubCategory,
+	}))
+	.handleAction(setActiveSubCategory, (state, action) => ({
+		...state,
+		activeSubCategory: action.payload.activeSubCategory,
+	}))
 
 const CategoriesTabs = () => {
 	const [state, dispatch] = useReducer(reducer, initialState)
