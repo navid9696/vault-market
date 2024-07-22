@@ -24,7 +24,7 @@ const QuantitySelector = () => {
 			</IconButton>
 
 			<FormControl className='w-16 ' size='small'>
-				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
+				<InputLabel className='font-semibold' htmlFor='i-adornment-amount'>
 					Amount
 				</InputLabel>
 				<OutlinedInput
@@ -37,7 +37,7 @@ const QuantitySelector = () => {
 					label='Amount'
 					inputProps={{
 						min: '1',
-						disabledUnderline: true,
+						disabledunderline: 'true',
 						style: { WebkitTextFillColor: 'rgba(0, 0, 0, 1.0)', textAlign: 'center' },
 					}}
 				/>
