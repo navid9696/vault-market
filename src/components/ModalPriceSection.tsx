@@ -10,11 +10,11 @@ const PriceSection = () => {
 	const isOnSale = useStore(state => state.isOnSale)
 
 	return (
-		<div className='md:w-1/3 w-1/2 flex flex-col justify-evenly items-center '>
-			<div className='w-full flex flex-col items-center text-green-950'>
+		<div className='w-1/2 flex flex-col justify-evenly items-center '>
+			<div className='sm:w-full flex flex-col items-center text-green-950'>
 				<h3 className='w-full text-left font-semibold text-sm'>PRICE</h3>
-				<div className='w-full flex justify-between gap-4'>
-					<p className='flex items-center gap-1 md:text-3xl text-xl'>
+				<div className='w-full flex flex-col sm:flex-row justify-start gap-4'>
+					<p className='flex items-center gap-1 md:text-2xl text-xl'>
 						1500
 						<Caps />
 					</p>

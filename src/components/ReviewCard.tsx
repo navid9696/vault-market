@@ -13,16 +13,16 @@ const StyledRating = styled(Rating)({
 	},
 })
 
-interface ReviewProps {
+interface ReviewCardProps {
 	username: string
 	userAvatar: string
 	comment: string
 	rating: number
 }
 
-const Review = ({ username, userAvatar, comment, rating }: ReviewProps) => {
+const ReviewCard = ({ username, userAvatar, comment, rating }: ReviewCardProps) => {
 	return (
-		<Card variant='outlined' className='w-full'>
+		<Card variant='outlined' className='bg-green-300'>
 			<CardContent>
 				<div className='flex items-center mb-2'>
 					<Avatar alt={username} src={userAvatar} className='mr-4' />
@@ -47,4 +47,4 @@ const Review = ({ username, userAvatar, comment, rating }: ReviewProps) => {
 	)
 }
 
-export default Review
+export default ReviewCard

@@ -15,7 +15,7 @@ const QuantitySelector = () => {
 	}
 
 	return (
-		<div className='flex  '>
+		<div className='flex  sm:scale-100 scale-75'>
 			<IconButton
 				disabled={productQuantity <= 1}
 				onClick={handleDecrement}
@@ -24,7 +24,7 @@ const QuantitySelector = () => {
 			</IconButton>
 
 			<FormControl className='w-16 ' size='small'>
-				<InputLabel className='font-semibold' htmlFor='i-adornment-amount'>
+				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
 					Amount
 				</InputLabel>
 				<OutlinedInput
