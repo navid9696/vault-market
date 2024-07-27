@@ -1,4 +1,5 @@
 import StarIcon from '@mui/icons-material/Star'
+import StarIcon from '@mui/icons-material/Star'
 import { FiMinus as Minus } from 'react-icons/fi'
 import { Rating, styled } from '@mui/material'
 import Image from 'next/image'
@@ -10,8 +11,12 @@ const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
 		color: '#f1f5f9',
 		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 1))',
+		color: '#f1f5f9',
+		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 1))',
 	},
 	'& .MuiRating-iconEmpty': {
+		color: '#1e293b',
+		fill: 'black',
 		color: '#1e293b',
 		fill: 'black',
 	},
@@ -44,6 +49,8 @@ const ProductCard = () => {
 						<div
 							className='absolute -top-[3px] -left-[10px] h-2 w-10 p-1 bg-orange-200
 				rounded-lg z-50'></div>
+						<div
+							className='absolute -top-[10px] -left-[3px] h-10 w-2 p-1 bg-orange-200
 						<div
 							className='absolute -top-[10px] -left-[3px] h-10 w-2 p-1 bg-orange-200
 				rounded-lg z-50'></div>
