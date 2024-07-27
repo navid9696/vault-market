@@ -2,20 +2,11 @@ import { InputAdornment, TextField, Typography, Button } from '@mui/material'
 import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
-import { useState, Dispatch, SetStateAction, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { SettingFormsProps } from '@/lib/types'
-
-const nicknameSchema = z.object({
-	nickname: z
-		.string()
-		.min(1, { message: 'Your nickname cannot be empty.' })
-		.regex(/^[a-zA-Z]/, { message: 'Start your name with a letter.' })
-		.min(5, { message: 'Make sure your name is at least 5 characters long.' })
-		.max(15, { message: 'Keep your name within 15 characters.' }),
-})
+import { nicknameSchema } from '@/schemas/nicknameSchema'
 
 interface NicknameFormInput {
 	nickname: string
