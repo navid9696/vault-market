@@ -7,7 +7,7 @@ import { createTheme, ThemeProvider } from '@mui/material'
 const Home = () => {
 	const theme = createTheme({
 		typography: {
-			fontFamily: ['Share_Tech_Mono', 'monospace'].join(','),
+			fontFamily: ['Share_Tech_Mono',''].join(','),
 		},
 	})
 	return (

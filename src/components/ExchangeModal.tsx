@@ -33,15 +33,8 @@ const ExchangeModal = () => {
 			</div>
 			<div>
 				<Typography className='flex items-center justify-center' paragraph variant='body1' gutterBottom>
-					<Image
-						className='mr-1'
-						src={'/icons/nuka-cap-alt.png'}
-						width={15}
-						height={15}
-						alt='nuka cola bottle cap'
-						loading='lazy'
-					/>
-					1
+
+					<Image className='mr-1' src={'/imgs/nuka-cap-alt.png'} width={15} height={15} alt='nuka cola bottle cap' />1
 				</Typography>
 				<Divider className='my-4'>
 					<Equals className='rotate-90 scale-150' />
