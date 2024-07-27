@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
-import { nicknameSchema } from '@/schemas/nicknameSchema'
+import { SettingFormsProps } from '~/lib/types'
+import { nicknameSchema } from '~/schemas/nicknameSchema'
 
 interface NicknameFormInput {
 	nickname: string

@@ -13,13 +13,12 @@ import {
 import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
-import { statesOfAmerica } from '@/data/StatesOfAmerica'
-import { addressSchema } from '@/schemas/addressSchema'
+import { SettingFormsProps } from '~/lib/types'
+import { statesOfUSA } from '~/data/statesOfUSA'
+import { addressSchema } from '~/schemas/addressSchema'
 
 interface AddressFormInput {
 	address: string
