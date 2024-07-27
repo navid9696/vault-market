@@ -17,16 +17,9 @@ import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { statesOfUSA } from '~/data/statesOfUSA'
-import { SettingFormsProps } from '~/lib/types'
-
-const addressSchema = z.object({
-	address: z.string().min(1, { message: 'Address cannot be empty.' }),
-	addressOptional: z.string().optional(),
-	city: z.string().min(1, { message: 'City cannot be empty.' }),
-	state: z.string().min(1, { message: 'State cannot be empty.' }),
-	zipCode: z.string().min(1, { message: 'Zip code cannot be empty.' }),
-})
+import { SettingFormsProps } from '@/lib/types'
+import { statesOfAmerica } from '@/data/StatesOfAmerica'
+import { addressSchema } from '@/schemas/addressSchema'
 
 interface AddressFormInput {
 	address: string

@@ -2,18 +2,11 @@ import { InputAdornment, TextField, Typography, Button } from '@mui/material'
 import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '~/lib/types'
-
-const emailSchema = z.object({
-	email: z
-		.string()
-		.min(1, { message: 'Your email address cannot be empty.' })
-		.email({ message: 'Please enter a valid email address.' }),
-})
+import { SettingFormsProps } from '@/lib/types'
+import { emailSchema } from '@/schemas/emailSchema'
 
 interface EmailFormInput {
 	email: string
