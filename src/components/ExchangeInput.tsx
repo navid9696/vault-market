@@ -8,6 +8,7 @@ interface ExchangeInputProps {
 }
 
 const ExchangeInput = ({ icon, inputProp, onChange }: ExchangeInputProps) => {
+
 	return (
 		<FormControl sx={{ m: 1, width: '35%' }}>
 			<InputLabel htmlFor='outlined-adornment-amount'>Amount</InputLabel>
@@ -17,8 +18,9 @@ const ExchangeInput = ({ icon, inputProp, onChange }: ExchangeInputProps) => {
 				startAdornment={<InputAdornment position='start'>{icon}</InputAdornment>}
 				onChange={onChange}
 				label='Amount'
-				onKeyDown={e => (e.key === '-' || e.key === '+' || e.key === '.' ? e.preventDefault() : false)}
-				inputProps={{ min: '0', ...inputProp }}
+				value={value}
+				onKeyDown={e => (e.key === '-' || e.key === '+' || e.key === '.' || e.key === 'e' ? e.preventDefault() : false)}
+				inputProps={{ min: '0', ...inputProps }}
 			/>
 		</FormControl>
 	)
