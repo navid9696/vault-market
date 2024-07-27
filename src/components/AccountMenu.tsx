@@ -17,7 +17,7 @@ import TransitionsModal from './TransitionModal'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
 import { useCallback, useState } from 'react'
 import dynamic from 'next/dynamic'
-import ProfileSettings from './ProfileSettings'
+import AccountSettings from './AccountSettings'
 
 const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	ssr: false,
@@ -56,7 +56,7 @@ export default function AccountMenu() {
 
 	const handleModalClose = useCallback(() => {
 		setModalOpen(false)
-		setContentId(null)
+		
 	}, [])
 
 	const renderModalContent = () => {
@@ -64,7 +64,7 @@ export default function AccountMenu() {
 			case 'exchange':
 				return <ExchangeModal />
 			case 'profile':
-				return <ProfileSettings />
+				return <AccountSettings  />
 			default:
 				return null
 		}

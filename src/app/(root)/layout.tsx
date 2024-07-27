@@ -1,18 +1,13 @@
 import type { Metadata } from 'next'
 
-import { Roboto_Mono, Share_Tech_Mono, VT323 } from 'next/font/google'
+import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'
-import { ApolloWrapper } from '@/providers/ApolloWrapper'
+import { ApolloWrapper } from '~/providers/ApolloWrapper'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],
 	weight: '400',
 })
-const vt323 = VT323({
-	subsets: ['latin'],
-	weight: '400',
-})
-// const robotoMono = Roboto_Mono({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
 	title: 'Vault Market',
@@ -25,8 +20,8 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang='en'>
-			<body className={`${shareTechMono.className} bg-zinc-950`}>
+		<html className='scrollbar-hide' lang='en'>
+			<body className={`${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
 				{/* Apollo for future implementation */}
 				<ApolloWrapper>{children}</ApolloWrapper>
 			</body>

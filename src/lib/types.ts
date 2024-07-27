@@ -1,1 +1,5 @@
-// maybe it will be useful in the future
+import { Dispatch, SetStateAction } from 'react'
+
+export interface SettingFormsProps {
+	setIsDetailsVisible: Dispatch<SetStateAction<boolean>>
+}
