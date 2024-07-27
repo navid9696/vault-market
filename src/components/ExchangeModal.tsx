@@ -1,6 +1,6 @@
 import { Button, Divider, Typography } from '@mui/material'
 import { FaEquals as Equals } from 'react-icons/fa'
-import { GiBottleCap } from 'react-icons/gi'
+import { GiBottleCap as Caps } from 'react-icons/gi'
 import ExchangeInput from './ExchangeInput'
 import Image from 'next/image'
 import { ChangeEvent, useState } from 'react'
@@ -42,6 +42,7 @@ const ExchangeModal = () => {
 						loading='lazy'
 					/>
 					1
+
 				</Typography>
 				<Divider className='my-4'>
 					<Equals className='rotate-90 scale-150' />
@@ -56,10 +57,10 @@ const ExchangeModal = () => {
 				</Typography>
 				<ExchangeInput icon={'$'} value={inputValue} inputProps={{ readOnly: true }} />
 			</div>
-			{/* add integration with database */}
-			<Button className='mt-5 font-extrabold' variant='outlined' size='large' endIcon={<GiBottleCap />}>
+			<Button className='mt-5 font-extrabold' variant='outlined' size='large' endIcon={<Caps />}>
 				BUY
 			</Button>
+			{/* add integration with database  */}
 		</div>
 	)
 }
