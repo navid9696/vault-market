@@ -4,6 +4,10 @@ import { useForm, SubmitHandler, Resolver } from 'react-hook-form'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState } from 'react'
 
+interface FormData {
+	[key: string]: string
+}
+
 interface FieldsConf {
 	name: string
 	label: string
@@ -14,8 +18,8 @@ interface FormBaseProps {
 	size: 'small' | 'medium'
 	className: string | undefined
 	fields: FieldsConf[]
-	resolver: Resolver<any>
-	onSubmitSuccess: (data: any) => void
+	resolver: Resolver
+	onSubmitSuccess: (data: FormData) => void
 	children?: React.ReactNode
 }
 
@@ -26,11 +30,11 @@ const FormBase = ({ title, subtitle, size, className, fields, resolver, onSubmit
 		handleSubmit,
 		formState: { errors },
 		clearErrors,
-	} = useForm<any>({
+	} = useForm<FormData>({
 		resolver,
 	})
 
-	const onSubmit: SubmitHandler<any> = data => {
+	const onSubmit: SubmitHandler<FormData> = data => {
 		onSubmitSuccess(data)
 	}
 
