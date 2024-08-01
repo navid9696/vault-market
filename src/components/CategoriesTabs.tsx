@@ -1,14 +1,49 @@
+import { useReducer } from 'react'
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { categoriesData } from '~/data/categories'
-import { useState } from 'react'
+import { createAction, ActionType, createReducer } from 'typesafe-actions'
+
+const setActiveCategory = createAction('SET_ACTIVE_CATEGORY')<{
+	activeCategory: number
+	activeSubCategory: number
+}>()
+
+const setActiveSubCategory = createAction('SET_ACTIVE_SUB_CATEGORY')<{
+	activeSubCategory: number
+}>()
+
+const actions = { setActiveCategory, setActiveSubCategory }
+
+type CategoriesAction = ActionType<typeof actions>
+
+interface State {
+	activeCategory: number
+	activeSubCategory: number
+}
+
+const initialState: State = {
+	activeCategory: 0,
+	activeSubCategory: 0,
+}
+
+const reducer = createReducer<State, CategoriesAction>(initialState)
+	.handleAction(setActiveCategory, (state, action) => ({
+		...state,
+		activeCategory: action.payload.activeCategory,
+		activeSubCategory: action.payload.activeSubCategory,
+	}))
+	.handleAction(setActiveSubCategory, (state, action) => ({
+		...state,
+		activeSubCategory: action.payload.activeSubCategory,
+	}))
 
 const CategoriesTabs = () => {
-	const [activeCategory, setActiveCategory] = useState<null | number>(0)
-	const [activeSubCategory, setActiveSubCategory] = useState<null | number>(null)
+	const [state, dispatch] = useReducer(reducer, initialState)
+
 	return (
 		<>
-			<div className='flex items-center justify-center '>
+			<div className='flex items-center justify-center'>
 				<Tabs
 					className='text-green-500'
 					TabScrollButtonProps={{ sx: { marginTop: '-20px' } }}
@@ -22,15 +57,16 @@ const CategoriesTabs = () => {
 							key={category.id}
 							text={category.name}
 							onClick={() => {
-								setActiveCategory(category.id)
-								setActiveSubCategory(0)
+								dispatch(setActiveCategory({ activeCategory: category.id, activeSubCategory: 0 }))
 							}}
-							isActive={activeCategory === category.id}
+							isActive={state.activeCategory === category.id}
 						/>
 					))}
 				</Tabs>
 			</div>
-			<div className='-mt-6 flex items-center justify-center'>
+
+			<div className='-mt-6 text-center'>
+
 				<Tabs
 					className='text-green-500'
 					value={false}
@@ -38,14 +74,14 @@ const CategoriesTabs = () => {
 					variant='scrollable'
 					scrollButtons='auto'
 					aria-label='scrollable auto tabs'>
-					{activeCategory !== null &&
-						categoriesData.categories[activeCategory].subCategories.map(subCategory => (
+					{state.activeCategory !== null &&
+						categoriesData.categories[state.activeCategory].subCategories.map(subCategory => (
 							<CategoryBtn
 								key={subCategory.id}
 								isSubCategory={true}
 								text={subCategory.name}
-								onClick={() => setActiveSubCategory(subCategory.id)}
-								isActive={activeSubCategory === subCategory.id}
+								onClick={() => dispatch(setActiveSubCategory({ activeSubCategory: subCategory.id }))}
+								isActive={state.activeSubCategory === subCategory.id}
 							/>
 						))}
 				</Tabs>

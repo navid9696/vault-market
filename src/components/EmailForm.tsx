@@ -65,7 +65,9 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsfocusedField(true)}
 					InputProps={{
 						startAdornment: isFocusedField && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
