@@ -64,7 +64,9 @@ const CategoriesTabs = () => {
 					))}
 				</Tabs>
 			</div>
+
 			<div className='-mt-6 text-center'>
+
 				<Tabs
 					className='text-green-500'
 					value={false}
