@@ -56,7 +56,6 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	})
 
 	const onSubmit: SubmitHandler<AddressFormInput> = data => {
-		console.log(data)
 		toast.success('Address updated successfully')
 		reset()
 	}
