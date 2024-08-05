@@ -5,8 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
-import { emailSchema } from '@/schemas/emailSchema'
+import { SettingFormsProps } from '~/lib/types'
+
 
 
 interface EmailFormInput {
@@ -59,7 +59,9 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsfocusedField(true)}
 					InputProps={{
 						startAdornment: isFocusedField && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),

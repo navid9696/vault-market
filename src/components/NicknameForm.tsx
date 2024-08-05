@@ -5,15 +5,23 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
-import { nicknameSchema } from '@/schemas/nicknameSchema'
+import { SettingFormsProps } from '~/lib/types'
+
+const nicknameSchema = z.object({
+	nickname: z
+		.string()
+		.min(1, { message: 'Your nickname cannot be empty.' })
+		.regex(/^[a-zA-Z]/, { message: 'Start your name with a letter.' })
+		.min(5, { message: 'Make sure your name is at least 5 characters long.' })
+		.max(15, { message: 'Keep your name within 15 characters.' }),
+})
 
 interface NicknameFormInput {
 	nickname: string
 }
 
 const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
-	const [isFocusedField, setIsfocusedField] = useState(false)
+	const [isFocusedField, setIsFocusedField] = useState(false)
 	const {
 		register,
 		handleSubmit,
@@ -31,7 +39,7 @@ const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {
-			setIsfocusedField(false)
+			setIsFocusedField(false)
 			toast.success('Nickname updated successfully')
 			reset()
 		}
@@ -52,14 +60,16 @@ const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					size='medium'
 					{...register('nickname', {
 						onBlur: () => {
-							setIsfocusedField(false)
+							setIsFocusedField(false)
 							clearErrors('nickname')
 						},
 					})}
-					onFocus={() => setIsfocusedField(true)}
+					onFocus={() => setIsFocusedField(true)}
 					InputProps={{
 						startAdornment: isFocusedField && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),

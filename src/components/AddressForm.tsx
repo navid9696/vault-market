@@ -17,9 +17,17 @@ import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
-import { statesOfAmerica } from '@/data/StatesOfAmerica'
-import { addressSchema } from '@/schemas/addressSchema'
+import { statesOfUSA } from '~/data/statesOfUSA'
+import { SettingFormsProps } from '~/lib/types'
+
+const addressSchema = z.object({
+	address: z.string().min(1, { message: 'Address cannot be empty.' }),
+	addressOptional: z.string().optional(),
+	city: z.string().min(1, { message: 'City cannot be empty.' }),
+	state: z.string().min(1, { message: 'State cannot be empty.' }),
+	zipCode: z.string().min(1, { message: 'Zip code cannot be empty.' }),
+})
+
 
 interface AddressFormInput {
 	address: string
@@ -30,7 +38,7 @@ interface AddressFormInput {
 }
 
 const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
-	const [focusedField, setFocusedField] = useState<string | boolean>(false)
+	const [isFocusedField, setIsFocusedField] = useState<string | boolean>(false)
 	const [state, setState] = useState('')
 
 	const handleChange = (event: SelectChangeEvent) => {
@@ -44,20 +52,18 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 		formState,
 		formState: { errors },
 		clearErrors,
-		setValue,
 	} = useForm<AddressFormInput>({
 		resolver: zodResolver(addressSchema),
 	})
 
 	const onSubmit: SubmitHandler<AddressFormInput> = data => {
-		console.log(data)
 		toast.success('Address updated successfully')
 		reset()
 	}
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {
-			setFocusedField(false)
+			setIsFocusedField(false)
 			reset()
 		}
 	}, [formState, reset])
@@ -69,11 +75,11 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 			</Typography>
 			<div
 				onBlur={() => {
-					setFocusedField(false)
+					setIsFocusedField(false)
 					clearErrors()
 				}}
 				className='flex flex-wrap justify-center gap-x-5'>
-				<Typography gutterBottom className='mt-10' variant='h6' component='h4'>
+				<Typography gutterBottom variant='h6' component='h4'>
 					Modify Your Address
 				</Typography>
 
@@ -82,14 +88,16 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					size='small'
 					{...register('address', {
 						onBlur: () => {
-							setFocusedField(false)
+							setIsFocusedField(false)
 							clearErrors('address')
 						},
 					})}
-					onFocus={() => setFocusedField('address')}
+					onFocus={() => setIsFocusedField('address')}
 					InputProps={{
-						startAdornment: focusedField === 'address' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+						startAdornment: isFocusedField === 'address' && (
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -97,7 +105,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					error={!!errors.address}
 					id='filled-basic-address'
 					label='Address'
-					placeholder='Street address, P.O. box'
+					placeholder='Street address'
 					variant='filled'
 					helperText={<span className='block h-6'>{errors.address?.message}</span>}
 				/>
@@ -106,14 +114,16 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					size='small'
 					{...register('addressOptional', {
 						onBlur: () => {
-							setFocusedField(false)
+							setIsFocusedField(false)
 							clearErrors('addressOptional')
 						},
 					})}
-					onFocus={() => setFocusedField('addressOptional')}
+					onFocus={() => setIsFocusedField('addressOptional')}
 					InputProps={{
-						startAdornment: focusedField === 'addressOptional' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+						startAdornment: isFocusedField === 'addressOptional' && (
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -121,7 +131,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					error={!!errors.addressOptional}
 					id='filled-basic-addressOptional'
 					label='Address 2 (Opt)'
-					placeholder='Apartment, suite, unit, building, floor'
+					placeholder='Apartment, suite, unit, building'
 					variant='filled'
 					helperText={<span className='block h-6'>{errors.addressOptional?.message}</span>}
 				/>
@@ -130,14 +140,16 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					size='small'
 					{...register('city', {
 						onBlur: () => {
-							setFocusedField(false)
+							setIsFocusedField(false)
 							clearErrors('city')
 						},
 					})}
-					onFocus={() => setFocusedField('city')}
+					onFocus={() => setIsFocusedField('city')}
 					InputProps={{
-						startAdornment: focusedField === 'city' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+						startAdornment: isFocusedField === 'city' && (
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -151,20 +163,27 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 				<FormControl className='relative max-w-72 w-full text-left' variant='filled' error={!!errors.state}>
 					<InputLabel id='demo-simple-select-filled-label'>State</InputLabel>
+					{isFocusedField === 'state' && (
+						<InputAdornment className='top-4 -left-[2px] absolute ' position='start'>
+							<FaAngleRight />
+						</InputAdornment>
+					)}
+
 					<Select
+						size='small'
 						label='State'
 						labelId='demo-simple-select-filled-label'
 						id='demo-simple-select-filled'
 						value={state}
 						{...register('state', {
 							onBlur: () => {
-								setFocusedField(false)
+								setIsFocusedField(false)
 								clearErrors('state')
 							},
 							onChange: handleChange,
 						})}
-						onFocus={() => setFocusedField('state')}>
-						{statesOfAmerica.map(state => (
+						onFocus={() => setIsFocusedField('state')}>
+						{statesOfUSA.map(state => (
 							<MenuItem key={state} value={state}>
 								{state}
 							</MenuItem>
@@ -180,14 +199,16 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					size='small'
 					{...register('zipCode', {
 						onBlur: () => {
-							setFocusedField(false)
+							setIsFocusedField(false)
 							clearErrors('zipCode')
 						},
 					})}
-					onFocus={() => setFocusedField('zipCode')}
+					onFocus={() => setIsFocusedField('zipCode')}
 					InputProps={{
-						startAdornment: focusedField === 'zipCode' && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+						startAdornment: isFocusedField === 'zipCode' && (
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),

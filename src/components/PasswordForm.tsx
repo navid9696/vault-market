@@ -3,10 +3,10 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
-import { useState, Dispatch, SetStateAction, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { SettingFormsProps } from '@/lib/types'
-import { updatePasswordSchema } from '@/schemas/passwordSchema'
+import { SettingFormsProps } from '~/lib/types'
+
 
 
 interface PasswordFormInput {
@@ -63,7 +63,9 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('currentPassword')}
 					InputProps={{
 						startAdornment: isFocusedField === 'currentPassword' && (
-							<InputAdornment className='-ml-[14px] absolute' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -86,7 +88,9 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('password')}
 					InputProps={{
 						startAdornment: isFocusedField === 'password' && (
-							<InputAdornment className='-ml-[14px] absolute' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -109,7 +113,9 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('confirmPassword')}
 					InputProps={{
 						startAdornment: isFocusedField === 'confirmPassword' && (
-							<InputAdornment className='-ml-[14px] absolute' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),

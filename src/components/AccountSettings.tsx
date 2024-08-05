@@ -1,5 +1,5 @@
 import { Avatar, Badge, Button, Typography, styled } from '@mui/material'
-import { useCallback, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { AiTwotoneEdit as EditIcon } from 'react-icons/ai'
 import { FaLongArrowAltRight as ArrowRight } from 'react-icons/fa'
 import { FaTrashAlt as Trash } from 'react-icons/fa'
@@ -9,9 +9,6 @@ import TransitionsModal from './TransitionModal'
 import DeleteAccountModal from './DeleteAccountModal'
 import PasswordForm from './PasswordForm'
 import AddressForm from './AddressForm'
-// import PasswordForm from './PasswordForm'
-// import EmailForm from './EmailForm'
-// import AddressForm from './AddressForm'
 
 const VisuallyHiddenInput = styled('input')({
 	clip: 'rect(0 0 0 0)',
@@ -25,8 +22,23 @@ const VisuallyHiddenInput = styled('input')({
 	width: 1,
 })
 
+const renderForm = (contentId: string | null, setIsFormVisible: Dispatch<SetStateAction<boolean>>): React.ReactNode => {
+	switch (contentId) {
+		case 'nickname':
+			return <NicknameForm setIsDetailsVisible={setIsFormVisible} />
+		case 'email':
+			return <EmailForm setIsDetailsVisible={setIsFormVisible} />
+		case 'password':
+			return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
+		case 'address':
+			return <AddressForm setIsDetailsVisible={setIsFormVisible} />
+		default:
+			return null
+	}
+}
+
 const AccountSettings = () => {
-	const [file, setFile] = useState<string | undefined>(undefined)
+	const [avatar, setAvatar] = useState<string | undefined>(undefined)
 	const [isFormVisible, setIsFormVisible] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
@@ -40,27 +52,12 @@ const AccountSettings = () => {
 		setIsFormVisible(true)
 	}
 
-	const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleAvatarChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
-			const file = e.target.files[0]
-			setFile(URL.createObjectURL(file))
+			const avatar = e.target.files[0]
+			setAvatar(URL.createObjectURL(avatar))
 		}
-	}
-
-	const renderForm = () => {
-		switch (contentId) {
-			case 'nickname':
-				return <NicknameForm setIsDetailsVisible={setIsFormVisible} />
-			case 'email':
-				return <EmailForm setIsDetailsVisible={setIsFormVisible} />
-			case 'password':
-				return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
-			case 'address':
-				return <AddressForm setIsDetailsVisible={setIsFormVisible} />
-			default:
-				return null
-		}
-	}
+	}, [])
 
 	return (
 		<>
@@ -77,7 +74,7 @@ const AccountSettings = () => {
 						overlap='circular'
 						anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 						badgeContent={<EditIcon className='mt-3 ml-3' fontSize={32} />}>
-						<Avatar className='h-32 w-32 border-4 border-black bg-slate-200' alt='Remy Sharp' src={file} />
+						<Avatar className='h-32 w-32 border-4 border-black bg-slate-200' alt='Remy Sharp' src={avatar} />
 						<VisuallyHiddenInput type='file' accept='image/*' onChange={handleAvatarChange}></VisuallyHiddenInput>
 					</Badge>
 					<div>
@@ -129,7 +126,7 @@ const AccountSettings = () => {
 				className={`text-center absolute p-10 top-0 left-full w-full h-full transition-transform duration-500 ${
 					isFormVisible ? '-translate-x-full' : 'translate-x-0'
 				}`}>
-				{renderForm()}
+				{renderForm(contentId, setIsFormVisible)}
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				<DeleteAccountModal handleClose={handleModalClose} />

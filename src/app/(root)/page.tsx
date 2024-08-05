@@ -1,19 +1,17 @@
 'use client'
 
-import Navbar from '@/components/Navbar'
+import Header from '~/components/Header'
+import Navbar from '~/components/Navbar'
+import ProductsList from '~/components/ProductsList'
 import { createTheme, ThemeProvider } from '@mui/material'
-import { ToastContainer } from 'react-toastify'
 
+import { ToastContainer } from 'react-toastify'
+import OnSaleList from '~/components/OnSaleList'
 const Home = () => {
 	const theme = createTheme({
 		typography: {
 			fontFamily: ['__Share_Tech_Mono_3ec33c', '__Share_Tech_Mono_Fallback_3ec33c'].join(','),
 		},
-		// components: {
-		// 	MuiInputBase: {
-		// 		styleOverrides: { root: { fontFamily: ['__VT323_4ca395', '__VT323_Fallback_4ca395'].join(',') } },
-		// 	},
-		// },
 	})
 
 	return (
@@ -21,7 +19,16 @@ const Home = () => {
 			<ThemeProvider theme={theme}>
 				<Navbar />
 				<ToastContainer autoClose={1500} draggablePercent={60} stacked hideProgressBar />
-				<div className='h-[2000px]'></div>
+
+				<div className='h-dvh'>
+					<Header />
+					<OnSaleList />
+				</div>
+				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-lg'>
+					<ProductsList />
+					<div className='h-[2000px] w-full bg-slate-100'></div>
+				</main>
+
 			</ThemeProvider>
 		</>
 	)
