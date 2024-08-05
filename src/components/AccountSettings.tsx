@@ -43,14 +43,14 @@ const AccountSettings = () => {
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const handleModalClose = useCallback(() => {
+	const handleModalClose = () => {
 		setModalOpen(false)
-	}, [])
+	}
 
-	const handleOpenSettings = useCallback((id: string) => {
+	const handleOpenSettings = (id: string) => {
 		setContentId(id)
 		setIsFormVisible(true)
-	}, [])
+	}
 
 	const handleAvatarChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
