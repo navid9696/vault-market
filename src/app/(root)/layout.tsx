@@ -20,7 +20,7 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html className='scrollbar-hide' lang='en'>
+		<html className='scrollbar-hide scroll-smooth' lang='en'>
 			<body className={`${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
 				{/* Apollo for future implementation */}
 				<ApolloWrapper>{children}</ApolloWrapper>

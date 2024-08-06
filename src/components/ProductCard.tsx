@@ -20,9 +20,15 @@ const StyledRating = styled(Rating)({
 	},
 })
 
-const ProductCard = () => {
+export interface ProductCardProps {
+	name: string
+	price: number
+	rating: number
+}
+
+const ProductCard = ({ name, price, rating }: ProductCardProps) => {
 	const isOnSale = useStore(state => state.isOnSale)
-	const setIsOnSale = useStore(state => state.setIsOnSale)
+	// const setIsOnSale = useStore(state => state.setIsOnSale)
 	const [modalOpen, setModalOpen] = useState(false)
 
 	const handleModalClose = useCallback(() => {
@@ -36,7 +42,7 @@ const ProductCard = () => {
 		<>
 			<div
 				onClick={handleOpen}
-				className='relative max-h-72 min-h-44 h-full max-w-56 min-w-52 w-full p-4 transition hover:scale-105 cursor-pointer z-0'>
+				className='relative max-h-72 min-h-44 h-full max-w-56 min-w-48 w-full p-4 transition hover:scale-105 cursor-pointer z-0 scale-90'>
 				{/* badge */}
 				{isOnSale && (
 					<>
@@ -70,7 +76,7 @@ const ProductCard = () => {
 							className={`${
 								isOnSale && 'w-11/12 pl-3 rounded-tr-lg'
 							} w-full h-[21px] pl-0 flex items-center justify-center text-md rounded-t-lg bg-green-700 text-orange-200 font-semibold `}>
-							Stimpak
+							{name}
 						</h4>
 						<div className='h-full w-full p-1'>
 							<div className='relative h-full w-full '>
@@ -90,7 +96,7 @@ const ProductCard = () => {
 									emptyIcon={<StarIcon fontSize='inherit' />}
 									className='text-base'
 									name='read-only'
-									value={3}
+									value={rating}
 									max={5}
 									precision={0.25}
 									readOnly
@@ -99,12 +105,12 @@ const ProductCard = () => {
 							{/* price-box */}
 							<div className='flex flex-col items-start pl-2 text-green-950'>
 								<div className='flex items-center gap-1'>
-									1500
+									{price}
 									<Caps />
 								</div>
 								{isOnSale && (
 									<div className='flex items-center gap-1 text-xs line-through decoration-red-500 decoration-2'>
-										2100 <Caps />
+										{price * 1.5} <Caps />
 									</div>
 								)}
 							</div>

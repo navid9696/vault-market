@@ -64,6 +64,10 @@ input::-webkit-inner-spin-button {
 	animation: fadeIn ease-in-out 0.3s forwards;
 }
 
+.h-with-navbar {
+	height: calc(100dvh - 150px);
+}
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;

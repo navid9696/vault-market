@@ -10,7 +10,7 @@ const OnSaleList = () => {
 				pauseOnHover
 				delay={1}>
 				{Array.from({ length: 15 }, (_, index) => (
-					<ProductCard key={index} />
+					<ProductCard key={index} name='Stimpak' price={2000} rating={2.5} />
 				))}
 			</Marquee>
 		</section>
