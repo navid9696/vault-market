@@ -24,10 +24,13 @@ export interface ProductCardProps {
 	name: string
 	price: number
 	rating: number
+	available: boolean
+	popularity: number
+	onSale: boolean
 }
 
-const ProductCard = ({ name, price, rating }: ProductCardProps) => {
-	const isOnSale = useStore(state => state.isOnSale)
+const ProductCard = ({ name, price, rating, onSale }: ProductCardProps) => {
+	// const isOnSale = useStore(state => state.isOnSale)
 	// const setIsOnSale = useStore(state => state.setIsOnSale)
 	const [modalOpen, setModalOpen] = useState(false)
 
@@ -42,9 +45,9 @@ const ProductCard = ({ name, price, rating }: ProductCardProps) => {
 		<>
 			<div
 				onClick={handleOpen}
-				className='relative max-h-72 min-h-44 h-full max-w-56 min-w-48 w-full p-4 transition hover:scale-105 cursor-pointer z-0 scale-90'>
+				className='relative max-h-60 min-h-48 h-full max-w-52 min-w-48 w-full p-4 transition hover:scale-105 cursor-pointer z-0'>
 				{/* badge */}
-				{isOnSale && (
+				{onSale && (
 					<>
 						{/* badge-back */}
 						<div
@@ -60,7 +63,7 @@ const ProductCard = ({ name, price, rating }: ProductCardProps) => {
 				{/* box */}
 				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
 					{/* border-covers  */}
-					{isOnSale && (
+					{onSale && (
 						<>
 							<div
 								className='absolute -top-[3px] -left-[10px] h-2 w-10 p-1 bg-orange-200
@@ -74,7 +77,7 @@ const ProductCard = ({ name, price, rating }: ProductCardProps) => {
 					<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-zinc-900 via-green-300 to-zinc-900 '>
 						<h4
 							className={`${
-								isOnSale && 'w-11/12 pl-3 rounded-tr-lg'
+								onSale && 'w-11/12 pl-3 rounded-tr-lg'
 							} w-full h-[21px] pl-0 flex items-center justify-center text-md rounded-t-lg bg-green-700 text-orange-200 font-semibold `}>
 							{name}
 						</h4>
@@ -108,7 +111,7 @@ const ProductCard = ({ name, price, rating }: ProductCardProps) => {
 									{price}
 									<Caps />
 								</div>
-								{isOnSale && (
+								{onSale && (
 									<div className='flex items-center gap-1 text-xs line-through decoration-red-500 decoration-2'>
 										{price * 1.5} <Caps />
 									</div>

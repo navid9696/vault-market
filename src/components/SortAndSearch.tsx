@@ -10,8 +10,8 @@ import {
 } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { exampleProducts } from './ProductsBrowsing'
 import useStore from '~/store/useStore'
+import { exampleProducts } from '~/data/exampleProducts'
 
 interface SortAndSearchProps {
 	products: ProductCardProps[]
@@ -19,7 +19,7 @@ interface SortAndSearchProps {
 }
 
 const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
-	const [sortOption, setSortOption] = useState<string>('')
+	const [sortOption, setSortOption] = useState('popularity-desc')
 	const setFiltersOpen = useStore(state => state.setFiltersOpen)
 	const filtersOpen = useStore(state => state.filtersOpen)
 
@@ -29,6 +29,12 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 
 		let sortedProducts
 		switch (value) {
+			case 'popularity-asc':
+				sortedProducts = [...products].sort((a, b) => b.popularity - a.popularity)
+				break
+			case 'popularity-desc':
+				sortedProducts = [...products].sort((a, b) => a.popularity - b.popularity)
+				break
 			case 'name-asc':
 				sortedProducts = [...products].sort((a, b) => a.name.localeCompare(b.name))
 				break
@@ -86,6 +92,8 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 					label='Sort'
 					value={sortOption}
 					onChange={handleSortChange}>
+					<MenuItem value='popularity-asc'>Popularity Ascdending</MenuItem>
+					<MenuItem value='popularity-desc'>Popularity Descending</MenuItem>
 					<MenuItem value='name-asc'>Name A-Z</MenuItem>
 					<MenuItem value='name-desc'>Name Z-A</MenuItem>
 					<MenuItem value='price-asc'>Price Ascending</MenuItem>
