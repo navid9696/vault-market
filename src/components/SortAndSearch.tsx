@@ -1,6 +1,7 @@
 import {
 	Autocomplete,
 	Button,
+	Drawer,
 	FormControl,
 	InputLabel,
 	MenuItem,
@@ -12,6 +13,7 @@ import { ProductCardProps } from './ProductCard'
 import { Dispatch, SetStateAction, useState } from 'react'
 import useStore from '~/store/useStore'
 import { exampleProducts } from '~/data/exampleProducts'
+import Filters from './Filters'
 
 interface SortAndSearchProps {
 	products: ProductCardProps[]
@@ -20,8 +22,11 @@ interface SortAndSearchProps {
 
 const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 	const [sortOption, setSortOption] = useState('popularity-desc')
-	const setFiltersOpen = useStore(state => state.setFiltersOpen)
-	const filtersOpen = useStore(state => state.filtersOpen)
+	const [open, setOpen] = useState(false)
+
+	const toggleDrawer = (newOpen: boolean) => () => {
+		setOpen(newOpen)
+	}
 
 	const handleSortChange = (e: SelectChangeEvent<string>) => {
 		const value = e.target.value
@@ -62,10 +67,16 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 
 	return (
 		<div
-			className={`flex justify-evenly items-center ${
-				filtersOpen ? 'sm:col-span-8 col-span-7' : 'col-span-10'
-			} row-span-1 bg-green-500`}>
-			<Button onClick={() => setFiltersOpen(!filtersOpen)}>Filters</Button>
+			className={`flex justify-evenly items-center 
+				 xl:col-span-8 col-span-10
+			 row-span-1 bg-green-500`}>
+			<Button className='xl:hidden' onClick={toggleDrawer(true)}>
+				Filters
+			</Button>
+
+			<Drawer open={open} onClose={toggleDrawer(false)}>
+				<Filters setProducts={setProducts} />
+			</Drawer>
 
 			<Autocomplete
 				freeSolo

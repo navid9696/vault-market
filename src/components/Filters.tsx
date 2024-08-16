@@ -46,7 +46,7 @@ const Filters = ({ setProducts }: FiltersProps) => {
 	}
 
 	return (
-		<div className='p-2 sm:col-span-2 col-span-3 row-span-8 bg-red-500'>
+		<div className=' p-2 bg-red-500'>
 			<div className='p-2 px-4 border-2 border-black rounded-xl'>
 				<p className='font-semibold'>Price</p>
 				<Slider

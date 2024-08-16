@@ -1,13 +1,13 @@
-import { StateCreator } from 'zustand';
+import { StateCreator } from 'zustand'
 
 export interface ProductsSortingSlice {
-  filtersOpen: boolean;
-  setFiltersOpen: (filtersOpen: boolean) => void;
+	filtersOpen: boolean
+	setFiltersOpen: (filtersOpen: boolean) => void
 }
 
-const createProductsSortingSlice: StateCreator<ProductsSortingSlice> = (set) => ({
-  filtersOpen: true,
-  setFiltersOpen: (filtersOpen) => set({ filtersOpen }),
-});
+const createProductsSortingSlice: StateCreator<ProductsSortingSlice> = set => ({
+	filtersOpen: true,
+	setFiltersOpen: filtersOpen => set({ filtersOpen }),
+})
 
-export default createProductsSortingSlice;
+export default createProductsSortingSlice
