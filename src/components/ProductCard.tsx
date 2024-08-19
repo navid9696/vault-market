@@ -7,7 +7,7 @@ import { LiaPercentSolid as Percent } from 'react-icons/lia'
 import { useCallback, useState } from 'react'
 import TransitionsModal from './TransitionModal'
 import ProductModal from './ProductModal'
-import useStore from '~/store/useStore'
+// import useStore from '~/store/useStore'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {

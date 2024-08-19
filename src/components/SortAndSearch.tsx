@@ -67,10 +67,10 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 
 	return (
 		<div
-			className={`flex justify-evenly items-center 
+			className={`p-2 flex gap-x-4 justify-evenly items-center 
 				 xl:col-span-8 col-span-10
 			 row-span-1 bg-green-500`}>
-			<Button className='xl:hidden' onClick={toggleDrawer(true)}>
+			<Button variant='outlined' className='xl:hidden' onClick={toggleDrawer(true)}>
 				Filters
 			</Button>
 
@@ -83,7 +83,7 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 				autoHighlight
 				handleHomeEndKeys
 				size='small'
-				className='w-52'
+				className='w-40'
 				options={exampleProducts}
 				getOptionLabel={product => (product as ProductCardProps).name}
 				onInputChange={(e, value) => {
@@ -95,12 +95,13 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}
 			/>
 
-			<FormControl className='w-40'>
+			<FormControl className='w-52'>
 				<InputLabel id='demo-simple-select-label'>Sort</InputLabel>
 				<Select
 					labelId='demo-simple-select-label'
 					id='demo-simple-select'
 					label='Sort'
+					size='small'
 					value={sortOption}
 					onChange={handleSortChange}>
 					<MenuItem value='popularity-asc'>Popularity Ascdending</MenuItem>

@@ -20,7 +20,7 @@ const ProductsBrowsing = () => {
 			<SortAndSearch products={products} setProducts={setProducts} />
 
 			<div
-				className='py-1 flex flex-wrap justify-start
+				className='py-1 flex flex-wrap justify-evenly
 					xl:col-span-8 col-span-10 row-span-9
 				 bg-blue-500 overflow-y-scroll'>
 				{...products.map(product => (
