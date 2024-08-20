@@ -68,6 +68,39 @@ input::-webkit-inner-spin-button {
 	height: calc(100dvh - 150px);
 }
 
+.css-nhh29r-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.css-wftkto-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+.css-1tfnmf9-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+	border-color: #09090b;
+}
+
+.css-1dsddae-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+	color: #09090b;
+}
+
+.css-1j45xve-MuiFormLabel-root.Mui-focused {
+	color: #00d30b;
+}
+
+::-webkit-scrollbar {
+	width: 12px;
+}
+
+::-webkit-scrollbar-track {
+	background-color: #2c2f33;
+	border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #72da7b;
+	border-radius: 10px;
+	border: 3px solid #0f0f0f;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: #3ba340;
+}
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;

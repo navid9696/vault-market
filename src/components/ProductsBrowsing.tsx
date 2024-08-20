@@ -13,7 +13,7 @@ const ProductsBrowsing = () => {
 			id='products-browsing'
 			className='h-with-navbar w-full 
 		grid grid-cols-10 grid-rows-8 bg-slate-950'>
-			<div className=' p-2 md:col-span-2 hidden xl:block row-span-8 bg-red-500'>
+			<div className='md:col-span-3 hidden xl:block row-span-8 bg-zinc-900 border-r-8 border-black'>
 				<Filters setProducts={setProducts} />
 			</div>
 
@@ -21,8 +21,9 @@ const ProductsBrowsing = () => {
 
 			<div
 				className='py-1 flex flex-wrap justify-evenly
-					xl:col-span-8 col-span-10 row-span-9
-				 bg-blue-500 overflow-y-scroll'>
+				border-t-8 border-black
+					xl:col-span-7 col-span-10 row-span-9
+				 bg-zinc-900 overflow-y-scroll'>
 				{...products.map(product => (
 					<ProductCard
 						key={product.name}

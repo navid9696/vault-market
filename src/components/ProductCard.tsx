@@ -29,7 +29,7 @@ export interface ProductCardProps {
 	onSale: boolean
 }
 
-const ProductCard = ({ name, price, rating, onSale }: ProductCardProps) => {
+const ProductCard = ({ name, price, rating, onSale, available }: ProductCardProps) => {
 	// const isOnSale = useStore(state => state.isOnSale)
 	// const setIsOnSale = useStore(state => state.setIsOnSale)
 	const [modalOpen, setModalOpen] = useState(false)
@@ -45,7 +45,9 @@ const ProductCard = ({ name, price, rating, onSale }: ProductCardProps) => {
 		<>
 			<div
 				onClick={handleOpen}
-				className='relative max-h-60 min-h-48 h-full max-w-52 min-w-48 w-full p-4 transition hover:scale-105 cursor-pointer z-0'>
+				className={`${
+					available ? 'grayscale-0 opacity-100' : 'grayscale opacity-90'
+				} relative max-h-60 min-h-44 h-full max-w-48 min-w-52 p-4 transition hover:scale-105 cursor-pointer z-0`}>
 				{/* badge */}
 				{onSale && (
 					<>

@@ -11,7 +11,7 @@ import {
 } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import { Dispatch, SetStateAction, useState } from 'react'
-import useStore from '~/store/useStore'
+// import useStore from '~/store/useStore'
 import { exampleProducts } from '~/data/exampleProducts'
 import Filters from './Filters'
 
@@ -68,13 +68,16 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 	return (
 		<div
 			className={`p-2 flex gap-x-4 justify-evenly items-center 
-				 xl:col-span-8 col-span-10
-			 row-span-1 bg-green-500`}>
-			<Button variant='outlined' className='xl:hidden' onClick={toggleDrawer(true)}>
+				 xl:col-span-7 col-span-10
+			 row-span-1 bg-green-700 `}>
+			<Button
+				variant='outlined'
+				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
+				onClick={toggleDrawer(true)}>
 				Filters
 			</Button>
 
-			<Drawer open={open} onClose={toggleDrawer(false)}>
+			<Drawer className='' open={open} onClose={toggleDrawer(false)}>
 				<Filters setProducts={setProducts} />
 			</Drawer>
 
@@ -83,7 +86,7 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 				autoHighlight
 				handleHomeEndKeys
 				size='small'
-				className='w-40'
+				className='bg-green-700 w-32'
 				options={exampleProducts}
 				getOptionLabel={product => (product as ProductCardProps).name}
 				onInputChange={(e, value) => {
@@ -95,9 +98,10 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}
 			/>
 
-			<FormControl className='w-52'>
+			<FormControl className='w-52 focus:bg-black focus:border-black'>
 				<InputLabel id='demo-simple-select-label'>Sort</InputLabel>
 				<Select
+					className='focus:border-black'
 					labelId='demo-simple-select-label'
 					id='demo-simple-select'
 					label='Sort'

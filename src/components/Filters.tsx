@@ -14,14 +14,15 @@ import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { ProductCardProps } from './ProductCard'
 import { exampleProducts } from '~/data/exampleProducts'
 import StarIcon from '@mui/icons-material/Star'
+import { green } from '@mui/material/colors'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
-		color: '#f1f5f9',
+		color: '#16a34a',
 		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 1))',
 	},
 	'& .MuiRating-iconEmpty': {
-		color: '#1e293b',
+		color: '#71717a',
 		fill: 'black',
 	},
 })
@@ -34,7 +35,7 @@ function valuetext(value: number) {
 	return `${value}`
 }
 
-const minDistance = 1000
+const minDistance = 500
 
 const Filters = ({ setProducts }: FiltersProps) => {
 	const [price, setPrice] = useState<number[]>([50, 5000])
@@ -53,7 +54,7 @@ const Filters = ({ setProducts }: FiltersProps) => {
 		}
 
 		if (checkedRating !== 'Any') {
-			filteredProducts = filteredProducts.filter(product => product.rating === Number(checkedRating))
+			filteredProducts = filteredProducts.filter(product => product.rating >= Number(checkedRating))
 		}
 
 		setProducts(filteredProducts)
@@ -66,19 +67,19 @@ const Filters = ({ setProducts }: FiltersProps) => {
 		let filteredProducts = [...exampleProducts]
 		switch (value) {
 			case 'Any':
-				filteredProducts = filteredProducts.filter(product => product.rating >= 0)
+				filteredProducts = filteredProducts.filter(product => product.rating === 0)
 				break
 			case '5':
 				filteredProducts = filteredProducts.filter(product => product.rating === 5)
 				break
 			case '4.5':
-				filteredProducts = filteredProducts.filter(product => product.rating >= 4.5)
+				filteredProducts = filteredProducts.filter(product => product.rating === 4.5)
 				break
 			case '4':
-				filteredProducts = filteredProducts.filter(product => product.rating >= 4)
+				filteredProducts = filteredProducts.filter(product => product.rating === 4)
 				break
 			case '3':
-				filteredProducts = filteredProducts.filter(product => product.rating >= 3)
+				filteredProducts = filteredProducts.filter(product => product.rating === 3)
 				break
 		}
 	}
@@ -98,9 +99,9 @@ const Filters = ({ setProducts }: FiltersProps) => {
 	}
 
 	return (
-		<div className='h-full flex flex-col justify-around  px-2 py-8 bg-red-500'>
-			<div className='p-2 px-6 border-2 border-black rounded-xl'>
-				<p className='font-semibold'>Price</p>
+		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600  bg-zinc-900'>
+			<div className='p-2 px-6 border-2 border-green-600 rounded-xl'>
+				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
 					getAriaLabel={() => 'Price range'}
 					value={price}
@@ -111,99 +112,173 @@ const Filters = ({ setProducts }: FiltersProps) => {
 					min={50}
 					step={5}
 					max={5000}
+					color='success'
 				/>
 			</div>
 
-			<FormGroup className='flex flex-col justify-center gap-5'>
+			<FormGroup className='my-5 flex flex-col justify-center gap-2'>
 				<FormControlLabel
-					label='ON SALE'
+					label='On sale %%%'
 					control={
 						<Checkbox
 							checked={checkedOnSale}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCheckedOnSale(e.target.checked)}
 							inputProps={{ 'aria-label': 'controlled' }}
+							sx={{
+								color: green[800],
+								'&.Mui-checked': {
+									color: green[600],
+								},
+							}}
 						/>
 					}
 				/>
 				<FormControlLabel
-					label='SHOW UNAVAILABLE'
+					label='Show unavailable'
 					control={
 						<Checkbox
 							checked={checkedShowedUnavailable}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCheckedShowedUnavailable(e.target.checked)}
 							inputProps={{ 'aria-label': 'controlled' }}
+							sx={{
+								color: green[800],
+								'&.Mui-checked': {
+									color: green[600],
+								},
+							}}
 						/>
 					}
 				/>
 			</FormGroup>
 
 			<FormControl>
-				<FormLabel className='font-semibold' id='demo-radio-buttons-group-label'>
+				<FormLabel className='text-green-600 text-lg font-semibold uppercase' id='demo-radio-buttons-group-label'>
 					Ratings
 				</FormLabel>
 				<RadioGroup
-					className='h-full flex flex-col gap-5'
+					className='h-full flex flex-col gap-2'
 					aria-labelledby='demo-radio-buttons-group-label'
 					defaultValue='Any'
 					onChange={handleRatingsChange}
 					name='radio-buttons-group'>
-					<FormControlLabel value={'Any'} control={<Radio />} label='Any' />
+					<FormControlLabel
+						value={'Any'}
+						control={
+							<Radio
+								sx={{
+									color: green[800],
+									'&.Mui-checked': {
+										color: green[600],
+									},
+								}}
+							/>
+						}
+						label='Any'
+					/>
 
 					<FormControlLabel
 						value={5}
-						control={<Radio />}
-						label={
-							<StyledRating
-								emptyIcon={<StarIcon fontSize='inherit' />}
-								className=''
-								name='read-only'
-								value={5}
-								max={5}
-								readOnly
+						control={
+							<Radio
+								sx={{
+									color: green[800],
+									'&.Mui-checked': {
+										color: green[600],
+									},
+								}}
 							/>
+						}
+						label={
+							<div className='flex items-center justify-center gap-2'>
+								<StyledRating
+									emptyIcon={<StarIcon fontSize='inherit' />}
+									className=''
+									name='read-only'
+									value={5}
+									max={5}
+									readOnly
+								/>
+								<span>5</span>
+							</div>
 						}
 					/>
 					<FormControlLabel
 						value={4.5}
-						control={<Radio />}
-						label={
-							<StyledRating
-								emptyIcon={<StarIcon fontSize='inherit' />}
-								className=''
-								name='read-only'
-								value={4.5}
-								precision={0.5}
-								max={5}
-								readOnly
+						control={
+							<Radio
+								sx={{
+									color: green[800],
+									'&.Mui-checked': {
+										color: green[600],
+									},
+								}}
 							/>
+						}
+						label={
+							<div className='flex items-center justify-center gap-2'>
+								<StyledRating
+									emptyIcon={<StarIcon fontSize='inherit' />}
+									className=''
+									name='read-only'
+									value={4.5}
+									precision={0.5}
+									max={5}
+									readOnly
+								/>
+								<span>4.5+</span>
+							</div>
 						}
 					/>
 					<FormControlLabel
 						value={4}
-						control={<Radio />}
-						label={
-							<StyledRating
-								emptyIcon={<StarIcon fontSize='inherit' />}
-								className=''
-								name='read-only'
-								value={4}
-								max={5}
-								readOnly
+						control={
+							<Radio
+								sx={{
+									color: green[800],
+									'&.Mui-checked': {
+										color: green[600],
+									},
+								}}
 							/>
+						}
+						label={
+							<div className='flex items-center justify-center gap-2'>
+								<StyledRating
+									emptyIcon={<StarIcon fontSize='inherit' />}
+									className=''
+									name='read-only'
+									value={4}
+									max={5}
+									readOnly
+								/>
+								<span>4+</span>
+							</div>
 						}
 					/>
 					<FormControlLabel
 						value={3}
-						control={<Radio />}
-						label={
-							<StyledRating
-								emptyIcon={<StarIcon fontSize='inherit' />}
-								className=''
-								name='read-only'
-								value={3}
-								max={5}
-								readOnly
+						control={
+							<Radio
+								sx={{
+									color: green[800],
+									'&.Mui-checked': {
+										color: green[600],
+									},
+								}}
 							/>
+						}
+						label={
+							<div className='flex items-center justify-center gap-2'>
+								<StyledRating
+									emptyIcon={<StarIcon fontSize='inherit' />}
+									className=''
+									name='read-only'
+									value={3}
+									max={5}
+									readOnly
+								/>
+								<span>3+</span>
+							</div>
 						}
 					/>
 				</RadioGroup>
