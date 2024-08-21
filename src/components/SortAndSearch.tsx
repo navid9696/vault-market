@@ -1,7 +1,6 @@
 import {
 	Autocomplete,
 	Button,
-	Drawer,
 	FormControl,
 	InputLabel,
 	MenuItem,
@@ -10,60 +9,65 @@ import {
 	TextField,
 } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
-import { Dispatch, SetStateAction, useState } from 'react'
-// import useStore from '~/store/useStore'
+import { Dispatch, SetStateAction, SyntheticEvent, useCallback, useEffect, useState } from 'react'
 import { exampleProducts } from '~/data/exampleProducts'
-import Filters from './Filters'
 
 interface SortAndSearchProps {
 	products: ProductCardProps[]
 	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
+	toggleDrawer: (newOpen: boolean) => () => void
 }
 
-const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
+const SortAndSearch = ({ products, setProducts, toggleDrawer }: SortAndSearchProps) => {
 	const [sortOption, setSortOption] = useState('popularity-desc')
-	const [open, setOpen] = useState(false)
 
-	const toggleDrawer = (newOpen: boolean) => () => {
-		setOpen(newOpen)
-	}
+	useEffect(() => {
+		let sortedProducts = [...products]
 
-	const handleSortChange = (e: SelectChangeEvent<string>) => {
-		const value = e.target.value
-		setSortOption(value)
-
-		let sortedProducts
-		switch (value) {
+		switch (sortOption) {
 			case 'popularity-asc':
-				sortedProducts = [...products].sort((a, b) => b.popularity - a.popularity)
+				sortedProducts.sort((a, b) => a.popularity - b.popularity)
 				break
 			case 'popularity-desc':
-				sortedProducts = [...products].sort((a, b) => a.popularity - b.popularity)
+				sortedProducts.sort((a, b) => b.popularity - a.popularity)
 				break
 			case 'name-asc':
-				sortedProducts = [...products].sort((a, b) => a.name.localeCompare(b.name))
+				sortedProducts.sort((a, b) => a.name.localeCompare(b.name))
 				break
 			case 'name-desc':
-				sortedProducts = [...products].sort((a, b) => b.name.localeCompare(a.name))
+				sortedProducts.sort((a, b) => b.name.localeCompare(a.name))
 				break
 			case 'price-asc':
-				sortedProducts = [...products].sort((a, b) => a.price - b.price)
+				sortedProducts.sort((a, b) => a.price - b.price)
 				break
 			case 'price-desc':
-				sortedProducts = [...products].sort((a, b) => b.price - a.price)
+				sortedProducts.sort((a, b) => b.price - a.price)
 				break
 			case 'rating-asc':
-				sortedProducts = [...products].sort((a, b) => a.rating - b.rating)
+				sortedProducts.sort((a, b) => a.rating - b.rating)
 				break
 			case 'rating-desc':
-				sortedProducts = [...products].sort((a, b) => b.rating - a.rating)
+				sortedProducts.sort((a, b) => b.rating - a.rating)
 				break
 			default:
 				sortedProducts = products
 		}
 
 		setProducts(sortedProducts)
+	}, [sortOption, setProducts])
+
+	const handleSortChange = (e: SelectChangeEvent<string>) => {
+		const value = e.target.value
+		setSortOption(value)
 	}
+
+	const handleInputChange = useCallback(
+		(e: SyntheticEvent<Element, Event>, value: string) => {
+			const filteredProducts = [...products].filter(product => product.name.toLowerCase().includes(value.toLowerCase()))
+			setProducts(filteredProducts)
+		},
+		[products, setProducts]
+	)
 
 	return (
 		<div
@@ -77,10 +81,6 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 				Filters
 			</Button>
 
-			<Drawer className='' open={open} onClose={toggleDrawer(false)}>
-				<Filters setProducts={setProducts} />
-			</Drawer>
-
 			<Autocomplete
 				freeSolo
 				autoHighlight
@@ -89,12 +89,7 @@ const SortAndSearch = ({ products, setProducts }: SortAndSearchProps) => {
 				className='bg-green-700 w-32'
 				options={exampleProducts}
 				getOptionLabel={product => (product as ProductCardProps).name}
-				onInputChange={(e, value) => {
-					const filteredProducts = exampleProducts.filter(product =>
-						product.name.toLowerCase().includes(value.toLowerCase())
-					)
-					setProducts(filteredProducts)
-				}}
+				onInputChange={handleInputChange}
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}
 			/>
 

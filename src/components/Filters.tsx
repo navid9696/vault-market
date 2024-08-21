@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { ProductCardProps } from './ProductCard'
-import { exampleProducts } from '~/data/exampleProducts'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
 
@@ -28,6 +27,7 @@ const StyledRating = styled(Rating)({
 })
 
 interface FiltersProps {
+	products: ProductCardProps[]
 	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
 }
 
@@ -37,20 +37,23 @@ function valuetext(value: number) {
 
 const minDistance = 500
 
-const Filters = ({ setProducts }: FiltersProps) => {
+const Filters = ({ setProducts, products }: FiltersProps) => {
 	const [price, setPrice] = useState<number[]>([50, 5000])
 	const [checkedOnSale, setCheckedOnSale] = useState(false)
 	const [checkedShowedUnavailable, setCheckedShowedUnavailable] = useState(false)
 	const [checkedRating, setCheckedRating] = useState<string | number>('Any')
 
 	useEffect(() => {
-		let filteredProducts = exampleProducts.filter(
-			product =>
-				product.price >= price[0] && product.price <= price[1] && (product.available || checkedShowedUnavailable)
-		)
+		let filteredProducts = [...products]
+
+		filteredProducts = filteredProducts.filter(product => product.price >= price[0] && product.price <= price[1])
+
+		if (!checkedShowedUnavailable) {
+			filteredProducts = filteredProducts.filter(product => product.available === true)
+		}
 
 		if (checkedOnSale) {
-			filteredProducts = filteredProducts.filter(product => product.onSale === true)
+			filteredProducts = filteredProducts.filter(product => product.onSale)
 		}
 
 		if (checkedRating !== 'Any') {
@@ -64,7 +67,7 @@ const Filters = ({ setProducts }: FiltersProps) => {
 		const value = (e.target as HTMLInputElement).value
 		setCheckedRating(value)
 
-		let filteredProducts = [...exampleProducts]
+		let filteredProducts = [...products]
 		switch (value) {
 			case 'Any':
 				filteredProducts = filteredProducts.filter(product => product.rating === 0)
@@ -81,6 +84,8 @@ const Filters = ({ setProducts }: FiltersProps) => {
 			case '3':
 				filteredProducts = filteredProducts.filter(product => product.rating === 3)
 				break
+			default:
+				'Any'
 		}
 	}
 
