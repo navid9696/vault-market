@@ -14,6 +14,7 @@ import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
+import { exampleProducts } from '~/data/exampleProducts'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -27,8 +28,8 @@ const StyledRating = styled(Rating)({
 })
 
 interface FiltersProps {
-	products: ProductCardProps[]
-	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
+	searchTerm: string
+	setFilteredProducts: Dispatch<SetStateAction<ProductCardProps[]>>
 }
 
 function valuetext(value: number) {
@@ -37,37 +38,39 @@ function valuetext(value: number) {
 
 const minDistance = 500
 
-const Filters = ({ setProducts, products }: FiltersProps) => {
+const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [price, setPrice] = useState<number[]>([50, 5000])
 	const [checkedOnSale, setCheckedOnSale] = useState(false)
 	const [checkedShowedUnavailable, setCheckedShowedUnavailable] = useState(false)
 	const [checkedRating, setCheckedRating] = useState<string | number>('Any')
 
 	useEffect(() => {
-		let filteredProducts = [...products]
+		let productsToFilter = [...exampleProducts]
 
-		filteredProducts = filteredProducts.filter(product => product.price >= price[0] && product.price <= price[1])
+		productsToFilter = productsToFilter.filter(product => product.price >= price[0] && product.price <= price[1])
 
 		if (!checkedShowedUnavailable) {
-			filteredProducts = filteredProducts.filter(product => product.available === true)
+			productsToFilter = productsToFilter.filter(product => product.available === true)
 		}
 
 		if (checkedOnSale) {
-			filteredProducts = filteredProducts.filter(product => product.onSale)
+			productsToFilter = productsToFilter.filter(product => product.onSale)
+		} else {
 		}
 
 		if (checkedRating !== 'Any') {
-			filteredProducts = filteredProducts.filter(product => product.rating >= Number(checkedRating))
+			productsToFilter = productsToFilter.filter(product => product.rating >= Number(checkedRating))
 		}
+		
 
-		setProducts(filteredProducts)
-	}, [price, checkedOnSale, checkedShowedUnavailable, checkedRating, setProducts])
+		setFilteredProducts(productsToFilter)
+	}, [price, checkedOnSale, checkedShowedUnavailable, checkedRating, setFilteredProducts, searchTerm])
 
 	const handleRatingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = (e.target as HTMLInputElement).value
 		setCheckedRating(value)
 
-		let filteredProducts = [...products]
+		let filteredProducts = [...exampleProducts]
 		switch (value) {
 			case 'Any':
 				filteredProducts = filteredProducts.filter(product => product.rating === 0)
@@ -102,6 +105,10 @@ const Filters = ({ setProducts, products }: FiltersProps) => {
 			setPrice([price[0], newMaxPrice])
 		}
 	}
+
+	useEffect(() => {
+		console.log('filtry')
+	}, [])
 
 	return (
 		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600  bg-zinc-900'>

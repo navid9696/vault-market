@@ -8,6 +8,8 @@ import { Drawer } from '@mui/material'
 
 const ProductsBrowsing = () => {
 	const [products, setProducts] = useState<ProductCardProps[]>(exampleProducts)
+	const [searchTerm, setSearchTerm] = useState('')
+	const [filteredProducts, setFilteredProducts] = useState<ProductCardProps[]>([])
 	const [open, setOpen] = useState(false)
 
 	const toggleDrawer = (newOpen: boolean) => () => {
@@ -24,7 +26,7 @@ const ProductsBrowsing = () => {
 			className='h-with-navbar w-full 
 		grid grid-cols-10 grid-rows-8 bg-slate-950'>
 			<div className='md:col-span-3 hidden xl:block row-span-8 bg-zinc-900 border-r-8 border-black'>
-				<Filters setProducts={setProducts} products={products} />
+				<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
 			</div>
 
 			<Drawer
@@ -34,10 +36,16 @@ const ProductsBrowsing = () => {
 				className='xl:hidden'
 				open={open}
 				onClose={toggleDrawer(false)}>
-				<Filters setProducts={setProducts} products={products} />
+				<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
 			</Drawer>
 
-			<SortAndSearch products={products} setProducts={setProducts} toggleDrawer={toggleDrawer} />
+			<SortAndSearch
+				products={products}
+				setProducts={setProducts}
+				toggleDrawer={toggleDrawer}
+				filteredProducts={filteredProducts}
+				setSearchTerm={setSearchTerm}
+			/>
 			<div
 				className='py-1 flex flex-wrap justify-evenly
 				border-t-8 border-black

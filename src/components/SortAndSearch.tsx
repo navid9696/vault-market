@@ -14,15 +14,23 @@ import { exampleProducts } from '~/data/exampleProducts'
 
 interface SortAndSearchProps {
 	products: ProductCardProps[]
+	filteredProducts: ProductCardProps[]
 	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
+	setSearchTerm: Dispatch<SetStateAction<string>>
 	toggleDrawer: (newOpen: boolean) => () => void
 }
 
-const SortAndSearch = ({ products, setProducts, toggleDrawer }: SortAndSearchProps) => {
+const SortAndSearch = ({
+	products,
+	setProducts,
+	toggleDrawer,
+	filteredProducts,
+	setSearchTerm,
+}: SortAndSearchProps) => {
 	const [sortOption, setSortOption] = useState('popularity-desc')
 
 	useEffect(() => {
-		let sortedProducts = [...products]
+		let sortedProducts = [...filteredProducts]
 
 		switch (sortOption) {
 			case 'popularity-asc':
@@ -50,24 +58,27 @@ const SortAndSearch = ({ products, setProducts, toggleDrawer }: SortAndSearchPro
 				sortedProducts.sort((a, b) => b.rating - a.rating)
 				break
 			default:
-				sortedProducts = products
+				break
 		}
 
 		setProducts(sortedProducts)
-	}, [sortOption, setProducts])
+	}, [sortOption, filteredProducts, setProducts])
 
-	const handleSortChange = (e: SelectChangeEvent<string>) => {
-		const value = e.target.value
-		setSortOption(value)
-	}
+	const handleSortChange = useCallback(
+		(e: SelectChangeEvent<string>) => {
+			const value = e.target.value
+			setSortOption(value)
+		},
+		[setSortOption]
+	)
 
 	const handleInputChange = useCallback(
-		(e: SyntheticEvent<Element, Event>, value: string) => {
-			const filteredProducts = [...products].filter(product => product.name.toLowerCase().includes(value.toLowerCase()))
-			setProducts(filteredProducts)
-		},
-		[products, setProducts]
+		(e: SyntheticEvent<Element, Event>, value: string) => setSearchTerm(value),
+		[setSearchTerm]
 	)
+	useEffect(() => {
+		console.log('sortowanie')
+	}, [])
 
 	return (
 		<div
@@ -87,7 +98,7 @@ const SortAndSearch = ({ products, setProducts, toggleDrawer }: SortAndSearchPro
 				handleHomeEndKeys
 				size='small'
 				className='bg-green-700 w-32'
-				options={exampleProducts}
+				options={[...exampleProducts]}
 				getOptionLabel={product => (product as ProductCardProps).name}
 				onInputChange={handleInputChange}
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}
