@@ -27,11 +27,11 @@ export interface ProductCardProps {
 	available: boolean
 	popularity: number
 	onSale: boolean
+	categoryId: number
+	subCategoryId: number | null
 }
 
 const ProductCard = ({ name, price, rating, onSale, available }: ProductCardProps) => {
-	// const isOnSale = useStore(state => state.isOnSale)
-	// const setIsOnSale = useStore(state => state.setIsOnSale)
 	const [modalOpen, setModalOpen] = useState(false)
 
 	const handleModalClose = useCallback(() => {
