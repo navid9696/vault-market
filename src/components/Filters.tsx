@@ -47,6 +47,8 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	useEffect(() => {
 		let productsToFilter = [...exampleProducts]
 
+		console.log('filtering functions')
+
 		productsToFilter = productsToFilter.filter(product => product.price >= price[0] && product.price <= price[1])
 
 		if (!checkedShowedUnavailable) {
@@ -55,16 +57,20 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 
 		if (checkedOnSale) {
 			productsToFilter = productsToFilter.filter(product => product.onSale)
-		} else {
 		}
 
 		if (checkedRating !== 'Any') {
 			productsToFilter = productsToFilter.filter(product => product.rating >= Number(checkedRating))
 		}
-		
+
+		if (searchTerm) {
+			productsToFilter = productsToFilter.filter(product =>
+				product.name.toLowerCase().includes(searchTerm.toLowerCase())
+			)
+		}
 
 		setFilteredProducts(productsToFilter)
-	}, [price, checkedOnSale, checkedShowedUnavailable, checkedRating, setFilteredProducts, searchTerm])
+	}, [price, checkedOnSale, checkedShowedUnavailable, checkedRating, searchTerm, setFilteredProducts])
 
 	const handleRatingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = (e.target as HTMLInputElement).value
@@ -107,7 +113,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	}
 
 	useEffect(() => {
-		console.log('filtry')
+		console.log('filters component')
 	}, [])
 
 	return (

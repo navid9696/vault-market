@@ -13,24 +13,19 @@ import { Dispatch, SetStateAction, SyntheticEvent, useCallback, useEffect, useSt
 import { exampleProducts } from '~/data/exampleProducts'
 
 interface SortAndSearchProps {
-	products: ProductCardProps[]
 	filteredProducts: ProductCardProps[]
 	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
 	setSearchTerm: Dispatch<SetStateAction<string>>
 	toggleDrawer: (newOpen: boolean) => () => void
 }
 
-const SortAndSearch = ({
-	products,
-	setProducts,
-	toggleDrawer,
-	filteredProducts,
-	setSearchTerm,
-}: SortAndSearchProps) => {
+const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
 	const [sortOption, setSortOption] = useState('popularity-desc')
 
 	useEffect(() => {
 		let sortedProducts = [...filteredProducts]
+
+		console.log('sorting functions')
 
 		switch (sortOption) {
 			case 'popularity-asc':
@@ -76,8 +71,9 @@ const SortAndSearch = ({
 		(e: SyntheticEvent<Element, Event>, value: string) => setSearchTerm(value),
 		[setSearchTerm]
 	)
+
 	useEffect(() => {
-		console.log('sortowanie')
+		console.log('sorting component')
 	}, [])
 
 	return (
@@ -87,7 +83,7 @@ const SortAndSearch = ({
 			 row-span-1 bg-green-700 `}>
 			<Button
 				variant='outlined'
-				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
+				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 hidden'
 				onClick={toggleDrawer(true)}>
 				Filters
 			</Button>

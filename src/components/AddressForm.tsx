@@ -17,7 +17,7 @@ import { z } from 'zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { statesOfUSA } from '~/data/statesOfUSA'
+import { statesOfAmerica } from '~/data/statesOfAmerica'
 import { SettingFormsProps } from '~/lib/types'
 
 const addressSchema = z.object({
@@ -182,7 +182,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 							onChange: handleChange,
 						})}
 						onFocus={() => setIsFocusedField('state')}>
-						{statesOfUSA.map(state => (
+						{statesOfAmerica.map(state => (
 							<MenuItem key={state} value={state}>
 								{state}
 							</MenuItem>
