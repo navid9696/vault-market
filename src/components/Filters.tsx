@@ -15,6 +15,8 @@ import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
 import { exampleProducts } from '~/data/exampleProducts'
+import { FaPercent } from 'react-icons/fa'
+import useStore from '~/store/useStore'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -43,34 +45,33 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [checkedOnSale, setCheckedOnSale] = useState(false)
 	const [checkedShowedUnavailable, setCheckedShowedUnavailable] = useState(false)
 	const [checkedRating, setCheckedRating] = useState<string | number>('Any')
+	const { reducerState } = useStore()
 
 	useEffect(() => {
 		let productsToFilter = [...exampleProducts]
 
-		console.log('filtering functions')
-
 		productsToFilter = productsToFilter.filter(product => product.price >= price[0] && product.price <= price[1])
 
-		if (!checkedShowedUnavailable) {
-			productsToFilter = productsToFilter.filter(product => product.available === true)
-		}
+		!checkedShowedUnavailable && (productsToFilter = productsToFilter.filter(product => product.available === true))
 
-		if (checkedOnSale) {
-			productsToFilter = productsToFilter.filter(product => product.onSale)
-		}
+		checkedOnSale && (productsToFilter = productsToFilter.filter(product => product.onSale))
 
-		if (checkedRating !== 'Any') {
-			productsToFilter = productsToFilter.filter(product => product.rating >= Number(checkedRating))
-		}
+		checkedRating !== 'Any' &&
+			(productsToFilter = productsToFilter.filter(product => product.rating >= Number(checkedRating)))
 
-		if (searchTerm) {
-			productsToFilter = productsToFilter.filter(product =>
+		reducerState.activeCategory  &&
+			(productsToFilter = productsToFilter.filter(product => product.categoryId === reducerState.activeCategory))
+
+		reducerState.activeSubCategory  &&
+			(productsToFilter = productsToFilter.filter(product => product.subCategoryId === reducerState.activeSubCategory))
+
+		searchTerm &&
+			(productsToFilter = productsToFilter.filter(product =>
 				product.name.toLowerCase().includes(searchTerm.toLowerCase())
-			)
-		}
+			))
 
 		setFilteredProducts(productsToFilter)
-	}, [price, checkedOnSale, checkedShowedUnavailable, checkedRating, searchTerm, setFilteredProducts])
+	}, [price, checkedOnSale, checkedShowedUnavailable, checkedRating, searchTerm, setFilteredProducts, reducerState.activeCategory, reducerState.activeSubCategory])
 
 	const handleRatingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = (e.target as HTMLInputElement).value
@@ -112,10 +113,6 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 		}
 	}
 
-	useEffect(() => {
-		console.log('filters component')
-	}, [])
-
 	return (
 		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600  bg-zinc-900'>
 			<div className='p-2 px-6 border-2 border-green-600 rounded-xl'>
@@ -136,7 +133,13 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 
 			<FormGroup className='my-5 flex flex-col justify-center gap-2'>
 				<FormControlLabel
-					label='On sale %%%'
+					className='w-full'
+					label={
+						<div className='flex items-center gap-2'>
+							<span>On Sale</span>
+							<FaPercent />
+						</div>
+					}
 					control={
 						<Checkbox
 							checked={checkedOnSale}

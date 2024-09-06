@@ -112,6 +112,6 @@ input::-webkit-inner-spin-button {
 
 @media (min-width: 1024px) {
 	body::before {
-		box-shadow: inset 0px 150px 75px 50px #09090b;
+		box-shadow: inset 0px 100px 50px 50px #09090b;
 	}
 }

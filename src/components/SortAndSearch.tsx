@@ -25,8 +25,6 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 	useEffect(() => {
 		let sortedProducts = [...filteredProducts]
 
-		console.log('sorting functions')
-
 		switch (sortOption) {
 			case 'popularity-asc':
 				sortedProducts.sort((a, b) => a.popularity - b.popularity)
@@ -72,10 +70,6 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 		[setSearchTerm]
 	)
 
-	useEffect(() => {
-		console.log('sorting component')
-	}, [])
-
 	return (
 		<div
 			className={`p-2 flex gap-x-4 justify-evenly items-center 
@@ -83,7 +77,7 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 			 row-span-1 bg-green-700 `}>
 			<Button
 				variant='outlined'
-				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 hidden'
+				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
 				onClick={toggleDrawer(true)}>
 				Filters
 			</Button>

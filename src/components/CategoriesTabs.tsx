@@ -1,11 +1,20 @@
-import { useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { categoriesData } from '~/data/categories'
 import { categoriesReducer, initialState, setActiveCategory, setActiveSubCategory } from '~/reducers/categoriesReducer'
+import useStore from '~/store/useStore'
 
 const CategoriesTabs = () => {
 	const [state, dispatch] = useReducer(categoriesReducer, initialState)
+	const { setReducerState } = useStore()
+
+	useEffect(() => {
+		setReducerState({
+			activeCategory: state.activeCategory,
+			activeSubCategory: state.activeSubCategory,
+		})
+	}, [state, setReducerState])
 
 	return (
 		<>
@@ -30,7 +39,6 @@ const CategoriesTabs = () => {
 			</div>
 
 			<div className='-mt-6 text-center'>
-
 				<Tabs
 					className='text-green-500'
 					value={false}

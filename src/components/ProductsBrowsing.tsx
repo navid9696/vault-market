@@ -4,36 +4,29 @@ import SortAndSearch from './SortAndSearch'
 import Filters from './Filters'
 import { exampleProducts } from '~/data/exampleProducts'
 import { Drawer } from '@mui/material'
+import useWindowDimensions from '~/hooks/useWindowDimensions'
 
 const ProductsBrowsing = () => {
 	const [products, setProducts] = useState<ProductCardProps[]>(exampleProducts)
 	const [searchTerm, setSearchTerm] = useState('')
-	const [isMobile, setIsMobile] = useState(window.innerWidth < 1280)
 	const [filteredProducts, setFilteredProducts] = useState<ProductCardProps[]>([])
 	const [open, setOpen] = useState(false)
+	const { height, width } = useWindowDimensions()
 
-	useEffect(() => {
-		window.addEventListener('resize', handleResize)
-		return () => window.removeEventListener('resize', handleResize)
-	}, [])
-
-	const handleResize = () => {
-		setIsMobile(window.innerWidth < 1280)
-	}
 	const toggleDrawer = (newOpen: boolean) => () => {
 		setOpen(newOpen)
 	}
 
-	useEffect(() => {
+	useEffect(()=>{
 		console.log(products)
-	}, [products])
+	})
 
 	return (
 		<section
 			id='products-browsing'
 			className='h-with-navbar w-full 
 		grid grid-cols-10 grid-rows-8 bg-slate-950'>
-			{isMobile ? (
+			{width < 1280 ? (
 				<Drawer
 					ModalProps={{
 						keepMounted: true,
@@ -69,6 +62,8 @@ const ProductsBrowsing = () => {
 						available={product.available}
 						popularity={product.popularity}
 						onSale={product.onSale}
+						categoryId={product.categoryId}
+						subCategoryId={product.subCategoryId}
 					/>
 				))}
 			</div>

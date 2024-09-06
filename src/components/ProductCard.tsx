@@ -7,7 +7,6 @@ import { LiaPercentSolid as Percent } from 'react-icons/lia'
 import { useCallback, useState } from 'react'
 import TransitionsModal from './TransitionModal'
 import ProductModal from './ProductModal'
-// import useStore from '~/store/useStore'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -27,11 +26,11 @@ export interface ProductCardProps {
 	available: boolean
 	popularity: number
 	onSale: boolean
+	categoryId?: number
+	subCategoryId?: number | null
 }
 
 const ProductCard = ({ name, price, rating, onSale, available }: ProductCardProps) => {
-	// const isOnSale = useStore(state => state.isOnSale)
-	// const setIsOnSale = useStore(state => state.setIsOnSale)
 	const [modalOpen, setModalOpen] = useState(false)
 
 	const handleModalClose = useCallback(() => {
