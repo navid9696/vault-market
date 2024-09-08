@@ -38,9 +38,6 @@ const Navbar = () => {
 						<AccountMenu />
 					</div>
 				</div>
-				<div>
-					<CategoriesTabs />
-				</div>
 			</div>
 			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-1 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
 			<div className='absolute hidden lg:block inset-0 bg-green-600 w-[1000px] h-2 top-6 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>

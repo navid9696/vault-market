@@ -5,6 +5,7 @@ import Filters from './Filters'
 import { exampleProducts } from '~/data/exampleProducts'
 import { Drawer } from '@mui/material'
 import useWindowDimensions from '~/hooks/useWindowDimensions'
+import CategoriesTabs from './CategoriesTabs'
 
 const ProductsBrowsing = () => {
 	const [products, setProducts] = useState<ProductCardProps[]>(exampleProducts)
@@ -17,57 +18,66 @@ const ProductsBrowsing = () => {
 		setOpen(newOpen)
 	}
 
-	useEffect(()=>{
+	useEffect(() => {
 		console.log(products)
 	})
 
 	return (
-		<section
-			id='products-browsing'
-			className='h-with-navbar w-full 
-		grid grid-cols-10 grid-rows-8 bg-slate-950'>
-			{width < 1280 ? (
-				<Drawer
-					ModalProps={{
-						keepMounted: true,
-					}}
-					open={open}
-					onClose={toggleDrawer(false)}>
-					<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
-				</Drawer>
-			) : (
-				<div className='xl:col-span-3 hidden xl:block row-span-8 bg-zinc-900 border-r-8 border-black'>
-					<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
+		<>
+			<section
+				id='products-browsing'
+				className='h-with-navbar w-full
+		grid grid-cols-10 grid-rows-12'>
+				<div className='flex items-center justify-center col-span-10 row-span-2 xl:border-b-8 xl:border-black bg-zinc-900 '>
+					<CategoriesTabs />
 				</div>
-			)}
 
-			<SortAndSearch
-				setProducts={setProducts}
-				toggleDrawer={toggleDrawer}
-				filteredProducts={filteredProducts}
-				setSearchTerm={setSearchTerm}
-			/>
+				{width < 1280 ? (
+					<Drawer
+						ModalProps={{
+							keepMounted: true,
+						}}
+						open={open}
+						onClose={toggleDrawer(false)}>
+						<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
+					</Drawer>
+				) : (
+					<div className='xl:col-span-3 hidden xl:block row-span-12 bg-zinc-900 border-r-8 border-black'>
+						<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
+					</div>
+				)}
+				<div
+					className=' xl:col-span-7 col-span-10
+			 row-span-1
+				  bg-green-700'>
+					<SortAndSearch
+						setProducts={setProducts}
+						toggleDrawer={toggleDrawer}
+						filteredProducts={filteredProducts}
+						setSearchTerm={setSearchTerm}
+					/>
+				</div>
 
-			<div
-				className='py-1 flex flex-wrap justify-evenly
-				border-t-8 border-black
+				<div
+					className='py-1 flex flex-wrap justify-evenly
 					xl:col-span-7 col-span-10 row-span-9
 				 bg-zinc-900 overflow-y-scroll'>
-				{...products.map(product => (
-					<ProductCard
-						key={product.name}
-						name={product.name}
-						price={product.price}
-						rating={product.rating}
-						available={product.available}
-						popularity={product.popularity}
-						onSale={product.onSale}
-						categoryId={product.categoryId}
-						subCategoryId={product.subCategoryId}
-					/>
-				))}
-			</div>
-		</section>
+					{...products.map(product => (
+						<ProductCard
+							key={product.name}
+							name={product.name}
+							price={product.price}
+							rating={product.rating}
+							available={product.available}
+							popularity={product.popularity}
+							onSale={product.onSale}
+							categoryId={product.categoryId}
+							subCategoryId={product.subCategoryId}
+						/>
+					))}
+				</div>
+			</section>
+		</>
 	)
 }
 

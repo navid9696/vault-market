@@ -72,9 +72,8 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 
 	return (
 		<div
-			className={`p-2 flex gap-x-4 justify-evenly items-center 
-				 xl:col-span-7 col-span-10
-			 row-span-1 bg-green-700 `}>
+			className={`h-full p-2 flex gap-x-4 justify-evenly items-center 
+				  `}>
 			<Button
 				variant='outlined'
 				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
