@@ -44,7 +44,8 @@ const ProductCard = ({ name, price, rating, onSale, available }: ProductCardProp
 		<>
 			<div
 				onClick={handleOpen}
-				className={`${
+				tabIndex={0}
+				className={`focus:scale-110 focus:outline-0 ${
 					available ? 'grayscale-0 opacity-100' : 'grayscale opacity-90'
 				} relative max-h-60 min-h-44 h-full max-w-48 min-w-52 p-4 transition hover:scale-105 cursor-pointer z-0`}>
 				{/* badge */}

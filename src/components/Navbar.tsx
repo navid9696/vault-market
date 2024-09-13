@@ -4,8 +4,6 @@ import Link from 'next/link'
 import AccountMenu from './AccountMenu'
 import { Badge } from '@mui/material'
 
-import CategoriesTabs from './CategoriesTabs'
-
 const Navbar = () => {
 	return (
 		<nav className='fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full md:max-w-screen-md '>
