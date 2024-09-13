@@ -42,6 +42,7 @@ const ExchangeModal = () => {
 						loading='lazy'
 					/>
 					1
+
 				</Typography>
 				<Divider className='my-4'>
 					<Equals className='rotate-90 scale-150' />
@@ -56,12 +57,15 @@ const ExchangeModal = () => {
 				</Typography>
 				<ExchangeInput icon={'$'} value={inputValue} inputProps={{ readOnly: true }} />
 			</div>
+
 			<Button
 				className='mt-5 font-extrabold text-green-500 hover:bg-[#13FF17] hover:text-slate-950'
 				size='large'
 				endIcon={<Caps />}>
+
 				BUY
 			</Button>
+			{/* add integration with database  */}
 		</div>
 	)
 }

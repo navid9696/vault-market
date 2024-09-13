@@ -8,7 +8,9 @@ interface ExchangeInputProps {
 	value?: number | string
 }
 
+
 const ExchangeInput = ({ icon, inputProps, onChange, value }: ExchangeInputProps) => {
+
 	return (
 		<FormControl sx={{ m: 1, width: '35%' }}>
 			<InputLabel htmlFor='outlined-adornment-amount'>Amount</InputLabel>

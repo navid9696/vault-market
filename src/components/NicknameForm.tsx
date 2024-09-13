@@ -13,7 +13,7 @@ interface NicknameFormInput {
 }
 
 const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
-	const [isFocusedField, setIsfocusedField] = useState(false)
+	const [isFocusedField, setIsFocusedField] = useState(false)
 	const {
 		register,
 		handleSubmit,
@@ -31,7 +31,7 @@ const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {
-			setIsfocusedField(false)
+			setIsFocusedField(false)
 			toast.success('Nickname updated successfully')
 			reset()
 		}
@@ -52,14 +52,16 @@ const NicknameForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					size='medium'
 					{...register('nickname', {
 						onBlur: () => {
-							setIsfocusedField(false)
+							setIsFocusedField(false)
 							clearErrors('nickname')
 						},
 					})}
-					onFocus={() => setIsfocusedField(true)}
+					onFocus={() => setIsFocusedField(true)}
 					InputProps={{
 						startAdornment: isFocusedField && (
-							<InputAdornment className='-ml-[14px] absolute ' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),

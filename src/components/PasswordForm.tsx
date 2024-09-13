@@ -62,7 +62,9 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('currentPassword')}
 					InputProps={{
 						startAdornment: isFocusedField === 'currentPassword' && (
-							<InputAdornment className='-ml-[14px] absolute' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -85,7 +87,9 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('password')}
 					InputProps={{
 						startAdornment: isFocusedField === 'password' && (
-							<InputAdornment className='-ml-[14px] absolute' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -108,7 +112,9 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('confirmPassword')}
 					InputProps={{
 						startAdornment: isFocusedField === 'confirmPassword' && (
-							<InputAdornment className='-ml-[14px] absolute' position='start'>
+							<InputAdornment
+								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
+								position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
