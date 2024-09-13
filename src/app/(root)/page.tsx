@@ -4,9 +4,9 @@ import Header from '~/components/Header'
 import Navbar from '~/components/Navbar'
 import ProductsBrowsing from '~/components/ProductsBrowsing'
 import { createTheme, ThemeProvider } from '@mui/material'
-
 import { ToastContainer } from 'react-toastify'
 import OnSaleList from '~/components/OnSaleList'
+import Footer from '~/components/Footer'
 const Home = () => {
 	const theme = createTheme({
 		typography: {
@@ -26,9 +26,8 @@ const Home = () => {
 				</div>
 				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-lg'>
 					<ProductsBrowsing />
-					<div className='h-[2000px] w-full bg-slate-100'></div>
 				</main>
-
+				<Footer />
 			</ThemeProvider>
 		</>
 	)
