@@ -39,6 +39,7 @@ const ProductCard = () => {
 				className='relative max-h-72 min-h-44 h-full max-w-56 min-w-52 w-full p-4 transition hover:scale-105 cursor-pointer z-0'>
 				{/* badge */}
 				{isOnSale && (
+
 					<>
 						{/* badge-back */}
 						<div
@@ -50,6 +51,7 @@ const ProductCard = () => {
 							<Minus fontSize={'12px'} className='absolute left-0 mt-[4px]' />
 						</div>
 					</>
+
 				)}
 				{/* box */}
 				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>

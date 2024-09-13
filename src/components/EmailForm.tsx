@@ -7,8 +7,6 @@ import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { SettingFormsProps } from '~/lib/types'
 
-
-
 interface EmailFormInput {
 	email: string
 }

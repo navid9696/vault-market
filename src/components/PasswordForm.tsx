@@ -5,9 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
+import { updatePasswordSchema } from '~/schemas/passwordSchema'
 import { SettingFormsProps } from '~/lib/types'
-
-
 
 interface PasswordFormInput {
 	currentPassword: string
