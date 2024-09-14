@@ -1,14 +1,17 @@
 import Divider from '@mui/material/Divider'
 import Link from 'next/link'
+import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa'
+import { FaXTwitter } from 'react-icons/fa6'
 import useWindowDimensions from '~/hooks/useWindowDimensions'
 
 const Footer = () => {
 	const { height, width } = useWindowDimensions()
+	
 	return (
 		<footer className='min-h-28 border-black border-t-8 text-green-600 bg-zinc-950'>
 			<div className='flex flex-col md:flex-row justify-center'>
 				<div className='flex-1 md:w-1/2'>
-					<div className='p-8 flex flex-col text-center text-sm '>
+					<div className='py-2 px-8 flex flex-col text-center text-sm '>
 						<h3 className='mb-4 text-lg uppercase'>About</h3>
 						<p>
 							Welcome to the Wasteland&apos;s top online emporium! At{' '}
@@ -20,14 +23,14 @@ const Footer = () => {
 				</div>
 
 				<Divider
-					className='bg-green-950'
+					className=' bg-green-950'
 					variant='middle'
 					orientation={width < 768 ? 'horizontal' : 'vertical'}
 					flexItem
 				/>
 
-				<div className='flex-10 md:w-1/2'>
-					<div className='h-full p-8 flex flex-col text-center'>
+				<div className='flex-1 md:w-1/2'>
+					<div className='h-full py-2 px-8 flex flex-col text-center'>
 						<h3 className='mb-4 text-lg uppercase'>Contact</h3>
 						<div className='h-full flex flex-col items-center justify-evenly gap-1 text-sm'>
 							<Link
@@ -45,7 +48,31 @@ const Footer = () => {
 					</div>
 				</div>
 			</div>
-
+			<Divider className='bg-green-950' variant='middle' />
+			<div className='p-2 flex flex-col justify-center items-center'>
+				<h3 className='mb-4 text-lg uppercase'>follow</h3>
+				<div className='flex '>
+					<Link className='p-1 hover:text-green-500 transition-colors' href={'/'}>
+						<FaFacebookF />
+					</Link>
+					<Divider className='mx-1 bg-green-950' orientation='vertical' flexItem />
+					<Link className='p-1 hover:text-green-500 transition-colors' href={'/'}>
+						<FaInstagram />
+					</Link>
+					<Divider className='mx-1 bg-green-950' orientation='vertical' flexItem />
+					<Link className='p-1 hover:text-green-500 transition-colors' href={'/'}>
+						<FaYoutube />
+					</Link>
+					<Divider className='mx-1 bg-green-950' orientation='vertical' flexItem />
+					<Link className='p-1 hover:text-green-500 transition-colors' href={'/'}>
+						<FaXTwitter />
+					</Link>
+					<Divider className='mx-1 bg-green-950' orientation='vertical' flexItem />
+					<Link className='p-1 hover:text-green-500 transition-colors' href={'/'}>
+						<FaTiktok />
+					</Link>
+				</div>
+			</div>
 			<div className='flex justify-center p-2 text-sm bg-green-900 text-green-400'>
 				<small className='text-center'>
 					&copy; {new Date().getFullYear()} Vault Market. All rights reserved. Designed for survivors, by survivors.
