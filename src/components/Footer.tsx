@@ -6,7 +6,7 @@ import useWindowDimensions from '~/hooks/useWindowDimensions'
 
 const Footer = () => {
 	const { height, width } = useWindowDimensions()
-	
+
 	return (
 		<footer className='min-h-28 border-black border-t-8 text-green-600 bg-zinc-950'>
 			<div className='flex flex-col md:flex-row justify-center'>

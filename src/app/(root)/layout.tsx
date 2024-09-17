@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html className='scrollbar-hide scroll-smooth' lang='en'>
-			<body id='top' className={`${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
+			<body id='top' className={`user ${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
 				{/* Apollo for future implementation */}
 				<ApolloWrapper>{children}</ApolloWrapper>
 			</body>
