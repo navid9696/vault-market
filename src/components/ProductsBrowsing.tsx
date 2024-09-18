@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState } from 'react'
 import ProductCard, { ProductCardProps } from './ProductCard'
 import SortAndSearch from './SortAndSearch'
@@ -8,7 +9,7 @@ import useWindowDimensions from '~/hooks/useWindowDimensions'
 import CategoriesTabs from './CategoriesTabs'
 
 const ProductsBrowsing = () => {
-	const [products, setProducts] = useState<ProductCardProps[]>(exampleProducts)
+	const [products, setProducts] = useState<ProductCardProps[]>([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const [filteredProducts, setFilteredProducts] = useState<ProductCardProps[]>([])
 	const [open, setOpen] = useState(false)
@@ -17,10 +18,6 @@ const ProductsBrowsing = () => {
 	const toggleDrawer = (newOpen: boolean) => () => {
 		setOpen(newOpen)
 	}
-
-	useEffect(() => {
-		console.log(products)
-	})
 
 	return (
 		<>
@@ -31,7 +28,6 @@ const ProductsBrowsing = () => {
 				<div className='flex items-center justify-center col-span-10 row-span-2 xl:border-b-8 xl:border-black bg-zinc-900 '>
 					<CategoriesTabs />
 				</div>
-
 				{width < 1280 ? (
 					<Drawer
 						ModalProps={{
@@ -57,7 +53,7 @@ const ProductsBrowsing = () => {
 						setSearchTerm={setSearchTerm}
 					/>
 				</div>
-
+				{/* console.log(data) */}
 				<div
 					className='py-1 flex flex-wrap justify-evenly
 					xl:col-span-7 col-span-10 row-span-9
@@ -73,6 +69,7 @@ const ProductsBrowsing = () => {
 							onSale={product.onSale}
 							categoryId={product.categoryId}
 							subCategoryId={product.subCategoryId}
+							imgURL={product.imgURL}
 						/>
 					))}
 				</div>

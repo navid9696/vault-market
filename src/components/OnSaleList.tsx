@@ -11,7 +11,7 @@ const OnSaleList = () => {
 				pauseOnHover
 				delay={1}>
 				{exampleProducts
-					.filter(product => product.available === true && product.onSale === true)
+					.filter(product => product.available > 0 && product.onSale > 0)
 					.map((product, index) => (
 						<ProductCard
 							key={`${product.name}-${index}`}
@@ -21,6 +21,7 @@ const OnSaleList = () => {
 							available={product.available}
 							popularity={product.popularity}
 							onSale={product.onSale}
+							imgURL={product.imgURL}
 						/>
 					))}
 			</Marquee>
