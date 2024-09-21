@@ -101,6 +101,20 @@ input::-webkit-inner-spin-button {
 	background-color: #3ba340;
 }
 
+.sidebar {
+	display: none;
+}
+
+.drawer {
+	display: block;
+}
+
+.custom-divider {
+	height: 1px;
+	margin: 0 1em;
+	background-color: #052e16;
+}
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -110,8 +124,28 @@ input::-webkit-inner-spin-button {
 	}
 }
 
+@media (min-width: 768px) {
+	.custom-divider {
+		width: 1px;
+		height: auto;
+		margin: 1em 0;
+		background-color: #052e16;
+	}
+}
+
 @media (min-width: 1024px) {
 	body::before {
 		box-shadow: inset 0px 45px 50px 25px #09090b;
+	}
+}
+
+@media (min-width: 1280px) {
+	.sidebar {
+		display: block;
+		border-right: 8px solid black;
+	}
+
+	.drawer {
+		display: none;
 	}
 }

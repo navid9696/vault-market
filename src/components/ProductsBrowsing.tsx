@@ -4,7 +4,6 @@ import SortAndSearch from './SortAndSearch'
 import Filters from './Filters'
 import { exampleProducts } from '~/data/exampleProducts'
 import { Drawer } from '@mui/material'
-import useWindowDimensions from '~/hooks/useWindowDimensions'
 import CategoriesTabs from './CategoriesTabs'
 
 const ProductsBrowsing = () => {
@@ -12,7 +11,6 @@ const ProductsBrowsing = () => {
 	const [searchTerm, setSearchTerm] = useState('')
 	const [filteredProducts, setFilteredProducts] = useState<ProductCardProps[]>([])
 	const [open, setOpen] = useState(false)
-	const { height, width } = useWindowDimensions()
 
 	const toggleDrawer = (newOpen: boolean) => () => {
 		setOpen(newOpen)
@@ -32,20 +30,20 @@ const ProductsBrowsing = () => {
 					<CategoriesTabs />
 				</div>
 
-				{width < 1280 ? (
-					<Drawer
-						ModalProps={{
-							keepMounted: true,
-						}}
-						open={open}
-						onClose={toggleDrawer(false)}>
-						<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
-					</Drawer>
-				) : (
-					<div className='xl:col-span-3 hidden xl:block row-span-12 bg-zinc-900 border-r-8 border-black'>
-						<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
-					</div>
-				)}
+				<Drawer
+					className='drawer'
+					ModalProps={{
+						keepMounted: true,
+					}}
+					open={open}
+					onClose={toggleDrawer(false)}>
+					<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
+				</Drawer>
+
+				<div className='sidebar xl:col-span-3 row-span-12'>
+					<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
+				</div>
+
 				<div
 					className=' xl:col-span-7 col-span-10
 			 row-span-1
