@@ -10,7 +10,7 @@ import {
 	Slider,
 	styled,
 } from '@mui/material'
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useState, useEffect, useMemo, useCallback } from 'react'
 import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
@@ -47,71 +47,60 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [checkedRating, setCheckedRating] = useState<string | number>('Any')
 	const { reducerState } = useStore()
 
+	const filteredProducts = useMemo(() => {
+		return exampleProducts.filter(product => {
+			const matchesPriceRange = product.price >= price[0] && product.price <= price[1]
+			const matchesAvailability = checkedShowedUnavailable || product.available === true
+			const matchesOnSale = !checkedOnSale || product.onSale
+			const matchesRating = checkedRating === 'Any' || product.rating >= Number(checkedRating)
+			const matchesCategory = !reducerState.activeCategory || product.categoryId === reducerState.activeCategory
+			const matchesSubCategory =
+				!reducerState.activeSubCategory || product.subCategoryId === reducerState.activeSubCategory
+			const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+			return (
+				matchesPriceRange &&
+				matchesAvailability &&
+				matchesOnSale &&
+				matchesRating &&
+				matchesCategory &&
+				matchesSubCategory &&
+				matchesSearchTerm
+			)
+		})
+	}, [
+		price,
+		checkedOnSale,
+		checkedShowedUnavailable,
+		checkedRating,
+		searchTerm,
+		reducerState.activeCategory,
+		reducerState.activeSubCategory,
+	])
+
 	useEffect(() => {
-		let productsToFilter = [...exampleProducts]
-
-		productsToFilter = productsToFilter.filter(product => product.price >= price[0] && product.price <= price[1])
-
-		!checkedShowedUnavailable && (productsToFilter = productsToFilter.filter(product => product.available === true))
-
-		checkedOnSale && (productsToFilter = productsToFilter.filter(product => product.onSale))
-
-		checkedRating !== 'Any' &&
-			(productsToFilter = productsToFilter.filter(product => product.rating >= Number(checkedRating)))
-
-		reducerState.activeCategory  &&
-			(productsToFilter = productsToFilter.filter(product => product.categoryId === reducerState.activeCategory))
-
-		reducerState.activeSubCategory  &&
-			(productsToFilter = productsToFilter.filter(product => product.subCategoryId === reducerState.activeSubCategory))
-
-		searchTerm &&
-			(productsToFilter = productsToFilter.filter(product =>
-				product.name.toLowerCase().includes(searchTerm.toLowerCase())
-			))
-
-		setFilteredProducts(productsToFilter)
-	}, [price, checkedOnSale, checkedShowedUnavailable, checkedRating, searchTerm, setFilteredProducts, reducerState.activeCategory, reducerState.activeSubCategory])
+		setFilteredProducts(filteredProducts)
+	}, [filteredProducts, setFilteredProducts])
 
 	const handleRatingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = (e.target as HTMLInputElement).value
 		setCheckedRating(value)
-
-		let filteredProducts = [...exampleProducts]
-		switch (value) {
-			case 'Any':
-				filteredProducts = filteredProducts.filter(product => product.rating === 0)
-				break
-			case '5':
-				filteredProducts = filteredProducts.filter(product => product.rating === 5)
-				break
-			case '4.5':
-				filteredProducts = filteredProducts.filter(product => product.rating === 4.5)
-				break
-			case '4':
-				filteredProducts = filteredProducts.filter(product => product.rating === 4)
-				break
-			case '3':
-				filteredProducts = filteredProducts.filter(product => product.rating === 3)
-				break
-			default:
-				'Any'
-		}
 	}
 
-	const handlePriceChange = (e: Event, newValue: number | number[], activeThumb: number) => {
-		if (!Array.isArray(newValue)) {
-			return
-		}
+	const handlePriceChange = useCallback(
+		(e: Event, newValue: number | number[], activeThumb: number) => {
+			if (!Array.isArray(newValue)) return
 
-		if (activeThumb === 0) {
-			const newMinPrice = Math.min(newValue[0], price[1] - minDistance)
-			setPrice([newMinPrice, price[1]])
-		} else {
-			const newMaxPrice = Math.max(newValue[1], price[0] + minDistance)
-			setPrice([price[0], newMaxPrice])
-		}
-	}
+			if (activeThumb === 0) {
+				const newMinPrice = Math.min(newValue[0], price[1] - minDistance)
+				setPrice([newMinPrice, price[1]])
+			} else {
+				const newMaxPrice = Math.max(newValue[1], price[0] + minDistance)
+				setPrice([price[0], newMaxPrice])
+			}
+		},
+		[price]
+	)
 
 	return (
 		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600  bg-zinc-900'>
@@ -173,7 +162,14 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 			</FormGroup>
 
 			<FormControl>
-				<FormLabel className='text-green-600 text-lg font-semibold uppercase' id='demo-radio-buttons-group-label'>
+				<FormLabel
+					sx={{
+						'&.Mui-focused': {
+							color: '#00d30b',
+						},
+					}}
+					className='text-green-600 text-lg font-semibold uppercase'
+					id='demo-radio-buttons-group-label'>
 					Ratings
 				</FormLabel>
 				<RadioGroup
