@@ -31,7 +31,7 @@ const ProductsBrowsing = () => {
 				</div>
 
 				<Drawer
-					className='drawer'
+					className='block xl:hidden'
 					ModalProps={{
 						keepMounted: true,
 					}}
@@ -40,7 +40,7 @@ const ProductsBrowsing = () => {
 					<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
 				</Drawer>
 
-				<div className='sidebar xl:col-span-3 row-span-12'>
+				<div className='hidden xl:block xl:border-r-8 xl:border-black xl:col-span-3 row-span-12'>
 					<Filters setFilteredProducts={setFilteredProducts} searchTerm={searchTerm} />
 				</div>
 
