@@ -70,6 +70,7 @@ const ProductsBrowsing = () => {
 							categoryId={product.categoryId}
 							subCategoryId={product.subCategoryId}
 							imgURL={product.imgURL}
+							description={product.description}
 						/>
 					))}
 				</div>

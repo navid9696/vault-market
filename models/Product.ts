@@ -11,6 +11,7 @@ const ProductSchema = new mongoose.Schema<ProductCardProps>({
 	categoryId: { type: Number, required: true },
 	subCategoryId: { type: Number, required: true },
 	imgURL: { type: String, required: true },
+	description: { type: String, required: true },
 })
 
 const Product = mongoose.models.Product || mongoose.model('Product', ProductSchema)

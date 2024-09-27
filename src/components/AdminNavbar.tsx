@@ -15,8 +15,8 @@ import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
-const pages = ['Dashboard', 'Products']
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
 const AdminNavbar = () => {
@@ -87,11 +87,16 @@ const AdminNavbar = () => {
 							sx={{
 								display: { xs: 'block', md: 'none' },
 							}}>
-							{pages.map(page => (
-								<MenuItem key={page} onClick={handleCloseNavMenu}>
-									<Typography textAlign='center'>{page}</Typography>
-								</MenuItem>
-							))}
+							<MenuItem onClick={handleCloseNavMenu}>
+								<Link href={'/dashboard'}>
+									<Typography textAlign='center'>Dashboard</Typography>
+								</Link>
+							</MenuItem>
+							<MenuItem onClick={handleCloseNavMenu}>
+								<Link href={'/products'}>
+									<Typography textAlign='center'>Products</Typography>
+								</Link>
+							</MenuItem>
 						</Menu>
 					</Box>
 					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -113,11 +118,12 @@ const AdminNavbar = () => {
 						LOGO
 					</Typography>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						{pages.map(page => (
-							<Button key={page} onClick={handleCloseNavMenu} sx={{ my: 2, ml: 2, color: 'white', display: 'block' }}>
-								{page}
-							</Button>
-						))}
+						<Button onClick={handleCloseNavMenu} sx={{ my: 2, ml: 2, color: 'white', display: 'block' }}>
+							<Link href={'/dashboard'}>Dashboard</Link>
+						</Button>
+						<Button onClick={handleCloseNavMenu} sx={{ my: 2, ml: 2, color: 'white', display: 'block' }}>
+							<Link href={'/products'}>Products</Link>
+						</Button>
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>

@@ -25,9 +25,10 @@ export interface ProductCardProps {
 	available: number
 	popularity: number
 	onSale: number
-	categoryId?: number
-	subCategoryId?: number | null
+	categoryId: number
+	subCategoryId: number | null
 	imgURL: string
+	description: string
 }
 
 const ProductCard = ({ name, price, rating, onSale, available, imgURL }: ProductCardProps) => {
