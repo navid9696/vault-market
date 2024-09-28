@@ -1,5 +1,11 @@
+import AdminDashboard from '~/components/AdminDashboard'
+
 const Dashboard = () => {
-	return <div className='h-full'></div>
+	return (
+		<div className='flex'>
+			<AdminDashboard />
+		</div>
+	)
 }
 
 export default Dashboard

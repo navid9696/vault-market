@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html className='scrollbar-hide scroll-smooth' lang='en'>
-			<body className={`admin ${inter.className} bg-zinc-900`}>
+			<body className={`admin ${inter.className} bg-gray-100`}>
 				<AdminNavbar />
 				{children}
 			</body>
