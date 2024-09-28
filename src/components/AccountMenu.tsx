@@ -34,10 +34,13 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	),
 })
 
-export default function AccountMenu() {
+interface AccountMenuProps {
+	isAdmin?: boolean
+}
+
+export default function AccountMenu({ isAdmin }: AccountMenuProps) {
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
-
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
 
@@ -56,7 +59,6 @@ export default function AccountMenu() {
 
 	const handleModalClose = useCallback(() => {
 		setModalOpen(false)
-		
 	}, [])
 
 	const renderModalContent = () => {
@@ -64,9 +66,73 @@ export default function AccountMenu() {
 			case 'exchange':
 				return <ExchangeModal />
 			case 'profile':
-				return <AccountSettings  />
+				return <AccountSettings />
 			default:
 				return null
+		}
+	}
+
+	const renderMenuItems = () => {
+		if (isAdmin) {
+			return [
+				<MenuItem key='toggle'>
+					<ListItemIcon>
+						<ContrastIcon fontSize='small' />
+					</ListItemIcon>
+					<Switch />
+				</MenuItem>,
+				<MenuItem key='profile' onClick={() => handleModalOpen('profile')}>
+					<ListItemIcon className='mr-2'>
+						<SettingsIcon fontSize='small' />
+					</ListItemIcon>
+					Profile Settings
+				</MenuItem>,
+				<MenuItem key='sign-out' onClick={handleClose}>
+					<Link href={'/auth'}>
+						<ListItemIcon className='mr-2'>
+							<LogoutIcon fontSize='small' />
+						</ListItemIcon>
+						Sign Out
+					</Link>
+				</MenuItem>,
+			]
+		} else {
+			return [
+				<MenuItem key='favorites' onClick={handleClose}>
+					<Link className='' href={'/favorites'}>
+						<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
+					</Link>
+				</MenuItem>,
+				<MenuItem key='orders' onClick={handleClose}>
+					<Link href={'/orders'}>
+						<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
+					</Link>
+				</MenuItem>,
+				<MenuItem key='exchange' onClick={() => handleModalOpen('exchange')}>
+					<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
+				</MenuItem>,
+				<Divider key='divider' />,
+				<MenuItem key='toggle-switch'>
+					<ListItemIcon>
+						<ContrastIcon fontSize='small' />
+					</ListItemIcon>
+					<Switch />
+				</MenuItem>,
+				<MenuItem key='profile-settings' onClick={() => handleModalOpen('profile')}>
+					<ListItemIcon className='mr-2'>
+						<SettingsIcon fontSize='small' />
+					</ListItemIcon>
+					Profile Settings
+				</MenuItem>,
+				<MenuItem key='sign-out' onClick={handleClose}>
+					<Link href={'/auth'}>
+						<ListItemIcon className='mr-2'>
+							<LogoutIcon fontSize='small' />
+						</ListItemIcon>
+						Sign Out
+					</Link>
+				</MenuItem>,
+			]
 		}
 	}
 
@@ -120,40 +186,7 @@ export default function AccountMenu() {
 				}}
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
-				<MenuItem onClick={handleClose}>
-					<Link className='' href={'/favorites'}>
-						<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
-					</Link>
-				</MenuItem>
-				<MenuItem onClick={handleClose}>
-					<Link href={'/orders'}>
-						<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
-					</Link>
-				</MenuItem>
-				<MenuItem onClick={() => handleModalOpen('exchange')}>
-					<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
-				</MenuItem>
-				<Divider />
-				<MenuItem>
-					<ListItemIcon>
-						<ContrastIcon fontSize='small' />
-					</ListItemIcon>
-					<Switch />
-				</MenuItem>
-				<MenuItem onClick={() => handleModalOpen('profile')}>
-					<ListItemIcon className='mr-2'>
-						<SettingsIcon fontSize='small' />
-					</ListItemIcon>
-					Profile Settings
-				</MenuItem>
-				<MenuItem onClick={handleClose}>
-					<Link href={'/auth'}>
-						<ListItemIcon className='mr-2'>
-							<LogoutIcon fontSize='small' />
-						</ListItemIcon>
-						Sign Out
-					</Link>
-				</MenuItem>
+				{renderMenuItems()}
 			</Menu>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				{renderModalContent()}

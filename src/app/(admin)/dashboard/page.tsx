@@ -1,11 +1,5 @@
-import AdminNavbar from '~/components/AdminNavbar'
-
-const page = () => {
-	return (
-		<main className='h-full'>
-			<AdminNavbar />
-		</main>
-	)
+const Dashboard = () => {
+	return <div className='h-full'></div>
 }
 
-export default page
+export default Dashboard
