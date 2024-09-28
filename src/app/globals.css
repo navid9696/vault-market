@@ -67,19 +67,12 @@ input::-webkit-inner-spin-button {
 	height: calc(100dvh - 56px);
 }
 
-.css-nhh29r-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
-.css-wftkto-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root.Mui-focused .MuiOutlinedInput-notchedOutline,
-.css-1tfnmf9-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
 	border-color: #09090b;
 }
 
-.css-1dsddae-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+.MuiInputLabel-root.Mui-focused {
 	color: #09090b;
-}
-
-.css-1j45xve-MuiFormLabel-root.Mui-focused,
-.Mui-focusVisible {
-	color: #00d30b;
 }
 
 ::-webkit-scrollbar {
