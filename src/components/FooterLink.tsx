@@ -1,8 +1,8 @@
 import Link from 'next/link'
+import { PropsWithChildren } from 'react'
 
-interface FooterLinkProps {
+interface FooterLinkProps extends PropsWithChildren {
 	href: string
-	children: React.ReactNode
 }
 
 const FooterLink = ({ href, children }: FooterLinkProps) => {

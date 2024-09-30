@@ -7,6 +7,7 @@ import { createTheme, ThemeProvider } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
 import OnSaleList from '~/components/OnSaleList'
 import Footer from '~/components/Footer'
+
 const Home = () => {
 	const theme = createTheme({
 		typography: {
