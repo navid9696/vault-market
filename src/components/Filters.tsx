@@ -10,13 +10,14 @@ import {
 	Slider,
 	styled,
 } from '@mui/material'
-import React, { Dispatch, SetStateAction, useState, useEffect, useMemo, useCallback } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useCallback, useReducer } from 'react'
 import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
 import { exampleProducts } from '~/data/exampleProducts'
 import { FaPercent } from 'react-icons/fa'
 import useStore from '~/store/useStore'
+import { filtersReducer, initialState } from '~/reducers/filtersReducer'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -41,18 +42,15 @@ function valuetext(value: number) {
 const minDistance = 500
 
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
-	const [price, setPrice] = useState<number[]>([50, 5000])
-	const [checkedOnSale, setCheckedOnSale] = useState(false)
-	const [checkedShowedUnavailable, setCheckedShowedUnavailable] = useState(false)
-	const [checkedRating, setCheckedRating] = useState<string | number>('Any')
+	const [state, dispatch] = useReducer(filtersReducer, initialState)
 	const { reducerState } = useStore()
 
 	const filteredProducts = useMemo(() => {
 		return exampleProducts.filter(product => {
-			const matchesPriceRange = product.price >= price[0] && product.price <= price[1]
-			const matchesAvailability = checkedShowedUnavailable || product.available === true
-			const matchesOnSale = !checkedOnSale || product.onSale
-			const matchesRating = checkedRating === 'Any' || product.rating >= Number(checkedRating)
+			const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
+			const matchesAvailability = state.checkedShowedUnavailable || product.available === true
+			const matchesOnSale = !state.checkedOnSale || product.onSale
+			const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
 			const matchesCategory = !reducerState.activeCategory || product.categoryId === reducerState.activeCategory
 			const matchesSubCategory =
 				!reducerState.activeSubCategory || product.subCategoryId === reducerState.activeSubCategory
@@ -69,13 +67,13 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 			)
 		})
 	}, [
-		price,
-		checkedOnSale,
-		checkedShowedUnavailable,
-		checkedRating,
-		searchTerm,
+		state.price,
+		state.checkedShowedUnavailable,
+		state.checkedOnSale,
+		state.checkedRating,
 		reducerState.activeCategory,
 		reducerState.activeSubCategory,
+		searchTerm,
 	])
 
 	useEffect(() => {
@@ -83,8 +81,8 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	}, [filteredProducts, setFilteredProducts])
 
 	const handleRatingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = (e.target as HTMLInputElement).value
-		setCheckedRating(value)
+		const value = e.target.value
+		dispatch({ type: 'SET_RATING_FILTER', payload: value })
 	}
 
 	const handlePriceChange = useCallback(
@@ -92,14 +90,14 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 			if (!Array.isArray(newValue)) return
 
 			if (activeThumb === 0) {
-				const newMinPrice = Math.min(newValue[0], price[1] - minDistance)
-				setPrice([newMinPrice, price[1]])
+				const newMinPrice = Math.min(newValue[0], state.price[1] - minDistance)
+				dispatch({ type: 'SET_PRICE_FILTER', payload: [newMinPrice, state.price[1]] })
 			} else {
-				const newMaxPrice = Math.max(newValue[1], price[0] + minDistance)
-				setPrice([price[0], newMaxPrice])
+				const newMaxPrice = Math.max(newValue[1], state.price[0] + minDistance)
+				dispatch({ type: 'SET_PRICE_FILTER', payload: [state.price[0], newMaxPrice] })
 			}
 		},
-		[price]
+		[state.price]
 	)
 
 	return (
@@ -108,7 +106,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
 					getAriaLabel={() => 'Price range'}
-					value={price}
+					value={state.price}
 					onChange={handlePriceChange}
 					valueLabelDisplay='auto'
 					getAriaValueText={valuetext}
@@ -131,9 +129,13 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					}
 					control={
 						<Checkbox
-							checked={checkedOnSale}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCheckedOnSale(e.target.checked)}
-							inputProps={{ 'aria-label': 'controlled' }}
+							checked={state.checkedOnSale}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								dispatch({ type: 'SET_ON_SALE_FILTER', payload: !state.checkedOnSale })
+							}
+							inputProps={{
+								'aria-label': state.checkedOnSale ? 'Uncheck to disable sale filter' : 'Check to filter items on sale',
+							}}
 							sx={{
 								color: green[800],
 								'&.Mui-checked': {
@@ -147,9 +149,15 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					label='Show unavailable'
 					control={
 						<Checkbox
-							checked={checkedShowedUnavailable}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCheckedShowedUnavailable(e.target.checked)}
-							inputProps={{ 'aria-label': 'controlled' }}
+							checked={state.checkedShowedUnavailable}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								dispatch({ type: 'SET_UNAVAILABLE_FILTER', payload: !state.checkedShowedUnavailable })
+							}
+							inputProps={{
+								'aria-label': state.checkedShowedUnavailable
+									? 'Uncheck to hide unavailable items'
+									: 'Check to show unavailable items',
+							}}
 							sx={{
 								color: green[800],
 								'&.Mui-checked': {
@@ -174,7 +182,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 				</FormLabel>
 				<RadioGroup
 					className='h-full flex flex-col gap-2'
-					aria-labelledby='demo-radio-buttons-group-label'
+					aria-labelledby='ratings-group-label'
 					defaultValue='Any'
 					onChange={handleRatingsChange}
 					name='radio-buttons-group'>

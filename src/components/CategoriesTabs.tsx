@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { categoriesData } from '~/data/categories'
@@ -8,6 +8,8 @@ import useStore from '~/store/useStore'
 const CategoriesTabs = () => {
 	const [state, dispatch] = useReducer(categoriesReducer, initialState)
 	const { setReducerState } = useStore()
+	const navbarRef = useRef(null)
+	const sectionRef = useRef(null)
 
 	useEffect(() => {
 		setReducerState({
@@ -17,22 +19,18 @@ const CategoriesTabs = () => {
 	}, [state, setReducerState])
 
 	const scrollToSection = () => {
-		const section = document.getElementById('products-browsing')
-		const navbarHeight = document.querySelector('nav')?.offsetHeight || 0
-
-		if (section) {
-			const sectionPosition = section.getBoundingClientRect().top + window.scrollY
-			const scrollToPosition = sectionPosition - navbarHeight
-
+		if (sectionRef.current && navbarRef.current) {
+			const navbarHeight = (navbarRef.current as HTMLElement).offsetHeight
+			const sectionPosition = (sectionRef.current as HTMLElement).getBoundingClientRect().top + window.scrollY
 			window.scrollTo({
-				top: scrollToPosition,
+				top: sectionPosition - navbarHeight,
 				behavior: 'smooth',
 			})
 		}
 	}
 
 	return (
-		<div className='relative w-full '>
+		<div ref={sectionRef} id='products-browsing' className='relative w-full '>
 			<div className=' flex items-center justify-center '>
 				<Tabs
 					className='text-green-500 w-fit '
@@ -41,7 +39,7 @@ const CategoriesTabs = () => {
 					allowScrollButtonsMobile
 					variant='scrollable'
 					scrollButtons='auto'
-					aria-label='scrollable auto tabs'>
+					aria-label='Category list'>
 					{categoriesData.categories.map(category => (
 						<CategoryBtn
 							key={category.id}
@@ -64,7 +62,7 @@ const CategoriesTabs = () => {
 					allowScrollButtonsMobile
 					variant='scrollable'
 					scrollButtons='auto'
-					aria-label='scrollable auto tabs'>
+					aria-label='Category list'>
 					{state.activeCategory !== null &&
 						categoriesData.categories[state.activeCategory].subCategories.map(subCategory => (
 							<CategoryBtn
