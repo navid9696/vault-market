@@ -10,7 +10,7 @@ import {
 	Slider,
 	styled,
 } from '@mui/material'
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useCallback, useReducer } from 'react'
+import React, { useEffect, useMemo, useCallback, useReducer } from 'react'
 import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
@@ -32,7 +32,7 @@ const StyledRating = styled(Rating)({
 
 interface FiltersProps {
 	searchTerm: string
-	setFilteredProducts: Dispatch<SetStateAction<ProductCardProps[]>>
+	setFilteredProducts: (filtered: ProductCardProps[]) => void
 }
 
 function valuetext(value: number) {
@@ -40,6 +40,14 @@ function valuetext(value: number) {
 }
 
 const minDistance = 500
+
+const ratingOptions = [
+	{ value: 'Any', label: 'Any' },
+	{ value: 5, label: '5', precision: 0.5 },
+	{ value: 4.5, label: '4.5+', precision: 0.5 },
+	{ value: 4, label: '4+', precision: 0.5 },
+	{ value: 3, label: '3+', precision: 0.5 },
+]
 
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
@@ -101,7 +109,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	)
 
 	return (
-		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600  bg-zinc-900'>
+		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600 bg-zinc-900'>
 			<div className='p-2 px-6 border-2 border-green-600 rounded-xl'>
 				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
@@ -177,7 +185,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 						},
 					}}
 					className='text-green-600 text-lg font-semibold uppercase'
-					id='demo-radio-buttons-group-label'>
+					id='ratings-group-label'>
 					Ratings
 				</FormLabel>
 				<RadioGroup
@@ -186,126 +194,39 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					defaultValue='Any'
 					onChange={handleRatingsChange}
 					name='radio-buttons-group'>
-					<FormControlLabel
-						value={'Any'}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label='Any'
-					/>
-
-					<FormControlLabel
-						value={5}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={5}
-									max={5}
-									readOnly
+					{ratingOptions.map(rating => (
+						<FormControlLabel
+							key={rating.value}
+							value={rating.value}
+							control={
+								<Radio
+									sx={{
+										color: green[800],
+										'&.Mui-checked': {
+											color: green[600],
+										},
+									}}
 								/>
-								<span>5</span>
-							</div>
-						}
-					/>
-					<FormControlLabel
-						value={4.5}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={4.5}
-									precision={0.5}
-									max={5}
-									readOnly
-								/>
-								<span>4.5+</span>
-							</div>
-						}
-					/>
-					<FormControlLabel
-						value={4}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={4}
-									max={5}
-									readOnly
-								/>
-								<span>4+</span>
-							</div>
-						}
-					/>
-					<FormControlLabel
-						value={3}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={3}
-									max={5}
-									readOnly
-								/>
-								<span>3+</span>
-							</div>
-						}
-					/>
+							}
+							label={
+								rating.precision ? (
+									<div className='flex items-center justify-center gap-2'>
+										<StyledRating
+											emptyIcon={<StarIcon fontSize='inherit' />}
+											name='read-only'
+											value={rating.value}
+											precision={rating.precision}
+											max={5}
+											readOnly
+										/>
+										<span>{rating.label}</span>
+									</div>
+								) : (
+									rating.label
+								)
+							}
+						/>
+					))}
 				</RadioGroup>
 			</FormControl>
 		</div>

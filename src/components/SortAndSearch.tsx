@@ -16,11 +16,21 @@ interface SortAndSearchProps {
 	filteredProducts: ProductCardProps[]
 	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
 	setSearchTerm: Dispatch<SetStateAction<string>>
-	toggleDrawer: (newOpen: boolean) => () => void
+	openDrawer: (newOpen: boolean) => () => void
 }
 
-const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
-	const [sortOption, setSortOption] = useState('popularity-desc')
+type SortOption =
+	| 'popularity-asc'
+	| 'popularity-desc'
+	| 'name-asc'
+	| 'name-desc'
+	| 'price-asc'
+	| 'price-desc'
+	| 'rating-asc'
+	| 'rating-desc'
+
+const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
+	const [sortOption, setSortOption] = useState<SortOption>('popularity-desc')
 
 	useEffect(() => {
 		let sortedProducts = [...filteredProducts]
@@ -60,7 +70,7 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 	const handleSortChange = useCallback(
 		(e: SelectChangeEvent<string>) => {
 			const value = e.target.value
-			setSortOption(value)
+			setSortOption(value as SortOption)
 		},
 		[setSortOption]
 	)
@@ -77,7 +87,7 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 			<Button
 				variant='outlined'
 				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
-				onClick={toggleDrawer(true)}>
+				onClick={openDrawer(true)}>
 				Filters
 			</Button>
 
@@ -87,7 +97,7 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 				handleHomeEndKeys
 				size='small'
 				className='bg-green-700 w-32'
-				options={[...exampleProducts]}
+				options={exampleProducts}
 				getOptionLabel={product => (product as ProductCardProps).name}
 				onInputChange={handleInputChange}
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}
