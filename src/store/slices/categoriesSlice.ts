@@ -1,19 +1,17 @@
 import { StateCreator } from 'zustand'
 
 export interface CategoriesSlice {
-  reducerState: {
-    activeCategory: number | null
-    activeSubCategory: number | null
-  }
-  setReducerState: (newState: { activeCategory: number | null, activeSubCategory: number | null }) => void
+	activeCategory: number | null
+	activeSubCategory: number | null
+	changeCategory: (category: number | null) => void
+	changeSubCategory: (subCategory: number | null) => void
 }
 
-const createCategoriesSlice: StateCreator<CategoriesSlice> = (set) => ({
-  reducerState: {
-    activeCategory: null,
-    activeSubCategory: null,
-  },
-  setReducerState: (newState) => set({ reducerState: newState }),
+const createCategoriesSlice: StateCreator<CategoriesSlice> = set => ({
+	activeCategory: null,
+	activeSubCategory: null,
+	changeCategory: category => set({ activeCategory: category }),
+	changeSubCategory: subCategory => set({ activeSubCategory: subCategory }),
 })
 
 export default createCategoriesSlice

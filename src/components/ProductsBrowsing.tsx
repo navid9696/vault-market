@@ -1,14 +1,16 @@
-import React, { useCallback, useReducer } from 'react'
-import ProductCard, { ProductCardProps } from './ProductCard'
+import { useState } from 'react'
+import ProductCard from './ProductCard'
 import SortAndSearch from './SortAndSearch'
 import Filters from './Filters'
 import { Drawer } from '@mui/material'
 import CategoriesTabs from './CategoriesTabs'
-import { initialState, productsReducer } from '~/reducers/productsReducer'
+
+import useProducts from '~/hooks/useProducts'
 
 const ProductsBrowsing = () => {
-	const [state, dispatch] = useReducer(productsReducer, initialState)
-	const [open, setOpen] = React.useState(false)
+	const { products, searchTerm, filteredProducts, updateProducts, updateSearchTerm, updateFilteredProducts } =
+		useProducts()
+	const [open, setOpen] = useState(false)
 
 	const openDrawer = (newOpen: boolean) => () => {
 		setOpen(newOpen)
@@ -31,41 +33,19 @@ const ProductsBrowsing = () => {
 					}}
 					open={open}
 					onClose={openDrawer(false)}>
-					<Filters
-						setFilteredProducts={useCallback(
-							(filtered: ProductCardProps[]) => {
-								dispatch({ type: 'SET_FILTERED_PRODUCTS', payload: filtered })
-							},
-							[dispatch]
-						)}
-						searchTerm={state.searchTerm}
-					/>
+					<Filters setFilteredProducts={updateFilteredProducts} searchTerm={searchTerm} />
 				</Drawer>
 
 				<div className='hidden xl:block xl:border-r-8 xl:border-black xl:col-span-3 row-span-12'>
-					<Filters
-						setFilteredProducts={useCallback(
-							(filtered: ProductCardProps[]) => {
-								dispatch({ type: 'SET_FILTERED_PRODUCTS', payload: filtered })
-							},
-							[dispatch]
-						)}
-						searchTerm={state.searchTerm}
-					/>
+					<Filters setFilteredProducts={updateFilteredProducts} searchTerm={searchTerm} />
 				</div>
 
 				<div className='xl:col-span-7 col-span-10 row-span-1 bg-green-700'>
 					<SortAndSearch
-						setProducts={useCallback(
-							products => dispatch({ type: 'SET_PRODUCTS', payload: products as ProductCardProps[] }),
-							[dispatch]
-						)}
+						setProducts={updateProducts}
 						openDrawer={openDrawer}
-						filteredProducts={state.filteredProducts}
-						setSearchTerm={useCallback(
-							term => dispatch({ type: 'SET_SEARCH_TERM', payload: term as string }),
-							[dispatch]
-						)}
+						filteredProducts={filteredProducts}
+						setSearchTerm={updateSearchTerm}
 					/>
 				</div>
 
@@ -73,7 +53,7 @@ const ProductsBrowsing = () => {
 					className='py-1 flex flex-wrap justify-evenly
 					xl:col-span-7 col-span-10 row-span-9
 				 bg-zinc-900 overflow-y-scroll'>
-					{state.products.map(product => (
+					{products.map(product => (
 						<ProductCard
 							key={product.name}
 							name={product.name}

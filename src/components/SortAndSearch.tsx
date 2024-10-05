@@ -9,13 +9,13 @@ import {
 	TextField,
 } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
-import { Dispatch, SetStateAction, SyntheticEvent, useCallback, useEffect, useState } from 'react'
+import { SyntheticEvent, useCallback, useEffect, useState } from 'react'
 import { exampleProducts } from '~/data/exampleProducts'
 
 interface SortAndSearchProps {
 	filteredProducts: ProductCardProps[]
-	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
-	setSearchTerm: Dispatch<SetStateAction<string>>
+	setProducts: (products: ProductCardProps[]) => void
+	setSearchTerm: (term: string) => void
 	openDrawer: (newOpen: boolean) => () => void
 }
 
@@ -33,9 +33,13 @@ const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTer
 	const [sortOption, setSortOption] = useState<SortOption>('popularity-desc')
 
 	useEffect(() => {
-		let sortedProducts = [...filteredProducts]
+		const sortedProducts = sortProducts(filteredProducts, sortOption)
+		setProducts(sortedProducts)
+	}, [sortOption, filteredProducts, setProducts])
 
-		switch (sortOption) {
+	const sortProducts = (products: ProductCardProps[], sort: SortOption) => {
+		const sortedProducts = [...products]
+		switch (sort) {
 			case 'popularity-asc':
 				sortedProducts.sort((a, b) => a.popularity - b.popularity)
 				break
@@ -63,9 +67,8 @@ const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTer
 			default:
 				break
 		}
-
-		setProducts(sortedProducts)
-	}, [sortOption, filteredProducts, setProducts])
+		return sortedProducts
+	}
 
 	const handleSortChange = useCallback(
 		(e: SelectChangeEvent<string>) => {
@@ -81,9 +84,7 @@ const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTer
 	)
 
 	return (
-		<div
-			className={`h-full p-2 flex gap-x-4 justify-evenly items-center 
-				  `}>
+		<div className='h-full p-2 flex gap-x-4 justify-evenly items-center'>
 			<Button
 				variant='outlined'
 				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
@@ -113,7 +114,7 @@ const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTer
 					size='small'
 					value={sortOption}
 					onChange={handleSortChange}>
-					<MenuItem value='popularity-asc'>Popularity Ascdending</MenuItem>
+					<MenuItem value='popularity-asc'>Popularity Ascending</MenuItem>
 					<MenuItem value='popularity-desc'>Popularity Descending</MenuItem>
 					<MenuItem value='name-asc'>Name A-Z</MenuItem>
 					<MenuItem value='name-desc'>Name Z-A</MenuItem>

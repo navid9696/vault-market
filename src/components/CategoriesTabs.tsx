@@ -7,23 +7,19 @@ import useStore from '~/store/useStore'
 
 const CategoriesTabs = () => {
 	const [state, dispatch] = useReducer(categoriesReducer, initialState)
-	const { setReducerState } = useStore()
-	const navbarRef = useRef(null)
+	const { changeCategory, changeSubCategory } = useStore()
 	const sectionRef = useRef(null)
 
 	useEffect(() => {
-		setReducerState({
-			activeCategory: state.activeCategory,
-			activeSubCategory: state.activeSubCategory,
-		})
-	}, [state, setReducerState])
+		changeCategory(state.activeCategory)
+		changeSubCategory(state.activeSubCategory)
+	}, [state, changeCategory, changeSubCategory])
 
 	const scrollToSection = () => {
-		if (sectionRef.current && navbarRef.current) {
-			const navbarHeight = (navbarRef.current as HTMLElement).offsetHeight
+		if (sectionRef.current) {
 			const sectionPosition = (sectionRef.current as HTMLElement).getBoundingClientRect().top + window.scrollY
 			window.scrollTo({
-				top: sectionPosition - navbarHeight,
+				top: sectionPosition - 80,
 				behavior: 'smooth',
 			})
 		}

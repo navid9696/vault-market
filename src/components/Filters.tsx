@@ -51,7 +51,7 @@ const ratingOptions = [
 
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
-	const { reducerState } = useStore()
+	const { activeCategory, activeSubCategory } = useStore()
 
 	const filteredProducts = useMemo(() => {
 		return exampleProducts.filter(product => {
@@ -59,9 +59,8 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 			const matchesAvailability = state.checkedShowedUnavailable || product.available === true
 			const matchesOnSale = !state.checkedOnSale || product.onSale
 			const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
-			const matchesCategory = !reducerState.activeCategory || product.categoryId === reducerState.activeCategory
-			const matchesSubCategory =
-				!reducerState.activeSubCategory || product.subCategoryId === reducerState.activeSubCategory
+			const matchesCategory = !activeCategory || product.categoryId === activeCategory
+			const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
 			const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
 
 			return (
@@ -79,8 +78,8 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 		state.checkedShowedUnavailable,
 		state.checkedOnSale,
 		state.checkedRating,
-		reducerState.activeCategory,
-		reducerState.activeSubCategory,
+		activeCategory,
+		activeSubCategory,
 		searchTerm,
 	])
 
