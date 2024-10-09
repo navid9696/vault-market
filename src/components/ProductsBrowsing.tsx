@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import ProductCard from './ProductCard'
 import SortAndSearch from './SortAndSearch'
 import Filters from './Filters'
@@ -6,24 +6,37 @@ import { Drawer } from '@mui/material'
 import CategoriesTabs from './CategoriesTabs'
 
 import useProducts from '~/hooks/useProducts'
+import { useNavigationHeight } from '~/context/NavbarHeightContext'
 
 const ProductsBrowsing = () => {
 	const { products, searchTerm, filteredProducts, updateProducts, updateSearchTerm, updateFilteredProducts } =
 		useProducts()
 	const [open, setOpen] = useState(false)
+	const sectionRef = useRef(null)
+	const { navHeight } = useNavigationHeight()
 
 	const openDrawer = (newOpen: boolean) => () => {
 		setOpen(newOpen)
 	}
 
+	const scrollToSection = () => {
+		if (sectionRef.current) {
+			const sectionPosition = (sectionRef.current as HTMLElement).getBoundingClientRect().top + window.scrollY
+			window.scrollTo({
+				top: sectionPosition - navHeight,
+				behavior: 'smooth',
+			})
+		}
+	}
+
 	return (
 		<>
 			<section
-				id='products-browsing'
+				ref={sectionRef}
 				className='h-with-navbar w-full
 		grid grid-cols-10 grid-rows-12'>
 				<div className='flex items-center justify-center col-span-10 row-span-2 xl:border-b-8 xl:border-black bg-zinc-900 '>
-					<CategoriesTabs />
+					<CategoriesTabs scrollToSection={scrollToSection} />
 				</div>
 
 				<Drawer

@@ -1,7 +1,7 @@
 import Divider from '@mui/material/Divider'
 import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa'
 import FooterLink from './FooterLink'
-import { Media, MediaContextProvider } from '~/providers/breakpoints'
+import { Media, MediaContextProvider } from '~/context/breakpointsContext'
 import { FaXTwitter } from 'react-icons/fa6'
 
 const footerLinks = [
