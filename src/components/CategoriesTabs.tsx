@@ -5,28 +5,21 @@ import { categoriesData } from '~/data/categories'
 import { categoriesReducer, initialState, setActiveCategory, setActiveSubCategory } from '~/reducers/categoriesReducer'
 import useStore from '~/store/useStore'
 
-const CategoriesTabs = () => {
+interface CategoriesTabs {
+	scrollToSection: () => void
+}
+
+const CategoriesTabs = ({ scrollToSection }: CategoriesTabs) => {
 	const [state, dispatch] = useReducer(categoriesReducer, initialState)
 	const { changeCategory, changeSubCategory } = useStore()
-	const sectionRef = useRef(null)
 
 	useEffect(() => {
 		changeCategory(state.activeCategory)
 		changeSubCategory(state.activeSubCategory)
 	}, [state, changeCategory, changeSubCategory])
 
-	const scrollToSection = () => {
-		if (sectionRef.current) {
-			const sectionPosition = (sectionRef.current as HTMLElement).getBoundingClientRect().top + window.scrollY
-			window.scrollTo({
-				top: sectionPosition - 80,
-				behavior: 'smooth',
-			})
-		}
-	}
-
 	return (
-		<div ref={sectionRef} id='products-browsing' className='relative w-full '>
+		<div id='products-browsing' className='relative w-full '>
 			<div className=' flex items-center justify-center '>
 				<Tabs
 					className='text-green-500 w-fit '
