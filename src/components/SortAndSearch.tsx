@@ -9,14 +9,14 @@ import {
 	TextField,
 } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
-import { SyntheticEvent, useCallback, useEffect, useState } from 'react'
+import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { exampleProducts } from '~/data/exampleProducts'
 
 interface SortAndSearchProps {
 	filteredProducts: ProductCardProps[]
 	setProducts: (products: ProductCardProps[]) => void
 	setSearchTerm: (term: string) => void
-	openDrawer: (newOpen: boolean) => () => void
+	handleDrawer: (isOpen: boolean) => () => void
 }
 
 type SortOption =
@@ -29,13 +29,8 @@ type SortOption =
 	| 'rating-asc'
 	| 'rating-desc'
 
-const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
+const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
 	const [sortOption, setSortOption] = useState<SortOption>('popularity-desc')
-
-	useEffect(() => {
-		const sortedProducts = sortProducts(filteredProducts, sortOption)
-		setProducts(sortedProducts)
-	}, [sortOption, filteredProducts, setProducts])
 
 	const sortProducts = (products: ProductCardProps[], sort: SortOption) => {
 		const sortedProducts = [...products]
@@ -70,6 +65,14 @@ const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTer
 		return sortedProducts
 	}
 
+	const sortedProducts = useMemo(() => {
+		return sortProducts(filteredProducts, sortOption)
+	}, [filteredProducts, sortOption])
+
+	useEffect(() => {
+		setProducts(sortedProducts)
+	}, [setProducts, sortedProducts])
+
 	const handleSortChange = useCallback(
 		(e: SelectChangeEvent<string>) => {
 			const value = e.target.value
@@ -88,7 +91,7 @@ const SortAndSearch = ({ setProducts, openDrawer, filteredProducts, setSearchTer
 			<Button
 				variant='outlined'
 				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
-				onClick={openDrawer(true)}>
+				onClick={handleDrawer(true)}>
 				Filters
 			</Button>
 
