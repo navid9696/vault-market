@@ -1,12 +1,12 @@
-import { useRef, useState } from 'react'
-import ProductCard from './ProductCard'
+import { useEffect, useReducer, useRef, useState } from 'react'
+import ProductCard, { ProductCardProps } from './ProductCard'
 import SortAndSearch from './SortAndSearch'
 import Filters from './Filters'
 import { Drawer } from '@mui/material'
 import CategoriesTabs from './CategoriesTabs'
-
 import useProducts from '~/hooks/useProducts'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
+import { initialState, showProductsReducer } from '~/reducers/showProductsReducer'
 
 const ProductsBrowsing = () => {
 	const { products, searchTerm, filteredProducts, updateProducts, updateSearchTerm, updateFilteredProducts } =
@@ -14,9 +14,11 @@ const ProductsBrowsing = () => {
 	const [open, setOpen] = useState(false)
 	const sectionRef = useRef(null)
 	const { navHeight } = useNavigationHeight()
+	const loadMoreRef = useRef(null)
+	const [state, dispatch] = useReducer(showProductsReducer, initialState)
 
-	const openDrawer = (newOpen: boolean) => () => {
-		setOpen(newOpen)
+	const handleDrawer = (isOpen: boolean) => () => {
+		setOpen(isOpen)
 	}
 
 	const scrollToSection = () => {
@@ -28,6 +30,34 @@ const ProductsBrowsing = () => {
 			})
 		}
 	}
+
+	useEffect(() => {
+		dispatch({ type: 'SET_VISIBLE_PRODUCTS', payload: products.slice(0, state.itemsToShow) })
+	}, [products, state.itemsToShow])
+
+	useEffect(() => {
+		const loadMoreProducts = () => {
+			const newItemsToShow = Math.min(state.itemsToShow + 3, products.length)
+			dispatch({ type: 'SET_ITEMS_TO_SHOW', payload: newItemsToShow })
+		}
+
+		const observer = new IntersectionObserver(
+			entries => {
+				entries.forEach(entry => {
+					entry.isIntersecting && loadMoreProducts()
+				})
+			},
+			{ threshold: 1.0 }
+		)
+
+		const currentLoadMoreRef = loadMoreRef.current
+
+		currentLoadMoreRef && observer.observe(currentLoadMoreRef)
+
+		return () => {
+			currentLoadMoreRef && observer.unobserve(currentLoadMoreRef)
+		}
+	}, [products, state.itemsToShow])
 
 	return (
 		<>
@@ -45,7 +75,7 @@ const ProductsBrowsing = () => {
 						keepMounted: true,
 					}}
 					open={open}
-					onClose={openDrawer(false)}>
+					onClose={handleDrawer(false)}>
 					<Filters setFilteredProducts={updateFilteredProducts} searchTerm={searchTerm} />
 				</Drawer>
 
@@ -56,7 +86,7 @@ const ProductsBrowsing = () => {
 				<div className='xl:col-span-7 col-span-10 row-span-1 bg-green-700'>
 					<SortAndSearch
 						setProducts={updateProducts}
-						openDrawer={openDrawer}
+						handleDrawer={handleDrawer}
 						filteredProducts={filteredProducts}
 						setSearchTerm={updateSearchTerm}
 					/>
@@ -65,8 +95,8 @@ const ProductsBrowsing = () => {
 				<div
 					className='py-1 flex flex-wrap justify-evenly
 					xl:col-span-7 col-span-10 row-span-9
-				 bg-zinc-900 overflow-y-scroll'>
-					{products.map(product => (
+					bg-zinc-900 overflow-y-scroll'>
+					{state.visibleProducts.map(product => (
 						<ProductCard
 							key={product.name}
 							name={product.name}
@@ -79,6 +109,7 @@ const ProductsBrowsing = () => {
 							subCategoryId={product.subCategoryId}
 						/>
 					))}
+					<div ref={loadMoreRef} className='h-10' />
 				</div>
 			</section>
 		</>
