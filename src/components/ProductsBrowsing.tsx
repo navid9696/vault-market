@@ -6,7 +6,11 @@ import { Drawer } from '@mui/material'
 import CategoriesTabs from './CategoriesTabs'
 import useProducts from '~/hooks/useProducts'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
+<<<<<<< HEAD
 import { initialState, showProductsReducer } from '~/reducers/showProductsReducer'
+=======
+import { initialState, setItemsToShow, setVisibleProducts, showProductsReducer } from '~/reducers/showProductsReducer'
+>>>>>>> 1c857dc0b4304e13ecbfb5277d2025fd30c83202
 
 const ProductsBrowsing = () => {
 	const { products, searchTerm, filteredProducts, updateProducts, updateSearchTerm, updateFilteredProducts } =
@@ -44,7 +48,13 @@ const ProductsBrowsing = () => {
 		const observer = new IntersectionObserver(
 			entries => {
 				entries.forEach(entry => {
+<<<<<<< HEAD
 					entry.isIntersecting && loadMoreProducts()
+=======
+					if (entry.isIntersecting) {
+						loadMoreProducts()
+					}
+>>>>>>> 1c857dc0b4304e13ecbfb5277d2025fd30c83202
 				})
 			},
 			{ threshold: 1.0 }
@@ -52,10 +62,21 @@ const ProductsBrowsing = () => {
 
 		const currentLoadMoreRef = loadMoreRef.current
 
+<<<<<<< HEAD
 		currentLoadMoreRef && observer.observe(currentLoadMoreRef)
 
 		return () => {
 			currentLoadMoreRef && observer.unobserve(currentLoadMoreRef)
+=======
+		if (currentLoadMoreRef) {
+			observer.observe(currentLoadMoreRef)
+		}
+
+		return () => {
+			if (currentLoadMoreRef) {
+				observer.unobserve(currentLoadMoreRef)
+			}
+>>>>>>> 1c857dc0b4304e13ecbfb5277d2025fd30c83202
 		}
 	}, [products, state.itemsToShow])
 
