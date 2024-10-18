@@ -12,7 +12,7 @@ import { NavigationProvider } from '~/context/NavbarHeightContext'
 const Home = () => {
 	const theme = createTheme({
 		typography: {
-			fontFamily: ['__Share_Tech_Mono_3ec33c', '__Share_Tech_Mono_Fallback_3ec33c'].join(','),
+			fontFamily: ['Share Tech Mono', '__Share_Tech_Mono_439932', '__Share_Tech_Mono_Fallback_439932'].join(','),
 		},
 	})
 

@@ -3,6 +3,7 @@ import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa'
 import FooterLink from './FooterLink'
 import { Media, MediaContextProvider } from '~/context/breakpointsContext'
 import { FaXTwitter } from 'react-icons/fa6'
+import React from 'react'
 
 const footerLinks = [
 	{ href: '/', icon: <FaFacebookF /> },
@@ -50,14 +51,12 @@ const Footer = () => {
 					<h3 className='mb-4 text-lg uppercase'>Follow</h3>
 					<div className='flex'>
 						{footerLinks.map((link, index) => (
-							<>
-								<FooterLink key={index} href={link.href}>
-									{link.icon}
-								</FooterLink>
+							<React.Fragment key={index}>
+								<FooterLink href={link.href}>{link.icon}</FooterLink>
 								{index < footerLinks.length - 1 && (
 									<Divider className='mx-1 bg-green-950' orientation='vertical' flexItem />
 								)}
-							</>
+							</React.Fragment>
 						))}
 					</div>
 				</div>

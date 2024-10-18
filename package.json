@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apollo/client": "^3.10.5",
-    "@apollo/experimental-nextjs-app-support": "^0.11.2",
     "@artsy/fresnel": "^7.1.4",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -18,11 +16,8 @@
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.19",
     "@next/bundle-analyzer": "^14.2.4",
-    "bootstrap": "^5.3.3",
-    "graphql": "^16.8.2",
     "next": "14.2.3",
     "react": "^18",
-    "react-bootstrap": "^2.10.4",
     "react-dom": "^18",
     "react-fast-marquee": "^1.6.5",
     "react-hook-form": "^7.52.1",
@@ -31,7 +26,6 @@
     "react-toastify": "^10.0.5",
     "react-virtualized-auto-sizer": "^1.0.24",
     "react-window": "^1.8.10",
-    "react-window-infinite-loader": "^1.0.9",
     "slick-carousel": "^1.8.1",
     "tailwind-scrollbar-hide": "^1.1.7",
     "typesafe-actions": "^5.1.0",
