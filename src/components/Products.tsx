@@ -51,29 +51,39 @@ const Products = () => {
 	}
 
 	return (
-		<div className='h-screen flex justify-center items-center'>
-			<div className='border'>
-				<h1 className='uppercase'>Total Products</h1>
-				<Button onClick={() => setShowAddProductForm(prev => !prev)}>
-					{showAddProductForm ? 'Cancel' : 'Add New Product'}
-				</Button>
-				{showAddProductForm && <AddProductCard onAddProduct={handleAddProduct} />}
-				<div className='border h-96 w-96 flex flex-wrap overflow-scroll'>
-					{products.map(product => (
-						<AdminProductCard
-							key={product.name}
-							name={product.name}
-							price={product.price}
-							rating={product.rating}
-							available={product.available}
-							popularity={product.popularity}
-							onSale={product.onSale}
-							categoryId={product.categoryId}
-							subCategoryId={product.subCategoryId}
-							imgURL={product.imgURL}
-							description={product.description}
-						/>
-					))}
+		<div className='p-2 h-screen flex justify-center items-center bg-gray-100'>
+			<div className='border border-gray-300 rounded-lg p-6 bg-white shadow-lg w-full max-w-screen-2xl'>
+				<h1 className='uppercase text-2xl font-semibold mb-4 text-center'>Total Products</h1>
+				<div className='flex justify-center mb-6'>
+					<Button
+						onClick={() => setShowAddProductForm(prev => !prev)}
+						className='bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded'>
+						{showAddProductForm ? 'Cancel' : 'Add New Product'}
+					</Button>
+				</div>
+				{showAddProductForm && (
+					<div className='mb-6'>
+						<AddProductCard onAddProduct={handleAddProduct} />
+					</div>
+				)}
+				<div className='border-t border-gray-200 pt-4 mt-4'>
+					<div className='h-96 w-full flex flex-wrap gap-4 overflow-y-auto'>
+						{products.map(product => (
+							<AdminProductCard
+								key={product.name}
+								name={product.name}
+								price={product.price}
+								rating={product.rating}
+								available={product.available}
+								popularity={product.popularity}
+								onSale={product.onSale}
+								categoryId={product.categoryId}
+								subCategoryId={product.subCategoryId}
+								imgURL={product.imgURL}
+								description={product.description}
+							/>
+						))}
+					</div>
 				</div>
 			</div>
 		</div>
