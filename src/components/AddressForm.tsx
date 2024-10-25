@@ -18,7 +18,6 @@ import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { statesOfAmerica } from '~/data/statesOfAmerica'
 import { SettingFormsProps } from '~/lib/types'
-import { statesOfUSA } from '~/data/statesOfUSA'
 import { addressSchema } from '~/schemas/addressSchema'
 
 
