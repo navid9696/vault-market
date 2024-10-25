@@ -41,30 +41,29 @@ export default function AccountMenu() {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
 
-	const handleClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
+	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(e.currentTarget)
-	}, [])
+	}
 
-	const handleClose = useCallback(() => {
+	const handleClose = () => {
 		setAnchorEl(null)
-	}, [])
+	}
 
-	const handleModalOpen = useCallback((id: string) => {
+	const handleModalOpen = (id: string) => {
 		setModalOpen(true)
 		setContentId(id)
-	}, [])
+	}
 
-	const handleModalClose = useCallback(() => {
+	const handleModalClose = () => {
 		setModalOpen(false)
-		
-	}, [])
+	}
 
 	const renderModalContent = () => {
 		switch (contentId) {
 			case 'exchange':
 				return <ExchangeModal />
 			case 'profile':
-				return <AccountSettings  />
+				return <AccountSettings />
 			default:
 				return null
 		}

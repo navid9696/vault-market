@@ -61,6 +61,7 @@ const ProductCard = ({ name, price, rating, onSale, available }: ProductCardProp
 							<Minus fontSize={'12px'} className='absolute left-0 mt-[4px]' />
 						</div>
 					</>
+
 				)}
 				{/* box */}
 				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
