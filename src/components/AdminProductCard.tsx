@@ -19,10 +19,14 @@ const AdminProductCard = ({
 	categoryId,
 	subCategoryId,
 }: ProductCardProps) => {
-	// const categoryName = categoriesData.categories.find(category => category.id === categoryId)
+	const category = categoriesData.categories.find(category => category.id === categoryId)
+	const categoryName = category ? category.name : 'Unknown Category'
+
+	const subcategory = category?.subCategories.find(subcategory => subcategory.id === subCategoryId)
+	const subcategoryName = subcategory ? subcategory.name : 'Unknown Subcategory'
 
 	return (
-		<Card className='p-2 flex flex-col  min-h-96 w-80 rounded-md overflow-hidden shadow-md border'>
+		<Card className='p-2 flex flex-col  min-h-96 w-[350px] rounded-md overflow-hidden shadow-md border'>
 			<div className='relative h-32'>
 				<Image className='object-contain' src={imgURL} fill alt={name} />
 			</div>
@@ -52,11 +56,11 @@ const AdminProductCard = ({
 					Popularity: {popularity}
 				</Typography>
 				<Typography variant='body2' color='text.primary' className='font-medium'>
-					{/* Category ID/Name: `${categoryId}/${categoryName}` */}
+					Category ID | Name: {categoryId} | {categoryName}
 				</Typography>
 				{subCategoryId && (
 					<Typography variant='body2' color='text.primary' className='font-medium'>
-						Subcategory ID: {subCategoryId}
+						Subcategory ID | Name: {subCategoryId} | {subcategoryName}
 					</Typography>
 				)}
 			</CardContent>

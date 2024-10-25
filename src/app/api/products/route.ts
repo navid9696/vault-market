@@ -23,3 +23,22 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json({ error: 'Failed to add product' }, { status: 500 })
 	}
 }
+
+export async function DELETE(req: NextRequest) {
+	await connectToDB()
+	try {
+		const productId = req.nextUrl.searchParams.get('id')
+		if (!productId) {
+			return NextResponse.json({ error: 'Product ID is required' }, { status: 400 })
+		}
+
+		const deletedProduct = await Product.findByIdAndDelete(productId)
+		if (!deletedProduct) {
+			return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+		}
+
+		return NextResponse.json({ message: 'Product deleted successfully' }, { status: 200 })
+	} catch (error) {
+		return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 })
+	}
+}
