@@ -16,6 +16,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
+import { statesOfAmerica } from '~/data/statesOfAmerica'
 import { SettingFormsProps } from '~/lib/types'
 import { statesOfUSA } from '~/data/statesOfUSA'
 import { addressSchema } from '~/schemas/addressSchema'
@@ -175,7 +176,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 							onChange: handleChange,
 						})}
 						onFocus={() => setIsFocusedField('state')}>
-						{statesOfUSA.map(state => (
+						{statesOfAmerica.map(state => (
 							<MenuItem key={state} value={state}>
 								{state}
 							</MenuItem>

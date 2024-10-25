@@ -1,8 +1,11 @@
 import { create } from 'zustand'
-import createSaleSlice, { SaleSlice } from './slices/saleSlice'
 
-export interface StoreState extends SaleSlice {}
+import createCategoriesSlice, { CategoriesSlice } from './slices/categoriesSlice'
 
-const useSalesStore = create<StoreState>((set, get, api) => createSaleSlice(set, get, api))
+export interface StoreState extends CategoriesSlice {}
 
-export default useSalesStore
+const useStore = create<StoreState>((set, get, api) => ({
+	...createCategoriesSlice(set, get, api),
+}))
+
+export default useStore

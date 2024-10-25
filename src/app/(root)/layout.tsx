@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
-
 import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'
-import { ApolloWrapper } from '~/providers/ApolloWrapper'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],
@@ -20,10 +18,9 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html className='scrollbar-hide' lang='en'>
-			<body className={`${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
-				{/* Apollo for future implementation */}
-				<ApolloWrapper>{children}</ApolloWrapper>
+		<html className='scrollbar-hide scroll-smooth' lang='en'>
+			<body id='top' className={`${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
+				{children}
 			</body>
 		</html>
 	)

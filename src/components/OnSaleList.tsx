@@ -1,3 +1,4 @@
+import { exampleProducts } from '~/data/exampleProducts'
 import ProductCard from './ProductCard'
 import Marquee from 'react-fast-marquee'
 
@@ -9,9 +10,19 @@ const OnSaleList = () => {
 				play={true}
 				pauseOnHover
 				delay={1}>
-				{Array.from({ length: 15 }, (_, index) => (
-					<ProductCard key={index} />
-				))}
+				{exampleProducts
+					.filter(product => product.available === true && product.onSale === true)
+					.map((product, index) => (
+						<ProductCard
+							key={`${product.name}-${index}`}
+							name={product.name}
+							price={product.price}
+							rating={product.rating}
+							available={product.available}
+							popularity={product.popularity}
+							onSale={product.onSale}
+						/>
+					))}
 			</Marquee>
 		</section>
 	)
