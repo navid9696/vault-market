@@ -19,14 +19,17 @@ const StyledRating = styled(Rating)({
 })
 
 export interface ProductCardProps {
+	id: string
 	name: string
 	price: number
-	rating: number
+	rating?: number
 	available: number
-	popularity: number
+	popularity?: number
 	onSale: number
-	categoryId: number
-	subCategoryId: number | null
+	categoryId?: number
+	subCategoryId?: number | null
+	categoryName?: string
+	subCategoryName?: string
 	imgURL: string
 	description: string
 }

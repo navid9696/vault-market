@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
 		await newProduct.save()
 		return NextResponse.json(newProduct, { status: 201 })
 	} catch (error) {
+		console.error('Error adding product:', error)
 		return NextResponse.json({ error: 'Failed to add product' }, { status: 500 })
 	}
 }

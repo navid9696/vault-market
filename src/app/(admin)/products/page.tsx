@@ -1,8 +1,8 @@
 import React from 'react'
-import Products from '~/components/Products'
+import AdminDisplayProducts from '~/components/AdminDisplayProducts'
 
 const AdminProducts = () => {
-	return <Products />
+	return <AdminDisplayProducts />
 }
 
 export default AdminProducts
