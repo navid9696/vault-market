@@ -7,7 +7,7 @@ import Link from 'next/link'
 import useStore from '~/store/useStore'
 
 const PriceSection = () => {
-	const isOnSale = useStore(state => state.isOnSale)
+	const isDiscount = useStore(state => state.isDiscount)
 
 	return (
 		<div className='w-1/2 flex flex-col justify-evenly items-center '>
@@ -18,7 +18,7 @@ const PriceSection = () => {
 						1500
 						<Caps />
 					</p>
-					{isOnSale && (
+					{isDiscount && (
 						<p className='flex items-center gap-1 line-through md:text-base text-sm decoration-red-500 decoration-2'>
 							2100
 							<Caps />

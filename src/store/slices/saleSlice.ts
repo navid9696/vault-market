@@ -1,13 +1,13 @@
 import { StateCreator } from 'zustand'
 
 export interface SaleSlice {
-	isOnSale: boolean
-	setIsOnSale: (isOnSale: boolean) => void
+	isDiscount: boolean
+	setIsdiscount: (isDiscount: boolean) => void
 }
 
 const createSaleSlice: StateCreator<SaleSlice> = set => ({
-	isOnSale: true,
-	setIsOnSale: isOnSale => set({ isOnSale }),
+	isDiscount: true,
+	setIsdiscount: isDiscount => set({ isDiscount }),
 })
 
 export default createSaleSlice

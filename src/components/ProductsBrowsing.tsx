@@ -60,13 +60,14 @@ const ProductsBrowsing = () => {
 				 bg-zinc-900 overflow-y-scroll'>
 					{...products.map(product => (
 						<ProductCard
+							id={product.id}
 							key={product.name}
 							name={product.name}
 							price={product.price}
 							rating={product.rating}
 							available={product.available}
 							popularity={product.popularity}
-							onSale={product.onSale}
+							discount={product.discount}
 							categoryId={product.categoryId}
 							subCategoryId={product.subCategoryId}
 							imgURL={product.imgURL}

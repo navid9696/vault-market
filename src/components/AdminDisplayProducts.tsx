@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import AdminProductCard from '~/components/AdminProductCard'
 import { ProductCardProps } from '~/components/ProductCard'
 import TransitionsModal from './TransitionModal'
-import AddNewProductForm from '~/components/AddNewProduct'
+import AddOrEditProductForm from '~/components/AddOrEditProductForm'
 
 const AdminDisplayProducts = () => {
 	const [products, setProducts] = useState<ProductCardProps[]>([])
@@ -20,7 +20,7 @@ const AdminDisplayProducts = () => {
 	}
 
 	const renderModalContent = () => {
-		return <AddNewProductForm />
+		return <AddOrEditProductForm />
 	}
 
 	useEffect(() => {
@@ -65,7 +65,7 @@ const AdminDisplayProducts = () => {
 									rating={product.rating}
 									available={product.available}
 									popularity={product.popularity}
-									onSale={product.onSale}
+									discount={product.discount}
 									categoryId={product.categoryId}
 									subCategoryId={product.subCategoryId}
 									imgURL={product.imgURL}

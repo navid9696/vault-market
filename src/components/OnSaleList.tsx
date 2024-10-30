@@ -2,7 +2,7 @@ import { exampleProducts } from '~/data/exampleProducts'
 import ProductCard from './ProductCard'
 import Marquee from 'react-fast-marquee'
 
-const OnSaleList = () => {
+const discountList = () => {
 	return (
 		<section className='h-1/4 bg-slate-100'>
 			<Marquee
@@ -11,17 +11,19 @@ const OnSaleList = () => {
 				pauseOnHover
 				delay={1}>
 				{exampleProducts
-					.filter(product => product.available > 0 && product.onSale > 0)
-					.map((product, index) => (
+					.filter(product => product.available > 0 && product.discount > 0)
+					.map(product => (
 						<ProductCard
-							key={`${product.name}-${index}`}
+							key={product.id}
+							id={product.id}
 							name={product.name}
 							price={product.price}
 							rating={product.rating}
 							available={product.available}
 							popularity={product.popularity}
-							onSale={product.onSale}
+							discount={product.discount}
 							imgURL={product.imgURL}
+							description={product.description}
 						/>
 					))}
 			</Marquee>
@@ -29,4 +31,4 @@ const OnSaleList = () => {
 	)
 }
 
-export default OnSaleList
+export default discountList

@@ -8,7 +8,7 @@ const ProductSchema = new mongoose.Schema<ProductCardProps>({
 	available: { type: Number, required: true },
 	popularity: { type: Number, required: true, default: 0 },
 	rating: { type: Number, required: true, default: 0 },
-	onSale: { type: Number, required: true },
+	discount: { type: Number, required: true },
 	categoryName: { type: String, required: true },
 	subCategoryName: { type: String, default: null },
 	categoryId: { type: Number, required: true },

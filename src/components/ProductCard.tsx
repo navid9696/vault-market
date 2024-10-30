@@ -25,7 +25,7 @@ export interface ProductCardProps {
 	rating?: number
 	available: number
 	popularity?: number
-	onSale: number
+	discount: number
 	categoryId?: number
 	subCategoryId?: number | null
 	categoryName?: string
@@ -34,7 +34,7 @@ export interface ProductCardProps {
 	description: string
 }
 
-const ProductCard = ({ name, price, rating, onSale, available, imgURL }: ProductCardProps) => {
+const ProductCard = ({ name, price, rating, discount, available, imgURL }: ProductCardProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
 
 	const handleModalClose = useCallback(() => {
@@ -53,7 +53,7 @@ const ProductCard = ({ name, price, rating, onSale, available, imgURL }: Product
 					available ? 'grayscale-0 opacity-100' : 'grayscale opacity-90'
 				} relative max-h-60 min-h-44 h-full max-w-48 min-w-52 p-4 transition hover:scale-105 cursor-pointer z-0`}>
 				{/* badge */}
-				{onSale > 0 && (
+				{discount > 0 && (
 					<>
 						{/* badge-back */}
 						<div
@@ -62,7 +62,7 @@ const ProductCard = ({ name, price, rating, onSale, available, imgURL }: Product
 						{/* bagde-front */}
 						<div className='top-2 left-2 absolute flex items-center justify-center border-[3px] border-[#0b5c29] rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
 							<p className='relative -top-[4px] ml-[3px] mr-[8px] my-[1px] tracking-tighter text-md '>
-								{(onSale * 100).toFixed(0)}
+								{(discount * 100).toFixed(0)}
 							</p>
 							<Percent fontSize={'8px'} className='absolute bottom-[13px] right-0' />
 							<p className='absolute -bottom-[2px] text-xs'>OFF</p>
@@ -72,7 +72,7 @@ const ProductCard = ({ name, price, rating, onSale, available, imgURL }: Product
 				{/* box */}
 				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
 					{/* border-covers  */}
-					{onSale > 0 && (
+					{discount > 0 && (
 						<>
 							<div
 								className='absolute -top-[3px] -left-[10px] h-2 w-10 p-1 bg-orange-200
@@ -86,7 +86,7 @@ const ProductCard = ({ name, price, rating, onSale, available, imgURL }: Product
 					<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-zinc-900 via-green-300 to-zinc-900 '>
 						<h4
 							className={`${
-								onSale > 0 && 'w-11/12 pl-3 rounded-tr-lg'
+								discount > 0 && 'w-11/12 pl-3 rounded-tr-lg'
 							} w-full h-[36px] pl-0 flex items-center justify-center text-sm tracking-tighter rounded-t-lg bg-green-700 text-orange-200 font-semibold `}>
 							{name}
 						</h4>
@@ -117,10 +117,10 @@ const ProductCard = ({ name, price, rating, onSale, available, imgURL }: Product
 							{/* price-box */}
 							<div className='flex flex-col items-start pl-2 text-green-950'>
 								<div className='flex items-center gap-1'>
-									{onSale > 0 ? price * onSale : price}
+									{discount > 0 ? price * discount : price}
 									<Caps />
 								</div>
-								{onSale > 0 && (
+								{discount > 0 && (
 									<div className='flex items-center gap-1 text-xs line-through decoration-red-500 decoration-2'>
 										{price} <Caps />
 									</div>
