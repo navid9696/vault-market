@@ -9,23 +9,32 @@ import {
 	TextField,
 } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
-import { Dispatch, SetStateAction, SyntheticEvent, useCallback, useEffect, useState } from 'react'
+import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { exampleProducts } from '~/data/exampleProducts'
 
 interface SortAndSearchProps {
 	filteredProducts: ProductCardProps[]
-	setProducts: Dispatch<SetStateAction<ProductCardProps[]>>
-	setSearchTerm: Dispatch<SetStateAction<string>>
-	toggleDrawer: (newOpen: boolean) => () => void
+	setProducts: (products: ProductCardProps[]) => void
+	setSearchTerm: (term: string) => void
+	handleDrawer: (isOpen: boolean) => () => void
 }
 
-const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
-	const [sortOption, setSortOption] = useState('popularity-desc')
+type SortOption =
+	| 'popularity-asc'
+	| 'popularity-desc'
+	| 'name-asc'
+	| 'name-desc'
+	| 'price-asc'
+	| 'price-desc'
+	| 'rating-asc'
+	| 'rating-desc'
 
-	useEffect(() => {
-		let sortedProducts = [...filteredProducts]
+const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
+	const [sortOption, setSortOption] = useState<SortOption>('popularity-desc')
 
-		switch (sortOption) {
+	const sortProducts = (products: ProductCardProps[], sort: SortOption) => {
+		const sortedProducts = [...products]
+		switch (sort) {
 			case 'popularity-asc':
 				sortedProducts.sort((a, b) => a.popularity - b.popularity)
 				break
@@ -53,14 +62,21 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 			default:
 				break
 		}
+		return sortedProducts
+	}
 
+	const sortedProducts = useMemo(() => {
+		return sortProducts(filteredProducts, sortOption)
+	}, [filteredProducts, sortOption])
+
+	useEffect(() => {
 		setProducts(sortedProducts)
-	}, [sortOption, filteredProducts, setProducts])
+	}, [setProducts, sortedProducts])
 
 	const handleSortChange = useCallback(
 		(e: SelectChangeEvent<string>) => {
 			const value = e.target.value
-			setSortOption(value)
+			setSortOption(value as SortOption)
 		},
 		[setSortOption]
 	)
@@ -71,13 +87,11 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 	)
 
 	return (
-		<div
-			className={`h-full p-2 flex gap-x-4 justify-evenly items-center 
-				  `}>
+		<div className='h-full p-2 flex gap-x-4 justify-evenly items-center'>
 			<Button
 				variant='outlined'
 				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
-				onClick={toggleDrawer(true)}>
+				onClick={handleDrawer(true)}>
 				Filters
 			</Button>
 
@@ -87,7 +101,7 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 				handleHomeEndKeys
 				size='small'
 				className='bg-green-700 w-32'
-				options={[...exampleProducts]}
+				options={exampleProducts}
 				getOptionLabel={product => (product as ProductCardProps).name}
 				onInputChange={handleInputChange}
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}
@@ -103,7 +117,7 @@ const SortAndSearch = ({ setProducts, toggleDrawer, filteredProducts, setSearchT
 					size='small'
 					value={sortOption}
 					onChange={handleSortChange}>
-					<MenuItem value='popularity-asc'>Popularity Ascdending</MenuItem>
+					<MenuItem value='popularity-asc'>Popularity Ascending</MenuItem>
 					<MenuItem value='popularity-desc'>Popularity Descending</MenuItem>
 					<MenuItem value='name-asc'>Name A-Z</MenuItem>
 					<MenuItem value='name-desc'>Name Z-A</MenuItem>

@@ -6,6 +6,7 @@ import QuantitySelector from './QuantitySelector'
 import Link from 'next/link'
 import useStore from '~/store/useStore'
 
+// will be improved in future
 const PriceSection = () => {
 	const isDiscount = useStore(state => state.isDiscount)
 

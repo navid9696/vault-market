@@ -10,11 +10,12 @@ import {
 	Slider,
 	styled,
 } from '@mui/material'
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useCallback, useReducer } from 'react'
 import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
 import useStore from '~/store/useStore'
+import { filtersReducer, initialState } from '~/reducers/filtersReducer'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -29,7 +30,7 @@ const StyledRating = styled(Rating)({
 
 interface FiltersProps {
 	searchTerm: string
-	setFilteredProducts: Dispatch<SetStateAction<ProductCardProps[]>>
+	setFilteredProducts: (filtered: ProductCardProps[]) => void
 }
 
 function valuetext(value: number) {
@@ -38,13 +39,17 @@ function valuetext(value: number) {
 
 const minDistance = 500
 
+const ratingOptions = [
+	{ value: 'Any', label: 'Any' },
+	{ value: 5, label: '5', precision: 0.5 },
+	{ value: 4.5, label: '4.5+', precision: 0.5 },
+	{ value: 4, label: '4+', precision: 0.5 },
+	{ value: 3, label: '3+', precision: 0.5 },
+]
+
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
-	const [price, setPrice] = useState<number[]>([50, 5000])
-	const [checkeddiscount, setCheckeddiscount] = useState(false)
-	const [checkedShowedUnavailable, setCheckedShowedUnavailable] = useState(false)
-	const [checkedRating, setCheckedRating] = useState<string | number>('Any')
-	const [products, setProducts] = useState<ProductCardProps[]>([])
-	const { reducerState } = useStore()
+	const [state, dispatch] = useReducer(filtersReducer, initialState)
+	const { activeCategory, activeSubCategory } = useStore()
 
 	useEffect(() => {
 		const loadProducts = async () => {
@@ -64,70 +69,67 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 		loadProducts()
 	}, [])
 
-	useEffect(() => {
-		let productsToFilter = [...products]
+	const filteredProducts = useMemo(() => {
+		return exampleProducts.filter(product => {
+			const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
+			const matchesAvailability = state.checkedShowedUnavailable || product.available === true
+			const matchesOnSale = !state.checkedOnSale || product.onSale
+			const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
+			const matchesCategory = !activeCategory || product.categoryId === activeCategory
+			const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
+			const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
 
-		productsToFilter = productsToFilter.filter(product => product.price >= price[0] && product.price <= price[1])
-
-		!checkedShowedUnavailable && (productsToFilter = productsToFilter.filter(product => product.available > 0))
-
-		checkeddiscount && (productsToFilter = productsToFilter.filter(product => product.discount))
-
-		checkedRating !== 'Any' &&
-			(productsToFilter = productsToFilter.filter(
-				product => product.rating !== undefined && product.rating >= Number(checkedRating)
-			))
-
-		reducerState.activeCategory &&
-			(productsToFilter = productsToFilter.filter(product => product.categoryId === reducerState.activeCategory))
-
-		reducerState.activeSubCategory &&
-			(productsToFilter = productsToFilter.filter(product => product.subCategoryId === reducerState.activeSubCategory))
-
-		searchTerm &&
-			(productsToFilter = productsToFilter.filter(product =>
-				product.name.toLowerCase().includes(searchTerm.toLowerCase())
-			))
-
-		setFilteredProducts(productsToFilter)
+			return (
+				matchesPriceRange &&
+				matchesAvailability &&
+				matchesOnSale &&
+				matchesRating &&
+				matchesCategory &&
+				matchesSubCategory &&
+				matchesSearchTerm
+			)
+		})
 	}, [
-		price,
-		checkeddiscount,
-		checkedShowedUnavailable,
-		checkedRating,
+		state.price,
+		state.checkedShowedUnavailable,
+		state.checkedOnSale,
+		state.checkedRating,
+		activeCategory,
+		activeSubCategory,
 		searchTerm,
-		setFilteredProducts,
-		reducerState.activeCategory,
-		reducerState.activeSubCategory,
-		products,
 	])
 
+	useEffect(() => {
+		setFilteredProducts(filteredProducts)
+	}, [filteredProducts, setFilteredProducts])
+
 	const handleRatingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = (e.target as HTMLInputElement).value
-		setCheckedRating(value)
+		const value = e.target.value
+		dispatch({ type: 'SET_RATING_FILTER', payload: value })
 	}
 
-	const handlePriceChange = (e: Event, newValue: number | number[], activeThumb: number) => {
-		if (!Array.isArray(newValue)) {
-			return
-		}
+	const handlePriceChange = useCallback(
+		(e: Event, newValue: number | number[], activeThumb: number) => {
+			if (!Array.isArray(newValue)) return
 
-		if (activeThumb === 0) {
-			const newMinPrice = Math.min(newValue[0], price[1] - minDistance)
-			setPrice([newMinPrice, price[1]])
-		} else {
-			const newMaxPrice = Math.max(newValue[1], price[0] + minDistance)
-			setPrice([price[0], newMaxPrice])
-		}
-	}
+			if (activeThumb === 0) {
+				const newMinPrice = Math.min(newValue[0], state.price[1] - minDistance)
+				dispatch({ type: 'SET_PRICE_FILTER', payload: [newMinPrice, state.price[1]] })
+			} else {
+				const newMaxPrice = Math.max(newValue[1], state.price[0] + minDistance)
+				dispatch({ type: 'SET_PRICE_FILTER', payload: [state.price[0], newMaxPrice] })
+			}
+		},
+		[state.price]
+	)
 
 	return (
-		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600  bg-zinc-900'>
+		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600 bg-zinc-900'>
 			<div className='p-2 px-6 border-2 border-green-600 rounded-xl'>
 				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
 					getAriaLabel={() => 'Price range'}
-					value={price}
+					value={state.price}
 					onChange={handlePriceChange}
 					valueLabelDisplay='auto'
 					getAriaValueText={valuetext}
@@ -149,9 +151,13 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					}
 					control={
 						<Checkbox
-							checked={checkeddiscount}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCheckeddiscount(e.target.checked)}
-							inputProps={{ 'aria-label': 'controlled' }}
+							checked={state.checkedOnSale}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								dispatch({ type: 'SET_ON_SALE_FILTER', payload: !state.checkedOnSale })
+							}
+							inputProps={{
+								'aria-label': state.checkedOnSale ? 'Uncheck to disable sale filter' : 'Check to filter items on sale',
+							}}
 							sx={{
 								color: green[800],
 								'&.Mui-checked': {
@@ -165,9 +171,15 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					label='Show unavailable'
 					control={
 						<Checkbox
-							checked={checkedShowedUnavailable}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCheckedShowedUnavailable(e.target.checked)}
-							inputProps={{ 'aria-label': 'controlled' }}
+							checked={state.checkedShowedUnavailable}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								dispatch({ type: 'SET_UNAVAILABLE_FILTER', payload: !state.checkedShowedUnavailable })
+							}
+							inputProps={{
+								'aria-label': state.checkedShowedUnavailable
+									? 'Uncheck to hide unavailable items'
+									: 'Check to show unavailable items',
+							}}
 							sx={{
 								color: green[800],
 								'&.Mui-checked': {
@@ -180,135 +192,55 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 			</FormGroup>
 
 			<FormControl>
-				<FormLabel className='text-green-600 text-lg font-semibold uppercase' id='demo-radio-buttons-group-label'>
+				<FormLabel
+					sx={{
+						'&.Mui-focused': {
+							color: '#00d30b',
+						},
+					}}
+					className='text-green-600 text-lg font-semibold uppercase'
+					id='ratings-group-label'>
 					Ratings
 				</FormLabel>
 				<RadioGroup
 					className='h-full flex flex-col gap-2'
-					aria-labelledby='demo-radio-buttons-group-label'
+					aria-labelledby='ratings-group-label'
 					defaultValue='Any'
 					onChange={handleRatingsChange}
 					name='radio-buttons-group'>
-					<FormControlLabel
-						value={'Any'}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label='Any'
-					/>
-
-					<FormControlLabel
-						value={5}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={5}
-									max={5}
-									readOnly
+					{ratingOptions.map(rating => (
+						<FormControlLabel
+							key={rating.value}
+							value={rating.value}
+							control={
+								<Radio
+									sx={{
+										color: green[800],
+										'&.Mui-checked': {
+											color: green[600],
+										},
+									}}
 								/>
-								<span>5</span>
-							</div>
-						}
-					/>
-					<FormControlLabel
-						value={4.5}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={4.5}
-									precision={0.5}
-									max={5}
-									readOnly
-								/>
-								<span>4.5+</span>
-							</div>
-						}
-					/>
-					<FormControlLabel
-						value={4}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={4}
-									max={5}
-									readOnly
-								/>
-								<span>4+</span>
-							</div>
-						}
-					/>
-					<FormControlLabel
-						value={3}
-						control={
-							<Radio
-								sx={{
-									color: green[800],
-									'&.Mui-checked': {
-										color: green[600],
-									},
-								}}
-							/>
-						}
-						label={
-							<div className='flex items-center justify-center gap-2'>
-								<StyledRating
-									emptyIcon={<StarIcon fontSize='inherit' />}
-									className=''
-									name='read-only'
-									value={3}
-									max={5}
-									readOnly
-								/>
-								<span>3+</span>
-							</div>
-						}
-					/>
+							}
+							label={
+								rating.precision ? (
+									<div className='flex items-center justify-center gap-2'>
+										<StyledRating
+											emptyIcon={<StarIcon fontSize='inherit' />}
+											name='read-only'
+											value={rating.value}
+											precision={rating.precision}
+											max={5}
+											readOnly
+										/>
+										<span>{rating.label}</span>
+									</div>
+								) : (
+									rating.label
+								)
+							}
+						/>
+					))}
 				</RadioGroup>
 			</FormControl>
 		</div>

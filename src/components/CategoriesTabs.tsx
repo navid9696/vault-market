@@ -1,38 +1,25 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
 import { categoriesData } from '~/data/categories'
 import { categoriesReducer, initialState, setActiveCategory, setActiveSubCategory } from '~/reducers/categoriesReducer'
 import useStore from '~/store/useStore'
 
-const CategoriesTabs = () => {
+interface CategoriesTabs {
+	scrollToSection: () => void
+}
+
+const CategoriesTabs = ({ scrollToSection }: CategoriesTabs) => {
 	const [state, dispatch] = useReducer(categoriesReducer, initialState)
-	const { setReducerState } = useStore()
+	const { changeCategory, changeSubCategory } = useStore()
 
 	useEffect(() => {
-		setReducerState({
-			activeCategory: state.activeCategory,
-			activeSubCategory: state.activeSubCategory,
-		})
-	}, [state, setReducerState])
-
-	const scrollToSection = () => {
-		const section = document.getElementById('products-browsing')
-		const navbarHeight = document.querySelector('nav')?.offsetHeight || 0
-
-		if (section) {
-			const sectionPosition = section.getBoundingClientRect().top + window.scrollY
-			const scrollToPosition = sectionPosition - navbarHeight
-
-			window.scrollTo({
-				top: scrollToPosition,
-				behavior: 'smooth',
-			})
-		}
-	}
+		changeCategory(state.activeCategory)
+		changeSubCategory(state.activeSubCategory)
+	}, [state, changeCategory, changeSubCategory])
 
 	return (
-		<div className='relative w-full '>
+		<div id='products-browsing' className='relative w-full '>
 			<div className=' flex items-center justify-center '>
 				<Tabs
 					className='text-green-500 w-fit '
@@ -41,7 +28,7 @@ const CategoriesTabs = () => {
 					allowScrollButtonsMobile
 					variant='scrollable'
 					scrollButtons='auto'
-					aria-label='scrollable auto tabs'>
+					aria-label='Category list'>
 					{categoriesData.categories.map(category => (
 						<CategoryBtn
 							key={category.id}
@@ -64,7 +51,7 @@ const CategoriesTabs = () => {
 					allowScrollButtonsMobile
 					variant='scrollable'
 					scrollButtons='auto'
-					aria-label='scrollable auto tabs'>
+					aria-label='Category list'>
 					{state.activeCategory !== null &&
 						categoriesData.categories[state.activeCategory].subCategories.map(subCategory => (
 							<CategoryBtn

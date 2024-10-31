@@ -1,9 +1,9 @@
 import { ChangeEventHandler } from 'react'
-import { FormControl, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
+import { FormControl, InputAdornment, InputBaseComponentProps, InputLabel, OutlinedInput } from '@mui/material'
 
 interface ExchangeInputProps {
 	icon: React.ReactNode
-	inputProps?: { [key: string]: string | number | boolean | null }
+	inputProps?: InputBaseComponentProps
 	onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
 	value?: number | string
 }

@@ -68,6 +68,7 @@ const ProductCard = ({ name, price, rating, discount, available, imgURL }: Produ
 							<p className='absolute -bottom-[2px] text-xs'>OFF</p>
 						</div>
 					</>
+
 				)}
 				{/* box */}
 				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
