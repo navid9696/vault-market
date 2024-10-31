@@ -21,6 +21,8 @@ const AdminProductCard = ({
 	popularity,
 	categoryId,
 	subCategoryId,
+	categoryName,
+	subCategoryName,
 }: ProductCardProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
 
@@ -32,25 +34,21 @@ const AdminProductCard = ({
 		setModalOpen(false)
 	}
 
-	const category = categoriesData.categories.find(category => category.id === categoryId)
-	const categoryName = category ? category.name : 'Unknown Category'
-
-	const subcategory = category?.subCategories.find(subcategory => subcategory.id === subCategoryId)
-	const subcategoryName = subcategory ? subcategory.name : 'Unknown Subcategory'
-
 	const productData = {
 		id: id,
 		name: name,
 		price: price,
 		available: available,
 		discount: discount * 100,
-		categoryName: categoryName,
-		subCategoryName: subcategoryName,
+		categoryName: categoryName || '',
+		subCategoryName: subCategoryName || null,
 		imgURL: imgURL,
 		description: description,
 		popularity: popularity ?? 0,
 		rating: rating ?? 0,
 	}
+
+	console.log('productData', productData)
 
 	const renderModalContent = () => {
 		return <AddOrEditProductForm product={productData} />
@@ -91,7 +89,7 @@ const AdminProductCard = ({
 					</Typography>
 					{subCategoryId && (
 						<Typography variant='body2' color='text.primary' className='font-medium'>
-							Subcategory ID | Name: {subCategoryId} | {subcategoryName}
+							Subcategory ID | Name: {subCategoryId} | {subCategoryName}
 						</Typography>
 					)}
 				</CardContent>

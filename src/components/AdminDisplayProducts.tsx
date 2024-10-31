@@ -70,6 +70,8 @@ const AdminDisplayProducts = () => {
 									subCategoryId={product.subCategoryId}
 									imgURL={product.imgURL}
 									description={product.description}
+									categoryName={product.categoryName}
+									subCategoryName={product.subCategoryName}
 								/>
 							))}
 						</div>

@@ -10,7 +10,7 @@ import {
 	Slider,
 	styled,
 } from '@mui/material'
-import React, { useEffect, useMemo, useCallback, useReducer } from 'react'
+import React, { useEffect, useMemo, useCallback, useReducer, useState } from 'react'
 import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
@@ -51,6 +51,8 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
 	const { activeCategory, activeSubCategory } = useStore()
 
+	const [products, setProducts] = useState<ProductCardProps[]>([])
+
 	useEffect(() => {
 		const loadProducts = async () => {
 			try {
@@ -58,7 +60,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 				if (!res.ok) {
 					throw new Error('Failed to fetch products')
 				}
-				const data = await res.json()
+				const data: ProductCardProps[] = await res.json()
 				setProducts(data)
 				console.log('Data fetched')
 			} catch (error) {
@@ -70,11 +72,11 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	}, [])
 
 	const filteredProducts = useMemo(() => {
-		return exampleProducts.filter(product => {
+		return products.filter((product: ProductCardProps) => {
 			const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
-			const matchesAvailability = state.checkedShowedUnavailable || product.available === true
-			const matchesOnSale = !state.checkedOnSale || product.onSale
-			const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
+			const matchesAvailability = state.checkedShowedUnavailable || product.available >0
+			const matchesOnSale = !state.checkedOnSale || product.discount
+			const matchesRating = state.checkedRating === 'Any' || (product.rating ?? 0) >= Number(state.checkedRating)
 			const matchesCategory = !activeCategory || product.categoryId === activeCategory
 			const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
 			const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -90,6 +92,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 			)
 		})
 	}, [
+		products,
 		state.price,
 		state.checkedShowedUnavailable,
 		state.checkedOnSale,
@@ -146,7 +149,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					className='w-full'
 					label={
 						<div className='flex items-center gap-2'>
-							<span>discount</span>
+							<span>Discount</span>
 						</div>
 					}
 					control={
@@ -228,7 +231,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 										<StyledRating
 											emptyIcon={<StarIcon fontSize='inherit' />}
 											name='read-only'
-											value={rating.value}
+											value={typeof rating.value === 'number' ? rating.value : 0}
 											precision={rating.precision}
 											max={5}
 											readOnly

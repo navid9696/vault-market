@@ -46,6 +46,19 @@ body.user {
 	::-webkit-scrollbar-thumb:hover {
 		background-color: #3ba340;
 	}
+
+	.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+		border-color: #09090b;
+	}
+
+	.MuiInputLabel-root.Mui-focused {
+		color: #09090b;
+	}
+
+	.MuiFormLabel-root.Mui-focused,
+	.Mui-focusVisible {
+		color: #00d30b;
+	}
 }
 
 input::-webkit-outer-spin-button,
@@ -86,19 +99,6 @@ input::-webkit-inner-spin-button {
 
 .h-with-navbar {
 	height: calc(100dvh - 56px);
-}
-
-.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-	border-color: #09090b;
-}
-
-.MuiInputLabel-root.Mui-focused {
-	color: #09090b;
-}
-
-.css-1j45xve-MuiFormLabel-root.Mui-focused,
-.Mui-focusVisible {
-	color: #00d30b;
 }
 
 @keyframes fadeIn {

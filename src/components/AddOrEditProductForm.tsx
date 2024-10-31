@@ -38,6 +38,7 @@ interface AddOrEditProductFormProps {
 }
 
 const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
+	console.log('Received product:', product)
 	const {
 		register,
 		handleSubmit,
@@ -72,11 +73,11 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 
 	useEffect(() => {
 		if (product) {
+			console.log('Received product in form:', product)
 			setValue('categoryName', product.categoryName)
 			setValue('subCategoryName', product.subCategoryName || '')
 		}
 	}, [product, setValue])
-	
 
 	const onSubmit: SubmitHandler<ProductFormData> = async data => {
 		try {
@@ -174,7 +175,7 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 						})}
 						error={!!errors.categoryName}
 						helperText={errors.categoryName ? errors.categoryName.message : ' '}>
-						{categoriesData.categories.map(category => (
+						{categoriesData.categories.slice(1).map(category => (
 							<MenuItem key={category.id} value={category.name}>
 								{category.name}
 							</MenuItem>
@@ -196,7 +197,7 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 								<br /> for this category
 							</MenuItem>
 						) : (
-							selectedSubCategories.map(subCategory => (
+							selectedSubCategories.slice(1).map(subCategory => (
 								<MenuItem key={subCategory.id} value={subCategory.name}>
 									{subCategory.name}
 								</MenuItem>
