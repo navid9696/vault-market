@@ -1,8 +1,28 @@
-import { exampleProducts } from '~/data/exampleProducts'
-import ProductCard from './ProductCard'
+import { useEffect, useState } from 'react'
+import ProductCard, { ProductCardProps } from './ProductCard'
 import Marquee from 'react-fast-marquee'
 
-const discountList = () => {
+const DiscountList = () => {
+	const [Products, setProducts] = useState<ProductCardProps[]>([])
+
+	useEffect(() => {
+		const loadProducts = async () => {
+			try {
+				const res = await fetch('/api/products')
+				if (!res.ok) {
+					throw new Error('Failed to fetch products')
+				}
+				const data: ProductCardProps[] = await res.json()
+				setProducts(data)
+				console.log('Data fetched')
+			} catch (error) {
+				console.error('Error fetching products:', error)
+			}
+		}
+
+		loadProducts()
+	}, [])
+
 	return (
 		<section className='h-1/4 bg-slate-100'>
 			<Marquee
@@ -10,25 +30,23 @@ const discountList = () => {
 				play={true}
 				pauseOnHover
 				delay={1}>
-				{exampleProducts
-					.filter(product => product.available > 0 && product.discount > 0)
-					.map(product => (
-						<ProductCard
-							key={product.id}
-							id={product.id}
-							name={product.name}
-							price={product.price}
-							rating={product.rating}
-							available={product.available}
-							popularity={product.popularity}
-							discount={product.discount}
-							imgURL={product.imgURL}
-							description={product.description}
-						/>
-					))}
+				{Products.filter(product => product.available > 0 && product.discount > 0).map(product => (
+					<ProductCard
+						key={product.id}
+						id={product.id}
+						name={product.name}
+						price={product.price}
+						rating={product.rating}
+						available={product.available}
+						popularity={product.popularity}
+						discount={product.discount}
+						imgURL={product.imgURL}
+						description={product.description}
+					/>
+				))}
 			</Marquee>
 		</section>
 	)
 }
 
-export default discountList
+export default DiscountList

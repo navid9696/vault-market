@@ -4,10 +4,10 @@ import Typography from '@mui/material/Typography'
 import { Button, CardActions } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import Image from 'next/image'
-import { categoriesData } from '~/data/categories'
 import AddOrEditProductForm from './AddOrEditProductForm'
 import { useState } from 'react'
 import TransitionsModal from './TransitionModal'
+import DeleteProduct from './DeleteProduct'
 
 const AdminProductCard = ({
 	id,
@@ -24,10 +24,12 @@ const AdminProductCard = ({
 	categoryName,
 	subCategoryName,
 }: ProductCardProps) => {
+	const [contentId, setContentId] = useState<string>()
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const handleModalOpen = () => {
+	const handleModalOpen = (id: string) => {
 		setModalOpen(true)
+		setContentId(id)
 	}
 
 	const handleModalClose = () => {
@@ -48,11 +50,17 @@ const AdminProductCard = ({
 		rating: rating ?? 0,
 	}
 
-	console.log('productData', productData)
-
 	const renderModalContent = () => {
-		return <AddOrEditProductForm product={productData} />
+		switch (contentId) {
+			case 'edit':
+				return <AddOrEditProductForm product={productData} />
+			case 'delete':
+				return <DeleteProduct product={productData} handleClose={handleModalClose} />
+			default:
+				return false
+		}
 	}
+
 	return (
 		<>
 			<Card className='p-2 flex flex-col  min-h-96 w-[350px] rounded-md overflow-hidden shadow-md border'>
@@ -94,10 +102,10 @@ const AdminProductCard = ({
 					)}
 				</CardContent>
 				<CardActions sx={{ justifyContent: 'space-between' }}>
-					<Button onClick={handleModalOpen} size='small' color='primary' variant='contained'>
+					<Button onClick={() => handleModalOpen('edit')} size='small' color='primary' variant='contained'>
 						Edit
 					</Button>
-					<Button size='small' color='error' variant='outlined'>
+					<Button onClick={() => handleModalOpen('delete')} size='small' color='error' variant='outlined'>
 						Delete
 					</Button>
 				</CardActions>

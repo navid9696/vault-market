@@ -10,7 +10,6 @@ import {
 } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import { SyntheticEvent, useCallback, useEffect, useMemo, useState } from 'react'
-import { exampleProducts } from '~/data/exampleProducts'
 
 interface SortAndSearchProps {
 	filteredProducts: ProductCardProps[]
@@ -101,7 +100,7 @@ const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchT
 				handleHomeEndKeys
 				size='small'
 				className='bg-green-700 w-32'
-				options={exampleProducts}
+				options={filteredProducts}
 				getOptionLabel={product => (product as ProductCardProps).name}
 				onInputChange={handleInputChange}
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}

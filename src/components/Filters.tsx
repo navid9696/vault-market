@@ -76,7 +76,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 			const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
 			const matchesAvailability = state.checkedShowedUnavailable || product.available >0
 			const matchesOnSale = !state.checkedOnSale || product.discount
-			const matchesRating = state.checkedRating === 'Any' || (product.rating ?? 0) >= Number(state.checkedRating)
+			const matchesRating = state.checkedRating === 'Any' || product.rating  >= Number(state.checkedRating)
 			const matchesCategory = !activeCategory || product.categoryId === activeCategory
 			const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
 			const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())

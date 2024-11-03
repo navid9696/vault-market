@@ -22,14 +22,14 @@ export interface ProductCardProps {
 	id: string
 	name: string
 	price: number
-	rating?: number
+	rating: number
 	available: number
-	popularity?: number
+	popularity: number
 	discount: number
 	categoryId?: number
 	subCategoryId?: number | null
 	categoryName?: string
-	subCategoryName?: string
+	subCategoryName?: string | null
 	imgURL: string
 	description: string
 }
@@ -60,7 +60,7 @@ const ProductCard = ({ name, price, rating, discount, available, imgURL }: Produ
 							className='absolute top-1 left-1 h-11 w-11 p-1 bg-orange-200
 				 shadow-inset-2 rounded-lg -z-[1] '></div>
 						{/* bagde-front */}
-						<div className='top-2 left-2 absolute flex items-center justify-center border-[3px] border-[#0b5c29] rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
+						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-[#0b5c29] rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
 							<p className='relative -top-[4px] ml-[3px] mr-[8px] my-[1px] tracking-tighter text-md '>
 								{(discount * 100).toFixed(0)}
 							</p>
@@ -68,7 +68,6 @@ const ProductCard = ({ name, price, rating, discount, available, imgURL }: Produ
 							<p className='absolute -bottom-[2px] text-xs'>OFF</p>
 						</div>
 					</>
-
 				)}
 				{/* box */}
 				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
@@ -118,7 +117,7 @@ const ProductCard = ({ name, price, rating, discount, available, imgURL }: Produ
 							{/* price-box */}
 							<div className='flex flex-col items-start pl-2 text-green-950'>
 								<div className='flex items-center gap-1'>
-									{discount > 0 ? price * discount : price}
+									{discount > 0 ? (price * (1 - discount)).toFixed(0) : price}
 									<Caps />
 								</div>
 								{discount > 0 && (

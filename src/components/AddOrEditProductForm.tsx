@@ -73,7 +73,6 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 
 	useEffect(() => {
 		if (product) {
-			console.log('Received product in form:', product)
 			setValue('categoryName', product.categoryName)
 			setValue('subCategoryName', product.subCategoryName || '')
 		}
@@ -91,11 +90,13 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 				rating: product ? product.rating : 0,
 				categoryId: category?.id ?? null,
 				subCategoryId: subCategory ? subCategory.id : null,
+				categoryName: category?.name,
+				subCategoryName: subCategory?.name,
 				discount: data.discount / 100,
 			}
 
 			const res = await fetch(
-				product ? `http://localhost:3000/api/products/${product.id}` : 'http://localhost:3000/api/products',
+				product ? `/api/products/${product.id}` : '/api/products',
 				{
 					method: product ? 'PUT' : 'POST',
 					headers: {
