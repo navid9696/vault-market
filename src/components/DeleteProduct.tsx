@@ -11,18 +11,23 @@ interface DeleteProductProps {
 const DeleteProduct = ({ handleClose, product }: DeleteProductProps) => {
 	const deleteProduct = async () => {
 		try {
-			const res = await fetch(`/api/products/${product.id}`, {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-			})
+			const res = await toast.promise(
+				fetch(`/api/products/${product.id}`, {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				}),
+				{
+					pending: 'Deleting product... Please wait ⏳',
+					success: 'Product successfully deleted! 🗑️',
+					error: 'Failed to delete product. Something went wrong! 🚫😓',
+				}
+			)
 
 			if (!res.ok) {
 				throw new Error('Failed to delete product')
 			}
-			console.log('Product deleted successfully')
-			
 			handleClose()
 		} catch (error) {
 			console.error('Error:', error)
@@ -31,9 +36,9 @@ const DeleteProduct = ({ handleClose, product }: DeleteProductProps) => {
 
 	return (
 		<>
-			<h2>Are you sure you want to delete your account?</h2>
+			<h2 className='mb-8 text-xl'>Are you sure you want to delete your account?</h2>
 			<div className='flex justify-center gap-20'>
-				<Button variant='outlined' size='large' onClick={deleteProduct}>
+				<Button color='error' variant='outlined' size='large' onClick={deleteProduct}>
 					Delete
 				</Button>
 				<Button variant='contained' size='large' onClick={handleClose}>

@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 body.user {
+	font-family: var(--share-tech-mono);
+
 	&::before {
 		content: '';
 		position: fixed;

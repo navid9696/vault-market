@@ -19,7 +19,6 @@ const AdminProductCard = ({
 	imgURL,
 	description,
 	popularity,
-	categoryId,
 	subCategoryId,
 	categoryName,
 	subCategoryName,
@@ -93,11 +92,11 @@ const AdminProductCard = ({
 						Popularity: {popularity}
 					</Typography>
 					<Typography variant='body2' color='text.primary' className='font-medium'>
-						Category ID | Name: {categoryId} | {categoryName}
+						Category: {categoryName}
 					</Typography>
 					{subCategoryId && (
 						<Typography variant='body2' color='text.primary' className='font-medium'>
-							Subcategory ID | Name: {subCategoryId} | {subCategoryName}
+							Subcategory: {subCategoryName}
 						</Typography>
 					)}
 				</CardContent>
