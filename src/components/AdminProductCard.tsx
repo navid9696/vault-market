@@ -71,7 +71,7 @@ const AdminProductCard = ({
 						{name}
 					</Typography>
 					<Typography variant='body2' color='text.secondary' className='mb-2'>
-						{description} Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi, voluptas?
+						{description}
 					</Typography>
 					<Typography variant='body2' color='text.primary' className='font-medium'>
 						Regular price: ${price}
