@@ -8,6 +8,7 @@ import { categoriesData } from '~/data/categories'
 import { useEffect } from 'react'
 import { Media, MediaContextProvider } from '~/context/breakpointsContext'
 import { productSchema } from '~/schemas/addOrEditProductSchema'
+import { toast } from 'react-toastify'
 
 type ProductFormData = z.infer<typeof productSchema>
 
@@ -72,13 +73,22 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 				discount: data.discount / 100,
 			}
 
-			const res = await fetch(product ? `/api/products/${product.id}` : '/api/products', {
-				method: product ? 'PUT' : 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(productData),
-			})
+			const res = await toast.promise(
+				fetch(product ? `/api/products/${product.id}` : '/api/products', {
+					method: product ? 'PUT' : 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(productData),
+				}),
+				{
+					pending: product ? 'Editing product... Please wait ⏳' : 'Adding product... Please wait ⏳',
+					success: product ? 'Product successfully updated! ✅' : 'Product successfully added! 🎉',
+					error: product
+						? 'Failed to update product. Something went wrong! 🚫😓'
+						: 'Failed to add product. Something went wrong! 🚫😓',
+				}
+			)
 
 			if (!res.ok) {
 				throw new Error(product ? 'Failed to update product' : 'Failed to add product')
