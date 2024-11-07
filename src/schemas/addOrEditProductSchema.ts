@@ -13,7 +13,7 @@ export const productSchema = z.object({
 		.nonnegative({ message: 'Discount cannot be negative' })
 		.max(99, { message: 'Cannot exceed 99% (free item)' }),
 	categoryName: z.string().min(1, { message: 'Category is required' }),
-	subCategoryName: z.string().nullable(),
+	subCategoryName: z.coerce.string().nullable(),
 	imgURL: z.string().url({ message: 'Must be a valid URL' }),
 	description: z.string().min(1, { message: 'Description is required' }),
 })

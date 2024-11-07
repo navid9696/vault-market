@@ -1,15 +1,15 @@
 'use client'
 
-import { Button } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { Button, CircularProgress } from '@mui/material'
+import { useState } from 'react'
 import AdminProductCard from '~/components/AdminProductCard'
-import { ProductCardProps } from '~/components/ProductCard'
 import TransitionsModal from './TransitionModal'
 import AddOrEditProductForm from '~/components/AddOrEditProductForm'
+import { trpc } from '~/server/client'
 
 const AdminDisplayProducts = () => {
-	const [products, setProducts] = useState<ProductCardProps[]>([])
 	const [modalOpen, setModalOpen] = useState(false)
+	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery()
 
 	const handleModalOpen = () => {
 		setModalOpen(true)
@@ -23,23 +23,21 @@ const AdminDisplayProducts = () => {
 		return <AddOrEditProductForm />
 	}
 
-	useEffect(() => {
-		const loadProducts = async () => {
-			try {
-				const res = await fetch('/api/products')
-				if (!res.ok) {
-					throw new Error('Failed to fetch products')
-				}
-				const data = await res.json()
-				setProducts(data)
-				console.log('Data fetched')
-			} catch (error) {
-				console.error('Error fetching products:', error)
-			}
-		}
+	if (isLoading) {
+		return (
+			<div className='p-2 h-screen flex justify-center items-center bg-gray-100'>
+				<CircularProgress />
+			</div>
+		)
+	}
 
-		loadProducts()
-	}, [])
+	if (isError) {
+		return (
+			<div className='p-2 h-screen flex justify-center items-center bg-gray-100'>
+				<h3 className='text-2xl text-red-600'>Error: {error.message}</h3>
+			</div>
+		)
+	}
 
 	return (
 		<>
@@ -56,7 +54,7 @@ const AdminDisplayProducts = () => {
 
 					<div className='border-t border-gray-200 pt-4 mt-4'>
 						<div className='h-96 w-full flex flex-wrap gap-4 overflow-y-auto'>
-							{products.map(product => (
+							{products?.map(product => (
 								<AdminProductCard
 									id={product.id}
 									key={product.id}

@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import { Media, MediaContextProvider } from '~/context/breakpointsContext'
 import { productSchema } from '~/schemas/addOrEditProductSchema'
 import { toast } from 'react-toastify'
+import { trpc } from '~/server/client'
 
 type ProductFormData = z.infer<typeof productSchema>
 
@@ -23,6 +24,8 @@ interface AddOrEditProductFormProps {
 }
 
 const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
+	const addProductMutation = trpc.product.addProduct.useMutation()
+	const editProductMutation = trpc.product.editProduct.useMutation()
 	const {
 		register,
 		handleSubmit,
@@ -36,7 +39,7 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 			name: product?.name,
 			price: product?.price,
 			available: product?.available,
-			discount: product?.discount,
+			discount: product ? Number(product.discount.toFixed(2)) : undefined,
 			categoryName: product?.categoryName,
 			subCategoryName: product?.subCategoryName,
 			imgURL: product?.imgURL,
@@ -66,35 +69,30 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 				id: product ? product.id : uuidv4(),
 				popularity: product ? product.popularity : 0,
 				rating: product ? product.rating : 0,
-				categoryId: category?.id ?? null,
+				categoryId: category?.id ?? 0,
 				subCategoryId: subCategory ? subCategory.id : null,
-				categoryName: category?.name,
-				subCategoryName: subCategory?.name,
+				categoryName: category?.name ?? '',
+				subCategoryName: subCategory?.name ?? null,
 				discount: data.discount / 100,
 			}
 
-			const res = await toast.promise(
-				fetch(product ? `/api/products/${product.id}` : '/api/products', {
-					method: product ? 'PUT' : 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(productData),
-				}),
-				{
-					pending: product ? 'Editing product... Please wait ⏳' : 'Adding product... Please wait ⏳',
-					success: product ? 'Product successfully updated! ✅' : 'Product successfully added! 🎉',
-					error: product
-						? 'Failed to update product. Something went wrong! 🚫😓'
-						: 'Failed to add product. Something went wrong! 🚫😓',
-				}
-			)
-
-			if (!res.ok) {
-				throw new Error(product ? 'Failed to update product' : 'Failed to add product')
+			if (product) {
+				await toast.promise(editProductMutation.mutateAsync(productData), {
+					pending: 'Editing product... Please wait ⏳',
+					success: 'Product successfully updated! ✅',
+					error: 'Failed to update product. Something went wrong! 🚫😓',
+				})
+				console.log('Product updated successfully')
+			} else {
+				await toast.promise(addProductMutation.mutateAsync(productData), {
+					pending: 'Adding product... Please wait ⏳',
+					success: 'Product successfully added! 🎉',
+					error: 'Failed to add product. Something went wrong! 🚫😓',
+				})
+				console.log('Product added successfully')
 			}
+
 			reset()
-			console.log(product ? 'Product updated successfully' : 'Product added successfully')
 		} catch (error) {
 			console.error('Error:', error)
 		}

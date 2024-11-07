@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useRef, useEffect, useState, PropsWithChildren } from 'react'
+'use client'
+
+import React, { createContext, useContext, useRef, useLayoutEffect, useState, PropsWithChildren } from 'react'
 
 interface NavigationContextType {
 	navHeight: number
@@ -19,8 +21,10 @@ export const NavigationProvider = ({ children }: PropsWithChildren) => {
 	const navRef = useRef<HTMLDivElement>(null)
 	const [navHeight, setNavHeight] = useState(0)
 
-	useEffect(() => {
-		navRef.current && setNavHeight(navRef.current.offsetHeight)
+	useLayoutEffect(() => {
+		if (navRef.current) {
+			setNavHeight(navRef.current.offsetHeight)
+		}
 	}, [])
 
 	return <NavigationContext.Provider value={{ navHeight, navRef }}>{children}</NavigationContext.Provider>

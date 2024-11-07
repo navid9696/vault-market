@@ -16,6 +16,7 @@ import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
 import useStore from '~/store/useStore'
 import { filtersReducer, initialState } from '~/reducers/filtersReducer'
+import { trpc } from '~/server/client'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -50,47 +51,30 @@ const ratingOptions = [
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
 	const { activeCategory, activeSubCategory } = useStore()
-
-	const [products, setProducts] = useState<ProductCardProps[]>([])
-
-	useEffect(() => {
-		const loadProducts = async () => {
-			try {
-				const res = await fetch('/api/products')
-				if (!res.ok) {
-					throw new Error('Failed to fetch products')
-				}
-				const data: ProductCardProps[] = await res.json()
-				setProducts(data)
-				console.log('Data fetched')
-			} catch (error) {
-				console.error('Error fetching products:', error)
-			}
-		}
-
-		loadProducts()
-	}, [])
+	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery()
 
 	const filteredProducts = useMemo(() => {
-		return products.filter((product: ProductCardProps) => {
-			const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
-			const matchesAvailability = state.checkedShowedUnavailable || product.available >0
-			const matchesOnSale = !state.checkedOnSale || product.discount
-			const matchesRating = state.checkedRating === 'Any' || product.rating  >= Number(state.checkedRating)
-			const matchesCategory = !activeCategory || product.categoryId === activeCategory
-			const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
-			const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
+		return (
+			products?.filter((product: ProductCardProps) => {
+				const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
+				const matchesAvailability = state.checkedShowedUnavailable || product.available > 0
+				const matchesOnSale = !state.checkedOnSale || product.discount
+				const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
+				const matchesCategory = !activeCategory || product.categoryId === activeCategory
+				const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
+				const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
 
-			return (
-				matchesPriceRange &&
-				matchesAvailability &&
-				matchesOnSale &&
-				matchesRating &&
-				matchesCategory &&
-				matchesSubCategory &&
-				matchesSearchTerm
-			)
-		})
+				return (
+					matchesPriceRange &&
+					matchesAvailability &&
+					matchesOnSale &&
+					matchesRating &&
+					matchesCategory &&
+					matchesSubCategory &&
+					matchesSearchTerm
+				)
+			}) || []
+		)
 	}, [
 		products,
 		state.price,

@@ -3,6 +3,7 @@ import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'
 import { ThemeProvider } from '@mui/material'
 import theme from '~/lib/theme'
+import { TrpcProvider } from '~/providers/TrpcProvider'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],
@@ -25,7 +26,9 @@ export default function RootLayout({
 			<body
 				id='top'
 				className={`user ${shareTechMono.variable} ${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
-				<ThemeProvider theme={theme}>{children}</ThemeProvider>
+				<TrpcProvider>
+					<ThemeProvider theme={theme}>{children}</ThemeProvider>
+				</TrpcProvider>
 			</body>
 		</html>
 	)
