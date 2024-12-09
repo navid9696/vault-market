@@ -35,14 +35,24 @@ export const productRouter = router({
 		}
 	}),
 
-	getProducts: procedure.query(async () => {
-		await ensureDBConnection()
-		try {
-			return await Product.find()
-		} catch (error) {
-			throw new Error('Failed to retrieve products: ' + (error as Error).message)
-		}
-	}),
+	getProducts: procedure
+		.input(
+			z.object({
+				search: z.string().optional(),
+			})
+		)
+		.query(async ({ input }) => {
+			await ensureDBConnection()
+			const { search } = input
+
+			try {
+				const products = await Product.find(search ? { name: { $regex: search, $options: 'i' } } : {})
+
+				return products
+			} catch (error) {
+				throw new Error('Failed to retrieve products: ' + (error as Error).message)
+			}
+		}),
 
 	editProduct: procedure.input(trpcProductSchema).mutation(async ({ input }) => {
 		await ensureDBConnection()

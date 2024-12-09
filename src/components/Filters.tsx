@@ -51,7 +51,7 @@ const ratingOptions = [
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
 	const { activeCategory, activeSubCategory } = useStore()
-	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery()
+	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery({})
 
 	const filteredProducts = useMemo(() => {
 		return (

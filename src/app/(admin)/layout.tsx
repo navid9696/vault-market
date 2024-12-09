@@ -19,8 +19,10 @@ export default function RootLayout({
 		<html className='scrollbar-hide scroll-smooth' lang='en'>
 			<body className={`admin ${inter.className} bg-zinc-900`}>
 				<TrpcProvider>
-					<AdminNavbar />
-					{children}
+					<div className='h-screen flex flex-col'>
+						<AdminNavbar />
+						{children}
+					</div>
 				</TrpcProvider>
 			</body>
 		</html>
