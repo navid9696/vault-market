@@ -10,14 +10,13 @@ import {
 	Slider,
 	styled,
 } from '@mui/material'
-import React, { useEffect, useMemo, useCallback, useReducer } from 'react'
+import React, { useEffect, useMemo, useCallback, useReducer, useState } from 'react'
 import { ProductCardProps } from './ProductCard'
 import StarIcon from '@mui/icons-material/Star'
 import { green } from '@mui/material/colors'
-import { exampleProducts } from '~/data/exampleProducts'
-import { FaPercent } from 'react-icons/fa'
 import useStore from '~/store/useStore'
 import { filtersReducer, initialState } from '~/reducers/filtersReducer'
+import { trpc } from '~/server/client'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -52,28 +51,32 @@ const ratingOptions = [
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
 	const { activeCategory, activeSubCategory } = useStore()
+	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery()
 
 	const filteredProducts = useMemo(() => {
-		return exampleProducts.filter(product => {
-			const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
-			const matchesAvailability = state.checkedShowedUnavailable || product.available === true
-			const matchesOnSale = !state.checkedOnSale || product.onSale
-			const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
-			const matchesCategory = !activeCategory || product.categoryId === activeCategory
-			const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
-			const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
+		return (
+			products?.filter((product: ProductCardProps) => {
+				const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
+				const matchesAvailability = state.checkedShowedUnavailable || product.available > 0
+				const matchesOnSale = !state.checkedOnSale || product.discount
+				const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
+				const matchesCategory = !activeCategory || product.categoryId === activeCategory
+				const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
+				const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
 
-			return (
-				matchesPriceRange &&
-				matchesAvailability &&
-				matchesOnSale &&
-				matchesRating &&
-				matchesCategory &&
-				matchesSubCategory &&
-				matchesSearchTerm
-			)
-		})
+				return (
+					matchesPriceRange &&
+					matchesAvailability &&
+					matchesOnSale &&
+					matchesRating &&
+					matchesCategory &&
+					matchesSubCategory &&
+					matchesSearchTerm
+				)
+			}) || []
+		)
 	}, [
+		products,
 		state.price,
 		state.checkedShowedUnavailable,
 		state.checkedOnSale,
@@ -130,8 +133,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					className='w-full'
 					label={
 						<div className='flex items-center gap-2'>
-							<span>On Sale</span>
-							<FaPercent />
+							<span>Discount</span>
 						</div>
 					}
 					control={
@@ -213,7 +215,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 										<StyledRating
 											emptyIcon={<StarIcon fontSize='inherit' />}
 											name='read-only'
-											value={rating.value}
+											value={typeof rating.value === 'number' ? rating.value : 0}
 											precision={rating.precision}
 											max={5}
 											readOnly

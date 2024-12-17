@@ -5,6 +5,10 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+	images: {
+		domains: ['static.wikia.nocookie.net'], 
+	},
+}
 
 export default withBundleAnalyzer(nextConfig)

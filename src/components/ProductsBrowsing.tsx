@@ -91,22 +91,25 @@ const ProductsBrowsing = () => {
 						setSearchTerm={updateSearchTerm}
 					/>
 				</div>
-
+				{/* console.log(data) */}
 				<div
 					className='py-1 flex flex-wrap justify-evenly
 					xl:col-span-7 col-span-10 row-span-9
 					bg-zinc-900 overflow-y-scroll'>
 					{state.visibleProducts.map(product => (
 						<ProductCard
+							id={product.id}
 							key={product.name}
 							name={product.name}
 							price={product.price}
 							rating={product.rating}
 							available={product.available}
 							popularity={product.popularity}
-							onSale={product.onSale}
+							discount={product.discount}
 							categoryId={product.categoryId}
 							subCategoryId={product.subCategoryId}
+							imgURL={product.imgURL}
+							description={product.description}
 						/>
 					))}
 					<div ref={loadMoreRef} className='h-10' />

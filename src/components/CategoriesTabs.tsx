@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useReducer, useRef } from 'react'
 import { Tabs } from '@mui/material'
 import CategoryBtn from './CategoryBtn'
