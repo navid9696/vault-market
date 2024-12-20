@@ -1,5 +1,4 @@
 'use client'
-import { v4 as uuidv4 } from 'uuid'
 import { Button, MenuItem, TextField, Typography } from '@mui/material'
 import { z } from 'zod'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -66,7 +65,6 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 
 			const productData = {
 				...data,
-				id: product ? product.id : uuidv4(),
 				popularity: product ? product.popularity : 0,
 				rating: product ? product.rating : 0,
 				categoryId: category?.id ?? 0,
@@ -104,7 +102,7 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 				<Typography variant='h3' component='h2' gutterBottom>
 					{product ? 'Edit Product' : 'Add New Product'}
 				</Typography>
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form noValidate onSubmit={handleSubmit(onSubmit)}>
 					<div className='w-full flex flex-wrap items-center justify-between gap-x-4'>
 						<TextField
 							margin='dense'
