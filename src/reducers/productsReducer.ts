@@ -1,6 +1,5 @@
 import { ActionType, createAction, createReducer } from 'typesafe-actions'
 import { ProductCardProps } from '~/components/ProductCard'
-import { exampleProducts } from '~/data/exampleProducts'
 
 const setProducts = createAction('SET_PRODUCTS')<ProductCardProps[]>()
 const setSearchTerm = createAction('SET_SEARCH_TERM')<string>()
@@ -17,7 +16,7 @@ interface State {
 }
 
 const initialState: State = {
-	products: exampleProducts,
+	products: [],
 	searchTerm: '',
 	filteredProducts: [],
 }

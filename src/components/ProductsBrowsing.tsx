@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
-import ProductCard, { ProductCardProps } from './ProductCard'
+import ProductCard from './ProductCard'
 import SortAndSearch from './SortAndSearch'
 import Filters from './Filters'
 import { Drawer } from '@mui/material'
@@ -98,15 +98,18 @@ const ProductsBrowsing = () => {
 					bg-zinc-900 overflow-y-scroll'>
 					{state.visibleProducts.map(product => (
 						<ProductCard
+							id={product.id}
 							key={product.name}
 							name={product.name}
 							price={product.price}
 							rating={product.rating}
 							available={product.available}
 							popularity={product.popularity}
-							onSale={product.onSale}
+							discount={product.discount}
 							categoryId={product.categoryId}
 							subCategoryId={product.subCategoryId}
+							imgURL={product.imgURL}
+							description={product.description}
 						/>
 					))}
 					<div ref={loadMoreRef} className='h-10' />
