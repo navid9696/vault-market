@@ -11,7 +11,7 @@ import AddOrEditProductForm from './AddOrEditProductForm'
 
 const AdminDisplayProducts = () => {
 	const [inputValue, setInputValue] = useState('')
-	const debouncedSearch = useDebounce(inputValue, 1000)
+	const debouncedSearch = useDebounce(inputValue, 500)
 	const [modalOpen, setModalOpen] = useState(false)
 	const handleModalOpen = () => setModalOpen(true)
 	const handleModalClose = () => setModalOpen(false)
@@ -23,9 +23,7 @@ const AdminDisplayProducts = () => {
 		isLoading,
 		isError,
 		error,
-	} = trpc.product.getProducts.useQuery({
-		search: debouncedSearch,
-	})
+	} = trpc.product.getProducts.useQuery(debouncedSearch ? { search: debouncedSearch } : {})
 
 	if (isError) {
 		return <div>Error: {error.message}</div>
