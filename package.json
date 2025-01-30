@@ -24,6 +24,7 @@
     "@trpc/react-query": "^11.0.0-rc.608",
     "@trpc/server": "^11.0.0-rc.608",
     "@uidotdev/usehooks": "^2.4.1",
+    "bcrypt": "^5.1.1",
     "bootstrap": "^5.3.3",
     "client-only": "^0.0.1",
     "graphql": "^16.8.2",
@@ -47,6 +48,7 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
