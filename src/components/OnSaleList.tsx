@@ -4,7 +4,8 @@ import { trpc } from '~/server/client'
 import { CircularProgress } from '@mui/material'
 
 const DiscountList = () => {
-	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery()
+	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery({});
+
 
 	return (
 		<section className='h-1/4 bg-slate-100'>

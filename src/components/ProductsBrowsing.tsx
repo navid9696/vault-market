@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
-import ProductCard, { ProductCardProps } from './ProductCard'
+import ProductCard from './ProductCard'
 import SortAndSearch from './SortAndSearch'
 import Filters from './Filters'
 import { Drawer } from '@mui/material'
@@ -91,7 +91,7 @@ const ProductsBrowsing = () => {
 						setSearchTerm={updateSearchTerm}
 					/>
 				</div>
-				{/* console.log(data) */}
+
 				<div
 					className='py-1 flex flex-wrap justify-evenly
 					xl:col-span-7 col-span-10 row-span-9

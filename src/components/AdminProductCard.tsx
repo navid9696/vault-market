@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import { Button, CardActions } from '@mui/material'
+import { Button, CardActions, Divider } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import Image from 'next/image'
 import AddOrEditProductForm from './AddOrEditProductForm'
@@ -66,6 +66,7 @@ const AdminProductCard = ({
 				<div className='relative h-32'>
 					<Image className='object-contain' src={imgURL} fill alt={name} />
 				</div>
+				<Divider className='mt-2' />
 				<CardContent className='flex-grow'>
 					<Typography gutterBottom variant='h5' className='text-center font-semibold'>
 						{name}

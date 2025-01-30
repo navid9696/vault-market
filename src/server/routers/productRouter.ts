@@ -32,13 +32,29 @@ export const productRouter = router({
 		}
 	}),
 
-	getProducts: procedure.query(async () => {
-		try {
-			return await prisma.products.findMany()
-		} catch (error) {
-			throw new Error('Failed to retrieve products: ' + (error as Error).message)
-		}
-	}),
+	getProducts: procedure
+		.input(
+			z.object({
+				search: z.string().optional(),
+			})
+		)
+		.query(async ({ input }) => {
+			try {
+				const { search } = input || {}
+				return await prisma.products.findMany({
+					where: search
+						? {
+								name: {
+									contains: search,
+									mode: 'insensitive',
+								},
+						  }
+						: {},
+				})
+			} catch (error) {
+				throw new Error('Failed to retrieve products: ' + (error as Error).message)
+			}
+		}),
 
 	editProduct: procedure.input(trpcProductSchema).mutation(async ({ input }) => {
 		try {
