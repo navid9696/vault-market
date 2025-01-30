@@ -4,9 +4,12 @@ import ShoppingCartCheckoutTwoToneIcon from '@mui/icons-material/ShoppingCartChe
 import { GiBottleCap as Caps } from 'react-icons/gi'
 import QuantitySelector from './QuantitySelector'
 import Link from 'next/link'
+import useStore from '~/store/useStore'
 
 // will be improved in future
 const PriceSection = () => {
+	const isDiscount = useStore(state => state.isDiscount)
+
 	return (
 		<div className='w-1/2 flex flex-col justify-evenly items-center '>
 			<div className='sm:w-full flex flex-col items-center text-green-950'>
@@ -16,11 +19,12 @@ const PriceSection = () => {
 						1500
 						<Caps />
 					</p>
-
-					<p className='flex items-center gap-1 line-through md:text-base text-sm decoration-red-500 decoration-2'>
-						2100
-						<Caps />
-					</p>
+					{isDiscount && (
+						<p className='flex items-center gap-1 line-through md:text-base text-sm decoration-red-500 decoration-2'>
+							2100
+							<Caps />
+						</p>
+					)}
 				</div>
 			</div>
 			<div>

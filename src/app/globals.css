@@ -2,7 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+body.user {
+	font-family: var(--share-tech-mono);
+
 	&::before {
 		content: '';
 		position: fixed;
@@ -24,6 +26,40 @@ body {
 		background-size: cover;
 		pointer-events: none;
 		z-index: -50;
+	}
+}
+
+.user {
+	::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	::-webkit-scrollbar-track {
+		background-color: #2c2f33;
+		border-radius: 10px;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background-color: #72da7b;
+		border-radius: 10px;
+		border: 3px solid #0f0f0f;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background-color: #3ba340;
+	}
+
+	.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+		border-color: #09090b;
+	}
+
+	.MuiInputLabel-root.Mui-focused {
+		color: #09090b;
+	}
+
+	.MuiFormLabel-root.Mui-focused,
+	.Mui-focusVisible {
+		color: #00d30b;
 	}
 }
 
@@ -65,39 +101,6 @@ input::-webkit-inner-spin-button {
 
 .h-with-navbar {
 	height: calc(100dvh - 56px);
-}
-
-.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-	border-color: #09090b;
-}
-
-.MuiInputLabel-root.Mui-focused {
-	color: #09090b;
-}
-
-::-webkit-scrollbar {
-	width: 12px;
-}
-
-::-webkit-scrollbar-track {
-	background-color: #2c2f33;
-	border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-	background-color: #72da7b;
-	border-radius: 10px;
-	border: 3px solid #0f0f0f;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background-color: #3ba340;
-}
-
-@media (min-width: 1024px) {
-	body::before {
-		box-shadow: inset 0px 45px 50px 25px #09090b;
-	}
 }
 
 @keyframes fadeIn {
