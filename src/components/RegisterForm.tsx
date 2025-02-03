@@ -8,17 +8,18 @@ import { registerSchema, RegisterInput } from '~/schemas/registerSchema'
 import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
 import { trpc } from '~/server/client'
+import { useRouter } from 'next/navigation'
 
 const RegisterForm = () => {
+	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [isFocusedField, setIsFocusedField] = useState<string | null>(null)
 
 	const registerMutation = trpc.user.registerUser.useMutation({
-		onSuccess: data => {
-			toast.success(`Successfully registered as ${data.email}!`)
-		},
-		onError: error => {
-			toast.error(`Registration failed: ${error.message}`)
+		onSuccess: () => {
+			setTimeout(() => {
+				router.push('/login')
+			}, 1000)
 		},
 	})
 
@@ -33,8 +34,12 @@ const RegisterForm = () => {
 		resolver: zodResolver(registerSchema),
 	})
 
-	const onSubmit: SubmitHandler<RegisterInput> = data => {
-		registerMutation.mutate(data)
+	const onSubmit: SubmitHandler<RegisterInput> = async data => {
+		await toast.promise(registerMutation.mutateAsync(data), {
+			pending: '📡 Uploading resident data...',
+			success: '✅ Registration confirmed! Enjoy your Vault life.',
+			error: '❌ ERROR: Data corrupted. Please try again.',
+		})
 	}
 
 	useEffect(() => {

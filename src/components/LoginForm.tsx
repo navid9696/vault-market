@@ -1,20 +1,32 @@
+import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { InputAdornment, TextField, Button } from '@mui/material'
-import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { loginSchema } from '~/schemas/loginSchema'
 import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
+import { trpc } from '~/server/client'
+import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
 
 type LoginForm = z.infer<typeof loginSchema>
 
 const LoginForm = () => {
+	const { data: session } = useSession()
+	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [isFocusedField, setIsFocusedField] = useState<string | null>(null)
+
+	const loginMutation = trpc.user.loginUser.useMutation({
+		onSuccess: () => {
+			setTimeout(() => {
+				router.push('/')
+			}, 1000)
+		},
+	})
 
 	const {
 		register,
@@ -27,9 +39,12 @@ const LoginForm = () => {
 		resolver: zodResolver(loginSchema),
 	})
 
-	const onSubmit: SubmitHandler<LoginForm> = data => {
-		console.log('Login data:', data)
-		toast.success('Successfully logged in!')
+	const onSubmit: SubmitHandler<LoginForm> = async data => {
+		await toast.promise(loginMutation.mutateAsync(data), {
+			pending: '📡 Connecting to Vault-Tec mainframe...',
+			success: '🎉 Access granted! Welcome, Vault Dweller!',
+			error: '🚫 ERROR: Authentication failure. Please try again.',
+		})
 	}
 
 	useEffect(() => {
@@ -103,8 +118,13 @@ const LoginForm = () => {
 							Need to create an account? <Link href={'/register'}>Sign up</Link>
 						</p>
 
-						<Button className='p-4' size='large' type='submit'>
-							Log In
+						<Button className='p-4' size='large' type='submit' disabled={loginMutation.status === 'pending'}>
+							{loginMutation.status === 'pending' ? 'Logging in...' : 'Log In'}
+						</Button>
+						<Button
+							onClick={() => signIn('google', { callbackUrl: '/' })}
+							className='flex items-center justify-center w-full border border-gray-300 rounded-md shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50'>
+							Sign in with Google
 						</Button>
 					</div>
 				</form>
