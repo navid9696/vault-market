@@ -19,7 +19,7 @@ body.user {
 		position: fixed;
 		display: block;
 		inset: 0;
-		filter: brightness(75%);
+		filter: brightness(50%);
 		background-image: url('/imgs/background.jpg');
 		background-position: top;
 		background-repeat: no-repeat;

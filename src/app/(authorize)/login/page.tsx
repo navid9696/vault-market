@@ -1,14 +1,13 @@
 'use client'
 
-import Header from '~/components/Header'
 import Navbar from '~/components/Navbar'
-import ProductsBrowsing from '~/components/ProductsBrowsing'
 import { ToastContainer } from 'react-toastify'
-import OnSaleList from '~/components/OnSaleList'
 import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
 import { ThemeProvider } from '@mui/material'
 import theme from '~/lib/theme'
+import LoginForm from '~/components/LoginForm'
+import Image from 'next/image'
 
 const Home = () => {
 	return (
@@ -16,13 +15,15 @@ const Home = () => {
 			<NavigationProvider>
 				<Navbar />
 				<ToastContainer autoClose={1500} draggablePercent={60} stacked hideProgressBar />
-				<div className='h-dvh'>
-					<Header />
-					<OnSaleList />
-				</div>
-				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl'>
-					<ProductsBrowsing />
+				<main className='flex bg-green-800 '>
+					<div className='hidden md:block relative w-1/2'>
+						<Image className='object-cover' src={'/imgs/diamondCityMarket.webp'} alt='Diamond City Market' fill />
+					</div>
+					<div className='flex-1'>
+						<LoginForm />
+					</div>
 				</main>
+
 				<Footer />
 			</NavigationProvider>
 		</ThemeProvider>
