@@ -9,23 +9,26 @@ import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
 import { ThemeProvider } from '@mui/material'
 import theme from '~/lib/theme'
+import { SessionProvider } from 'next-auth/react'
 
 const Home = () => {
 	return (
-		<ThemeProvider theme={theme}>
-			<NavigationProvider>
-				<Navbar />
-				<ToastContainer autoClose={1500} draggablePercent={60} stacked hideProgressBar />
-				<div className='h-dvh'>
-					<Header />
-					<OnSaleList />
-				</div>
-				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl'>
-					<ProductsBrowsing />
-				</main>
-				<Footer />
-			</NavigationProvider>
-		</ThemeProvider>
+		<SessionProvider>
+			<ThemeProvider theme={theme}>
+				<NavigationProvider>
+					<Navbar />
+					<ToastContainer autoClose={1500} draggablePercent={60} stacked hideProgressBar />
+					<div className='h-dvh'>
+						<Header />
+						<OnSaleList />
+					</div>
+					<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl'>
+						<ProductsBrowsing />
+					</main>
+					<Footer />
+				</NavigationProvider>
+			</ThemeProvider>
+		</SessionProvider>
 	)
 }
 

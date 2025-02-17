@@ -1,3 +1,9 @@
+'use client'
+
+import { useState } from 'react'
+import dynamic from 'next/dynamic'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
@@ -6,18 +12,17 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
+import { Skeleton, Switch, Typography } from '@mui/material'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchangeTwoTone'
 import LogoutIcon from '@mui/icons-material/LogoutTwoTone'
 import FavoriteIcon from '@mui/icons-material/FavoriteTwoTone'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasketTwoTone'
 import ContrastIcon from '@mui/icons-material/ContrastTwoTone'
-import { Skeleton, Switch, Typography } from '@mui/material'
-import Link from 'next/link'
-import TransitionsModal from './TransitionModal'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
-import { useCallback, useState } from 'react'
-import dynamic from 'next/dynamic'
+import LoginIcon from '@mui/icons-material/Login'
+import TransitionsModal from './TransitionModal'
 import AccountSettings from './AccountSettings'
+import { FaAngleRight } from 'react-icons/fa6'
 
 const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	ssr: false,
@@ -35,9 +40,9 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 })
 
 export default function AccountMenu() {
+	const { data: session } = useSession()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
-
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
 
@@ -120,7 +125,7 @@ export default function AccountMenu() {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
 				<MenuItem onClick={handleClose}>
-					<Link className='' href={'/favorites'}>
+					<Link href={'/favorites'}>
 						<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
 					</Link>
 				</MenuItem>
@@ -145,14 +150,26 @@ export default function AccountMenu() {
 					</ListItemIcon>
 					Profile Settings
 				</MenuItem>
-				<MenuItem onClick={handleClose}>
-					<Link href={'/auth'}>
+				{session ? (
+					<MenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
 						<ListItemIcon className='mr-2'>
 							<LogoutIcon fontSize='small' />
 						</ListItemIcon>
 						Sign Out
-					</Link>
-				</MenuItem>
+					</MenuItem>
+				) : (
+					<Link href={'/login'}>
+					<MenuItem
+						onClick={() => {
+							handleClose
+						}}>
+							<ListItemIcon className='mr-2'>
+								<LoginIcon fontSize='small' />
+							</ListItemIcon>
+							Sign In
+					</MenuItem>
+						</Link>
+				)}
 			</Menu>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				{renderModalContent()}

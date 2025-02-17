@@ -19,7 +19,7 @@ const RegisterForm = () => {
 		onSuccess: () => {
 			setTimeout(() => {
 				router.push('/login')
-			}, 1000)
+			}, 2000)
 		},
 	})
 
