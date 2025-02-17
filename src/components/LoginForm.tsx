@@ -8,9 +8,9 @@ import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { loginSchema } from '~/schemas/loginSchema'
 import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
-import { trpc } from '~/server/client'
 import { useRouter } from 'next/navigation'
 import { signIn, useSession } from 'next-auth/react'
+import GoogleButton from 'react-google-button'
 
 type LoginForm = z.infer<typeof loginSchema>
 
@@ -19,14 +19,6 @@ const LoginForm = () => {
 	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [isFocusedField, setIsFocusedField] = useState<string | null>(null)
-
-	const loginMutation = trpc.user.loginUser.useMutation({
-		onSuccess: () => {
-			setTimeout(() => {
-				router.push('/')
-			}, 1000)
-		},
-	})
 
 	const {
 		register,
@@ -40,12 +32,42 @@ const LoginForm = () => {
 	})
 
 	const onSubmit: SubmitHandler<LoginForm> = async data => {
-		await toast.promise(loginMutation.mutateAsync(data), {
-			pending: '📡 Connecting to Vault-Tec mainframe...',
-			success: '🎉 Access granted! Welcome, Vault Dweller!',
-			error: '🚫 ERROR: Authentication failure. Please try again.',
+		const signInPromise = new Promise((resolve, reject) => {
+			signIn('credentials', {
+				redirect: false,
+				email: data.email,
+				password: data.password,
+				callbackUrl: '/',
+			}).then(result => {
+				if (result && result.error) {
+					reject(result.error)
+				} else {
+					resolve(result)
+				}
+			})
 		})
+
+		await toast
+			.promise(signInPromise, {
+				pending: '📡 Connecting to Vault-Tec mainframe...',
+				success: '🎉 Access granted! Welcome, Vault Dweller!',
+				error: '🚫 ERROR: Authentication failure. Please try again.',
+			})
+			.then((result: any) => {
+				setTimeout(() => {
+					router.push(result.url || '/')
+				}, 2000)
+			})
+			.catch(error => {
+				console.log(error)
+			})
 	}
+
+	useEffect(() => {
+		if (session) {
+			router.push('/')
+		}
+	}, [session, router])
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {
@@ -118,8 +140,8 @@ const LoginForm = () => {
 							Need to create an account? <Link href={'/register'}>Sign up</Link>
 						</p>
 
-						<Button className='p-4' size='large' type='submit' disabled={loginMutation.status === 'pending'}>
-							{loginMutation.status === 'pending' ? 'Logging in...' : 'Log In'}
+						<Button className='p-4' size='large' type='submit'>
+							Log In
 						</Button>
 						<Button
 							onClick={() => signIn('google', { callbackUrl: '/' })}

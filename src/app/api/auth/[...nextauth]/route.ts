@@ -24,12 +24,20 @@ export const authOptions: NextAuthOptions = {
 				return { id: user.id, email: user.email }
 			},
 		}),
+
+		// --------------------------------------
+
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID!,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
 		}),
 	],
-	session: { strategy: 'jwt' },
+	session: {
+		strategy: 'jwt',
+		maxAge: 7 * 24 * 60 * 60,
+		updateAge: 24 * 60 * 60,
+	},
+
 	callbacks: {
 		async jwt({ token, user }) {
 			if (user) token.id = user.id
