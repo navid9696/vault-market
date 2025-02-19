@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { authOptions } from '~/app/api/auth/[...nextauth]/route';
+import { authOptions } from '~/lib/authOptions';
+
 
 
 export const createContext = async ({ req, res }: { req: NextApiRequest; res: NextApiResponse }) => {
