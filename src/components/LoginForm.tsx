@@ -143,11 +143,7 @@ const LoginForm = () => {
 						<Button className='p-4' size='large' type='submit'>
 							Log In
 						</Button>
-						<Button
-							onClick={() => signIn('google', { callbackUrl: '/' })}
-							className='flex items-center justify-center w-full border border-gray-300 rounded-md shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50'>
-							Sign in with Google
-						</Button>
+						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
 			</div>

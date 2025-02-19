@@ -1,13 +1,14 @@
-// pages/api/auth/[...nextauth].ts
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 
 const prisma = new PrismaClient()
 
 export const authOptions: NextAuthOptions = {
+	adapter: PrismaAdapter(prisma),
 	providers: [
 		CredentialsProvider({
 			name: 'Credentials',
@@ -17,10 +18,12 @@ export const authOptions: NextAuthOptions = {
 			},
 			async authorize(credentials) {
 				if (!credentials?.email || !credentials?.password) return null
-				const user = await prisma.users.findUnique({ where: { email: credentials.email } })
-				if (!user) return null
+				const user = await prisma.user.findUnique({ where: { email: credentials.email } })
+				if (!user || !user.password) return null
+
 				const isValid = await bcrypt.compare(credentials.password, user.password)
 				if (!isValid) return null
+
 				return { id: user.id, email: user.email }
 			},
 		}),
@@ -30,12 +33,19 @@ export const authOptions: NextAuthOptions = {
 		GoogleProvider({
 			clientId: process.env.GOOGLE_CLIENT_ID!,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+			authorization: {
+				params: {
+					prompt: 'consent',
+					access_type: 'offline',
+					response_type: 'code',
+				},
+			},
 		}),
 	],
 	session: {
 		strategy: 'jwt',
-		maxAge: 7 * 24 * 60 * 60,
-		updateAge: 24 * 60 * 60,
+		maxAge: 24 * 60 * 60,
+		updateAge: 60 * 60,
 	},
 
 	callbacks: {

@@ -22,7 +22,11 @@ import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
 import LoginIcon from '@mui/icons-material/Login'
 import TransitionsModal from './TransitionModal'
 import AccountSettings from './AccountSettings'
-import { FaAngleRight } from 'react-icons/fa6'
+
+const getFirstLetterOfEmail = (email?: string | null) => {
+	if (!email || email.length === 0) return ''
+	return email[0].toUpperCase()
+}
 
 const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	ssr: false,
@@ -45,6 +49,8 @@ export default function AccountMenu() {
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
+	const userImage = session?.user?.image
+	const userEmail = session?.user?.email
 
 	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(e.currentTarget)
@@ -85,7 +91,9 @@ export default function AccountMenu() {
 						aria-controls={open ? 'account-menu' : undefined}
 						aria-haspopup='true'
 						aria-expanded={open ? 'true' : undefined}>
-						<Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }}>
+							{!userImage ? getFirstLetterOfEmail(userEmail) : undefined}
+						</Avatar>
 					</IconButton>
 				</Tooltip>
 			</Box>
@@ -159,16 +167,16 @@ export default function AccountMenu() {
 					</MenuItem>
 				) : (
 					<Link href={'/login'}>
-					<MenuItem
-						onClick={() => {
-							handleClose
-						}}>
+						<MenuItem
+							onClick={() => {
+								handleClose
+							}}>
 							<ListItemIcon className='mr-2'>
 								<LoginIcon fontSize='small' />
 							</ListItemIcon>
 							Sign In
-					</MenuItem>
-						</Link>
+						</MenuItem>
+					</Link>
 				)}
 			</Menu>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>

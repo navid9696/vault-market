@@ -9,6 +9,8 @@ import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
 import { trpc } from '~/server/client'
 import { useRouter } from 'next/navigation'
+import GoogleButton from 'react-google-button'
+import { signIn } from 'next-auth/react'
 
 const RegisterForm = () => {
 	const router = useRouter()
@@ -140,6 +142,7 @@ const RegisterForm = () => {
 						<Button className='p-4' size='large' type='submit' disabled={registerMutation.status === 'pending'}>
 							{registerMutation.status === 'pending' ? 'Signing up...' : 'Sign Up'}
 						</Button>
+						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
 			</div>

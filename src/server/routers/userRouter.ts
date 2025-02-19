@@ -19,14 +19,14 @@ export const userRouter = router({
 	registerUser: procedure.input(registerSchema).mutation(async ({ input }) => {
 		const { email, password } = input
 
-		const existingUser = await prisma.users.findUnique({ where: { email } })
+		const existingUser = await prisma.user.findUnique({ where: { email } })
 		if (existingUser) {
 			throw new Error('Email already in use')
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 10)
 
-		const newUser = await prisma.users.create({
+		const newUser = await prisma.user.create({
 			data: {
 				email,
 				password: hashedPassword,
@@ -43,9 +43,12 @@ export const userRouter = router({
 	loginUser: procedure.input(loginSchema).mutation(async ({ input }) => {
 		const { email, password } = input
 
-		const user = await prisma.users.findUnique({ where: { email } })
+		const user = await prisma.user.findUnique({ where: { email } })
 		if (!user) {
 			throw new Error('Invalid email')
+		}
+		if (!user.password) {
+			throw new Error('Account registered via OAuth. Please sign in using your OAuth provider.')
 		}
 
 		const isPasswordValid = await bcrypt.compare(password, user.password)
