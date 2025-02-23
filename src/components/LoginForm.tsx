@@ -1,18 +1,22 @@
+import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { InputAdornment, TextField, Button } from '@mui/material'
-import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { loginSchema } from '~/schemas/loginSchema'
 import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { signIn, useSession } from 'next-auth/react'
+import GoogleButton from 'react-google-button'
 
 type LoginForm = z.infer<typeof loginSchema>
 
 const LoginForm = () => {
+	const { data: session } = useSession()
+	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [isFocusedField, setIsFocusedField] = useState<string | null>(null)
 
@@ -27,10 +31,43 @@ const LoginForm = () => {
 		resolver: zodResolver(loginSchema),
 	})
 
-	const onSubmit: SubmitHandler<LoginForm> = data => {
-		console.log('Login data:', data)
-		toast.success('Successfully logged in!')
+	const onSubmit: SubmitHandler<LoginForm> = async data => {
+		const signInPromise = new Promise((resolve, reject) => {
+			signIn('credentials', {
+				redirect: false,
+				email: data.email,
+				password: data.password,
+				callbackUrl: '/',
+			}).then(result => {
+				if (result && result.error) {
+					reject(result.error)
+				} else {
+					resolve(result)
+				}
+			})
+		})
+
+		await toast
+			.promise(signInPromise, {
+				pending: '📡 Connecting to Vault-Tec mainframe...',
+				success: '🎉 Access granted! Welcome, Vault Dweller!',
+				error: '🚫 ERROR: Authentication failure. Please try again.',
+			})
+			.then((result: any) => {
+				setTimeout(() => {
+					router.push(result.url || '/')
+				}, 2000)
+			})
+			.catch(error => {
+				console.log(error)
+			})
 	}
+
+	useEffect(() => {
+		if (session) {
+			router.push('/')
+		}
+	}, [session, router])
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {
@@ -98,14 +135,16 @@ const LoginForm = () => {
 						/>
 					</div>
 
-					<div className='flex flex-col justify-center items-center mt-4'>
+					<div className='flex flex-col justify-center items-center mt-4 gap-4'>
 						<p>
 							Need to create an account? <Link href={'/register'}>Sign up</Link>
 						</p>
 
-						<Button className='p-4' size='large' type='submit'>
+						<Button variant='outlined' className='p-4 ' size='large' type='submit'>
 							Log In
 						</Button>
+						<p>OR</p>
+						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
 			</div>

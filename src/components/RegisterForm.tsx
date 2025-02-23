@@ -1,20 +1,29 @@
-import { z } from 'zod'
-import { InputAdornment, TextField, Button } from '@mui/material'
-import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { InputAdornment, TextField, Button } from '@mui/material'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
-import { registerSchema } from '~/schemas/registerSchema'
+import { registerSchema, RegisterInput } from '~/schemas/registerSchema'
 import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
-
-type RegisterForm = z.infer<typeof registerSchema>
+import { trpc } from '~/server/client'
+import { useRouter } from 'next/navigation'
+import GoogleButton from 'react-google-button'
+import { signIn } from 'next-auth/react'
 
 const RegisterForm = () => {
+	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [isFocusedField, setIsFocusedField] = useState<string | null>(null)
+
+	const registerMutation = trpc.user.registerUser.useMutation({
+		onSuccess: () => {
+			setTimeout(() => {
+				router.push('/login')
+			}, 2000)
+		},
+	})
 
 	const {
 		register,
@@ -23,13 +32,16 @@ const RegisterForm = () => {
 		formState,
 		formState: { errors },
 		clearErrors,
-	} = useForm<RegisterForm>({
+	} = useForm<RegisterInput>({
 		resolver: zodResolver(registerSchema),
 	})
 
-	const onSubmit: SubmitHandler<RegisterForm> = data => {
-		console.log('Register data:', data)
-		toast.success('Successfully registered!')
+	const onSubmit: SubmitHandler<RegisterInput> = async data => {
+		await toast.promise(registerMutation.mutateAsync(data), {
+			pending: '📡 Uploading resident data...',
+			success: '✅ Registration confirmed! Enjoy your Vault life.',
+			error: '❌ ERROR: Data corrupted. Please try again.',
+		})
 	}
 
 	useEffect(() => {
@@ -122,14 +134,16 @@ const RegisterForm = () => {
 						/>
 					</div>
 
-					<div className='flex flex-col justify-center items-center mt-4'>
+					<div className='flex flex-col justify-center items-center mt-4 gap-4'>
 						<p>
 							Already have an account? <Link href={'/login'}>Log in</Link>
 						</p>
 
-						<Button className='p-4' size='large' type='submit'>
-							Sign Up
+						<Button variant='outlined' className='p-4' size='large' type='submit' disabled={registerMutation.status === 'pending'}>
+							{registerMutation.status === 'pending' ? 'Signing up...' : 'Sign Up'}
 						</Button>
+						<p>OR</p>
+						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
 			</div>
