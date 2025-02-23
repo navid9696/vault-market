@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model products {
+model Products {
   id              String  @id @default(auto()) @map("_id") @db.ObjectId
   v               Int?    @map("__v")
   available       Int

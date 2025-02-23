@@ -21,7 +21,7 @@ const RegisterForm = () => {
 		onSuccess: () => {
 			setTimeout(() => {
 				router.push('/login')
-			}, 1000)
+			}, 2000)
 		},
 	})
 
@@ -134,14 +134,15 @@ const RegisterForm = () => {
 						/>
 					</div>
 
-					<div className='flex flex-col justify-center items-center mt-4'>
+					<div className='flex flex-col justify-center items-center mt-4 gap-4'>
 						<p>
 							Already have an account? <Link href={'/login'}>Log in</Link>
 						</p>
 
-						<Button className='p-4' size='large' type='submit' disabled={registerMutation.status === 'pending'}>
+						<Button variant='outlined' className='p-4' size='large' type='submit' disabled={registerMutation.status === 'pending'}>
 							{registerMutation.status === 'pending' ? 'Signing up...' : 'Sign Up'}
 						</Button>
+						<p>OR</p>
 						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
