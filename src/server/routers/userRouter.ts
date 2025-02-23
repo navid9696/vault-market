@@ -40,26 +40,26 @@ export const userRouter = router({
 		}
 	}),
 
-	loginUser: procedure.input(loginSchema).mutation(async ({ input }) => {
-		const { email, password } = input
+	// loginUser: procedure.input(loginSchema).mutation(async ({ input }) => {
+	// 	const { email, password } = input
 
-		const user = await prisma.user.findUnique({ where: { email } })
-		if (!user) {
-			throw new Error('Invalid email')
-		}
-		if (!user.password) {
-			throw new Error('Account registered via OAuth. Please sign in using your OAuth provider.')
-		}
+	// 	const user = await prisma.user.findUnique({ where: { email } })
+	// 	if (!user) {
+	// 		throw new Error('Invalid email')
+	// 	}
+	// 	if (!user.password) {
+	// 		throw new Error('Account registered via OAuth. Please sign in using your OAuth provider.')
+	// 	}
 
-		const isPasswordValid = await bcrypt.compare(password, user.password)
-		if (!isPasswordValid) {
-			throw new Error('Invalid password')
-		}
+	// 	const isPasswordValid = await bcrypt.compare(password, user.password)
+	// 	if (!isPasswordValid) {
+	// 		throw new Error('Invalid password')
+	// 	}
 
-		return {
-			id: user.id,
-			email: user.email,
-			createdAt: user.createdAt,
-		}
-	}),
+	// 	return {
+	// 		id: user.id,
+	// 		email: user.email,
+	// 		createdAt: user.createdAt,
+	// 	}
+	// }),
 })

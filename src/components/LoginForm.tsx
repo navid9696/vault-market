@@ -135,14 +135,15 @@ const LoginForm = () => {
 						/>
 					</div>
 
-					<div className='flex flex-col justify-center items-center mt-4'>
+					<div className='flex flex-col justify-center items-center mt-4 gap-4'>
 						<p>
 							Need to create an account? <Link href={'/register'}>Sign up</Link>
 						</p>
 
-						<Button className='p-4' size='large' type='submit'>
+						<Button variant='outlined' className='p-4 ' size='large' type='submit'>
 							Log In
 						</Button>
+						<p>OR</p>
 						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
