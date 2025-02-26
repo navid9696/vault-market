@@ -8,34 +8,48 @@ datasource db {
 }
 
 model Products {
-  id              String  @id @default(auto()) @map("_id") @db.ObjectId
-  v               Int?    @map("__v")
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  v               Int?        @map("__v")
   available       Int
   categoryId      Int
   categoryName    String
   description     String
   discount        Float
   imgURL          String
-  name            String  @unique(map: "name_1")
+  name            String      @unique(map: "name_1")
   popularity      Int
   price           Int
   rating          Float
   subCategoryId   Int?
   subCategoryName String?
+  favorites       Favorite[]
 }
 
 model User {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String         @unique
+  email         String      @unique
   emailVerified DateTime?
-  password      String?         
+  password      String?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  favorites     Favorite[]  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
+
+model Favorite {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String   @db.ObjectId
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId], name: "userId_productId")
+}
+
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -50,30 +64,30 @@ model Account {
   scope             String?
   id_token          String? @db.String
   session_state     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@unique([provider, providerAccountId])
 }
- 
- model Session {
+
+model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
   userId       String   @db.ObjectId
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
 }

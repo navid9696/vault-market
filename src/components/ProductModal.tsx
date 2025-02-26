@@ -1,11 +1,12 @@
-import { ImHeart as Favorite } from 'react-icons/im'
+import { ImHeart as FavoriteIcon } from 'react-icons/im'
 import StarIcon from '@mui/icons-material/Star'
 import Image from 'next/image'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { IconButton, Rating, styled } from '@mui/material'
 import ModalPriceSection from './ModalPriceSection'
 import ReviewList from './ReviewList'
 import TransitionsModal from './TransitionModal'
+import { trpc } from '~/server/client'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -18,21 +19,42 @@ const StyledRating = styled(Rating)({
 	},
 })
 
-const ProductModal = () => {
+export interface ProductModalProps {
+	productId: string
+}
+
+const ProductModal = ({ productId }: ProductModalProps) => {
 	const [isFavorite, setIsFavorite] = useState(false)
 	const [modalOpen, setModalOpen] = useState(false)
+	const addFavoriteMutation = trpc.favorite.addFavorite.useMutation()
+	const removeFavoriteMutation = trpc.favorite.removeFavorite.useMutation()
+	const { data: favorites } = trpc.favorite.getFavorites.useQuery()
 
 	const handleModalClose = useCallback(() => {
 		setModalOpen(false)
 	}, [])
 
 	const handleModalOpen = useCallback(() => {
-		window.innerWidth < 768 && setModalOpen(true)
+		if (window.innerWidth < 768) setModalOpen(true)
 	}, [])
 
-	const handleIsFavorite = useCallback(() => {
-		setIsFavorite(prev => !prev)
-	}, [])
+	const handleToggleFavorite = useCallback(() => {
+		if (isFavorite) {
+			removeFavoriteMutation.mutate({ productId })
+			console.log(productId)
+			setIsFavorite(false)
+		} else {
+			addFavoriteMutation.mutate({ productId })
+			setIsFavorite(true)
+		}
+	}, [isFavorite, productId, addFavoriteMutation, removeFavoriteMutation])
+
+	useEffect(() => {
+		if (favorites) {
+			const favExists = favorites.some(fav => fav.product.id === productId)
+			setIsFavorite(favExists)
+		}
+	}, [favorites, productId])
 
 	return (
 		<>
@@ -49,14 +71,14 @@ const ProductModal = () => {
 								disableFocusRipple
 								disableRipple
 								disableTouchRipple
-								onClick={handleIsFavorite}>
+								onClick={handleToggleFavorite}>
 								{isFavorite ? (
-									<Favorite
+									<FavoriteIcon
 										className='stroke-green-950 stroke-1 overflow-visible text-green-600 transition-colors'
 										fontSize={26}
 									/>
 								) : (
-									<Favorite
+									<FavoriteIcon
 										className='stroke-green-950 stroke-1 overflow-visible text-transparent group-hover:text-green-200 transition-colors'
 										fontSize={26}
 									/>

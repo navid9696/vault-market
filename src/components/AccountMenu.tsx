@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -49,7 +49,7 @@ export default function AccountMenu() {
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
-	const userImage = session?.user?.image
+	const userImage = session?.user.image
 	const userEmail = session?.user?.email
 
 	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
@@ -91,7 +91,7 @@ export default function AccountMenu() {
 						aria-controls={open ? 'account-menu' : undefined}
 						aria-haspopup='true'
 						aria-expanded={open ? 'true' : undefined}>
-						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }}>
+						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }} alt='User Avatar'>
 							{!userImage ? getFirstLetterOfEmail(userEmail) : undefined}
 						</Avatar>
 					</IconButton>

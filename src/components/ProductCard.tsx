@@ -34,7 +34,7 @@ export interface ProductCardProps {
 	description: string
 }
 
-const ProductCard = ({ name, price, rating, discount, available, imgURL }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: ProductCardProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
 
 	const handleModalClose = useCallback(() => {
@@ -131,7 +131,7 @@ const ProductCard = ({ name, price, rating, discount, available, imgURL }: Produ
 				</div>
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
-				<ProductModal />
+				<ProductModal productId={id}/>
 			</TransitionsModal>
 		</>
 	)
