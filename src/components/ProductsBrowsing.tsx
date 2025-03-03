@@ -93,7 +93,7 @@ const ProductsBrowsing = () => {
 				</div>
 
 				<div
-					className='py-1 flex flex-wrap justify-evenly
+					className='py-1 flex flex-wrap justify-center items-start content-start
 					xl:col-span-7 col-span-10 row-span-9
 					bg-zinc-900 overflow-y-scroll'>
 					{state.visibleProducts.map(product => (

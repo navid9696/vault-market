@@ -41,7 +41,6 @@ const ProductModal = ({ productId }: ProductModalProps) => {
 	const handleToggleFavorite = useCallback(() => {
 		if (isFavorite) {
 			removeFavoriteMutation.mutate({ productId })
-			console.log(productId)
 			setIsFavorite(false)
 		} else {
 			addFavoriteMutation.mutate({ productId })
