@@ -6,6 +6,7 @@ import { FaPercent as Percent } from 'react-icons/fa'
 import { useCallback, useState } from 'react'
 import TransitionsModal from './TransitionModal'
 import ProductModal from './ProductModal'
+import { trpc } from '~/server/client'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -34,12 +35,14 @@ export interface ProductCardProps {
 	description: string
 }
 
-const ProductCard = ({ name, price, rating, discount, available, imgURL }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: ProductCardProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
+	const utils = trpc.useUtils()
 
 	const handleModalClose = useCallback(() => {
 		setModalOpen(false)
-	}, [])
+		utils.favorite.getFavorites.invalidate()
+	}, [utils])
 
 	const handleOpen = () => setModalOpen(true)
 
@@ -131,7 +134,7 @@ const ProductCard = ({ name, price, rating, discount, available, imgURL }: Produ
 				</div>
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
-				<ProductModal />
+				<ProductModal productId={id} />
 			</TransitionsModal>
 		</>
 	)

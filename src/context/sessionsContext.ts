@@ -1,12 +1,11 @@
-import { getServerSession } from 'next-auth/next'
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { authOptions } from '~/lib/authOptions';
+// src/context/sessionsContext.ts
+import { getServerSession } from 'next-auth'
+import { authOptions } from '~/lib/authOptions'
 
-
-
-export const createContext = async ({ req, res }: { req: NextApiRequest; res: NextApiResponse }) => {
-	const session = await getServerSession(req, res, authOptions)
-	return { req, res, session }
+export async function createContext(_req: Request) {
+	const session = await getServerSession(authOptions)
+	console.log('Session in context:', session)
+	return { session }
 }
 
 export type Context = Awaited<ReturnType<typeof createContext>>
