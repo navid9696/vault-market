@@ -50,7 +50,7 @@ export default function AccountMenu() {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
 	const userImage = session?.user.image
-	const userEmail = session?.user?.email
+	const userEmail = session?.user.email
 
 	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(e.currentTarget)
@@ -91,8 +91,8 @@ export default function AccountMenu() {
 						aria-controls={open ? 'account-menu' : undefined}
 						aria-haspopup='true'
 						aria-expanded={open ? 'true' : undefined}>
-						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }} alt='User Avatar'>
-							{!userImage ? getFirstLetterOfEmail(userEmail) : undefined}
+						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }}>
+							{!userImage && getFirstLetterOfEmail(userEmail)}
 						</Avatar>
 					</IconButton>
 				</Tooltip>
