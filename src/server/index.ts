@@ -1,3 +1,4 @@
+import { capsOrderRouter } from './routers/capsOrderRouter'
 import { favoriteRouter } from './routers/favouriteRouter'
 import { productRouter } from './routers/productRouter'
 import { userRouter } from './routers/userRouter'
@@ -7,6 +8,7 @@ export const appRouter = router({
 	product: productRouter,
 	user: userRouter,
 	favorite: favoriteRouter,
+	exchange: capsOrderRouter,
 })
 
 export type AppRouter = typeof appRouter
