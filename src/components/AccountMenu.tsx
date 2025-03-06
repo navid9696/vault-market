@@ -72,7 +72,7 @@ export default function AccountMenu() {
 	const renderModalContent = () => {
 		switch (contentId) {
 			case 'exchange':
-				return <ExchangeModal />
+				return <ExchangeModal onClose={handleModalClose} />
 			case 'profile':
 				return <AccountSettings />
 			default:

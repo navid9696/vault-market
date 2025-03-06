@@ -1,12 +1,17 @@
-import { Button, Divider, Typography } from '@mui/material'
+import { Button, Divider, Typography, CircularProgress } from '@mui/material'
 import { FaEquals as Equals } from 'react-icons/fa'
 import { GiBottleCap as Caps } from 'react-icons/gi'
 import ExchangeInput from './ExchangeInput'
 import Image from 'next/image'
 import { ChangeEvent, useState } from 'react'
 import { trpc } from '~/server/client'
+import { toast } from 'react-toastify'
 
-const ExchangeModal = () => {
+interface ExchangeModalProps {
+	onClose: () => void
+}
+
+const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 	const [capsAmount, setCapsAmount] = useState<number | string>('')
 	const [usdValue, setUsdValue] = useState<number | string>('')
 	const utils = trpc.useUtils()
@@ -16,6 +21,9 @@ const ExchangeModal = () => {
 			setCapsAmount('')
 			setUsdValue('')
 			utils.exchange.getTotalCaps.invalidate()
+			setTimeout(() => {
+				onClose()
+			}, 3000)
 		},
 		onError: (error: unknown) => {
 			console.error('Error creating order:', error)
@@ -33,12 +41,27 @@ const ExchangeModal = () => {
 		}
 	}
 
-	const handleBuy = () => {
+	const handleBuy = async () => {
 		if (capsAmount === '' || isNaN(Number(capsAmount))) {
 			console.error('Invalid caps amount')
 			return
 		}
-		createOrderMutation.mutate({ quantity: Number(capsAmount), usd: Number(usdValue) })
+
+		try {
+			await toast.promise(
+				createOrderMutation.mutateAsync({
+					quantity: Number(capsAmount),
+					usd: Number(usdValue),
+				}),
+				{
+					pending: '📡 Connecting to Vault-Tec...',
+					success: '🎉 Exchange complete! Caps credited.',
+					error: '🚫 ERROR: Transaction failed. Please retry.',
+				}
+			)
+		} catch (error) {
+			console.error('Error creating caps order:', error)
+		}
 	}
 
 	return (
@@ -82,10 +105,11 @@ const ExchangeModal = () => {
 			</div>
 			<Button
 				onClick={handleBuy}
+				disabled={createOrderMutation.status === 'pending'}
 				className='mt-5 font-extrabold text-green-500 hover:bg-[#13FF17] hover:text-slate-950'
 				size='large'
-				endIcon={<Caps />}>
-				BUY
+				endIcon={createOrderMutation.status === 'pending' ? <CircularProgress size={20} /> : <Caps />}>
+				{createOrderMutation.status === 'pending' ? 'Processing...' : 'BUY'}
 			</Button>
 		</div>
 	)
