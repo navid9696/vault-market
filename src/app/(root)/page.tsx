@@ -17,7 +17,7 @@ const Home = () => {
 			<ThemeProvider theme={theme}>
 				<NavigationProvider>
 					<Navbar />
-					<ToastContainer autoClose={1500} draggablePercent={60} stacked hideProgressBar />
+					<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
 					<div className='h-dvh'>
 						<Header />
 						<OnSaleList />

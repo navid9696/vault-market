@@ -8,8 +8,17 @@ interface ExchangeInputProps {
 	value?: number | string
 }
 
-
 const ExchangeInput = ({ icon, inputProps, onChange, value }: ExchangeInputProps) => {
+	const handleChange: ChangeEventHandler<HTMLInputElement> = e => {
+		const newValue = e.target.value
+		if (newValue.length > 4) {
+			e.preventDefault()
+			return
+		}
+		if (onChange) {
+			onChange(e)
+		}
+	}
 
 	return (
 		<FormControl sx={{ m: 1, width: '35%' }}>
@@ -18,11 +27,15 @@ const ExchangeInput = ({ icon, inputProps, onChange, value }: ExchangeInputProps
 				type='number'
 				id='outlined-adornment-amount'
 				startAdornment={<InputAdornment position='start'>{icon}</InputAdornment>}
-				onChange={onChange}
+				onChange={handleChange}
 				label='Amount'
 				value={value}
-				onKeyDown={e => (e.key === '-' || e.key === '+' || e.key === '.' || e.key === 'e' ? e.preventDefault() : false)}
-				inputProps={{ min: '0', ...inputProps }}
+				onKeyDown={e => {
+					if (['-', '+', '.', 'e'].includes(e.key)) {
+						e.preventDefault()
+					}
+				}}
+				inputProps={{ min: '0', max: '9999', ...inputProps }}
 			/>
 		</FormControl>
 	)

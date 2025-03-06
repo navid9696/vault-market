@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 const AdminProducts = () => {
 	return (
 		<>
-			<ToastContainer autoClose={1500} draggablePercent={60} stacked hideProgressBar />
+			<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
 			<AdminDisplayProducts />
 		</>
 	)

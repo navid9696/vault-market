@@ -9,7 +9,7 @@ import { loginSchema } from '~/schemas/loginSchema'
 import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { signIn, useSession } from 'next-auth/react'
+import { signIn, SignInResponse, useSession } from 'next-auth/react'
 import GoogleButton from 'react-google-button'
 
 type LoginForm = z.infer<typeof loginSchema>
@@ -53,12 +53,13 @@ const LoginForm = () => {
 				success: '🎉 Access granted! Welcome, Vault Dweller!',
 				error: '🚫 ERROR: Authentication failure. Please try again.',
 			})
-			.then((result: any) => {
+			.then(result => {
+				const signInResult = result as SignInResponse
 				setTimeout(() => {
-					router.push(result.url || '/')
+					router.push(signInResult.url || '/')
 				}, 2000)
 			})
-			.catch(error => {
+			.catch((error: unknown) => {
 				console.log(error)
 			})
 	}
