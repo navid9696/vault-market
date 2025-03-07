@@ -1,35 +1,41 @@
-import { FormControl, IconButton, InputLabel, OutlinedInput, styled } from '@mui/material'
+import { FormControl, IconButton, InputLabel, OutlinedInput } from '@mui/material'
 import { useState } from 'react'
 import { FaPlus as Plus } from 'react-icons/fa'
 import { FaMinus as Minus } from 'react-icons/fa'
+import useStore from '~/store/useStore'
 
 const QuantitySelector = () => {
-	const [productQuantity, setProductQuantity] = useState(1)
+	const [selectedQuantity, setSelectedQuantity] = useState(1)
+	const availability = useStore(state => state.product?.available) ?? 0
 
 	const handleIncrement = () => {
-		productQuantity >= 1 && setProductQuantity(prevQuantity => prevQuantity + 1)
+		if (selectedQuantity < availability) {
+			setSelectedQuantity(prev => prev + 1)
+		}
 	}
 
 	const handleDecrement = () => {
-		productQuantity > 1 && setProductQuantity(prevQuantity => prevQuantity - 1)
+		if (selectedQuantity > 1) {
+			setSelectedQuantity(prev => prev - 1)
+		}
 	}
 
 	return (
-		<div className='flex  sm:scale-100 scale-75'>
+		<div className='flex sm:scale-100 scale-75'>
 			<IconButton
-				disabled={productQuantity <= 1}
+				disabled={selectedQuantity <= 1}
 				onClick={handleDecrement}
 				className='text-green-950 rounded-none rounded-tl-md rounded-bl-md shadow-inset-1'>
 				<Minus />
 			</IconButton>
 
-			<FormControl className='w-16 ' size='small'>
+			<FormControl className='w-16' size='small'>
 				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
 					Amount
 				</InputLabel>
 				<OutlinedInput
 					className='rounded-none hover:border-red-400 font-semibold'
-					value={productQuantity}
+					value={selectedQuantity}
 					id='input-adornment-amount'
 					type='number'
 					readOnly
@@ -37,7 +43,6 @@ const QuantitySelector = () => {
 					label='Amount'
 					inputProps={{
 						min: '1',
-						disabledunderline: 'true',
 						style: { WebkitTextFillColor: 'rgba(0, 0, 0, 1.0)', textAlign: 'center' },
 					}}
 				/>
@@ -45,7 +50,8 @@ const QuantitySelector = () => {
 
 			<IconButton
 				onClick={handleIncrement}
-				className='text-green-950 rounded-none rounded-tr-md rounded-br-md   shadow-inset-1'>
+				disabled={selectedQuantity >= availability}
+				className='text-green-950 rounded-none rounded-tr-md rounded-br-md shadow-inset-1'>
 				<Plus />
 			</IconButton>
 		</div>

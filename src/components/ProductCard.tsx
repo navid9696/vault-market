@@ -7,6 +7,7 @@ import { useCallback, useState } from 'react'
 import TransitionsModal from './TransitionModal'
 import ProductModal from './ProductModal'
 import { trpc } from '~/server/client'
+import useStore from '~/store/useStore'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -25,7 +26,7 @@ export interface ProductCardProps {
 	price: number
 	rating: number
 	available: number
-	popularity: number
+	popularity?: number
 	discount: number
 	categoryId?: number
 	subCategoryId?: number | null
@@ -35,8 +36,9 @@ export interface ProductCardProps {
 	description: string
 }
 
-const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, rating, discount, available, imgURL, description }: ProductCardProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
+	const setProduct = useStore(state => state.setProduct)
 	const utils = trpc.useUtils()
 
 	const handleModalClose = useCallback(() => {
@@ -44,7 +46,10 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 		utils.favorite.getFavorites.invalidate()
 	}, [utils])
 
-	const handleOpen = () => setModalOpen(true)
+	const handleOpen = () => {
+		setProduct({ id, name, price, rating, discount, available, description, imgURL })
+		setModalOpen(true)
+	}
 
 	return (
 		// container
@@ -52,7 +57,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 			<div
 				onClick={handleOpen}
 				tabIndex={0}
-				className={`focus:scale-110 focus:outline-0 ${
+				className={`${
 					available ? 'grayscale-0 opacity-100' : 'grayscale opacity-90'
 				} relative max-h-60 min-h-44 h-full max-w-48 min-w-52 p-4 transition hover:scale-105 cursor-pointer z-0`}>
 				{/* badge */}
@@ -134,7 +139,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 				</div>
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
-				<ProductModal productId={id} />
+				<ProductModal />
 			</TransitionsModal>
 		</>
 	)

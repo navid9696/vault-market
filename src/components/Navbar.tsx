@@ -13,8 +13,10 @@ const Navbar = () => {
 	const { data: caps } = trpc.exchange.getTotalCaps.useQuery(undefined, {
 		enabled: !!session,
 	})
+	const { data: cart } = trpc.cart.getTotalItems.useQuery()
 
 	const totalCaps = caps?.total ?? 0
+	const cartCount = cart?.total
 
 	return (
 		<nav className='fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full md:max-w-screen-md '>
@@ -40,7 +42,7 @@ const Navbar = () => {
 					</div>
 					<div className='flex items-center'>
 						<Link className='mr-3' href={'/cart'}>
-							<Badge badgeContent={5} color='warning'>
+							<Badge badgeContent={cartCount} color='warning' showZero max={99}>
 								<ShoppingCart className='text-green-600' />
 							</Badge>
 						</Link>
