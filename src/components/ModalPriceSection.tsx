@@ -10,29 +10,26 @@ import { toast } from 'react-toastify'
 import useStore from '~/store/useStore'
 
 const PriceSection = () => {
-	const [selectedQuantity, setSelectedQuantity] = useState<number>(1)
-
+	const utils = trpc.useUtils()
 	const product = useStore(state => state.product)
-
+	const [selectedQuantity, setSelectedQuantity] = useState(1)
 	if (!product) return null
-
 	const addCartItemMutation = trpc.cart.addCartItem.useMutation({
 		onSuccess: () => {
 			toast.success('Item added to cart!')
 		},
-		onError: (error: unknown) => {
+		onError: error => {
 			console.error('Error adding to cart', error)
 			toast.error('Error adding item. Please try again.')
 		},
 	})
-
 	const handleAddToCart = () => {
 		addCartItemMutation.mutate({
 			productId: product.id,
 			quantity: selectedQuantity,
 		})
+		utils.cart.getTotalItems.invalidate()
 	}
-
 	return (
 		<div className='w-1/2 flex flex-col justify-evenly items-center'>
 			<div className='sm:w-full flex flex-col items-center text-green-950'>
@@ -51,7 +48,7 @@ const PriceSection = () => {
 				</div>
 			</div>
 			<div>
-				<QuantitySelector />
+				<QuantitySelector selectedQuantity={selectedQuantity} setSelectedQuantity={setSelectedQuantity} />
 				<p className='text-xs'>in stock {product.available}</p>
 			</div>
 			<div className='flex flex-col gap-4'>
@@ -62,7 +59,7 @@ const PriceSection = () => {
 					endIcon={<AddShoppingCartTwoToneIcon />}>
 					{addCartItemMutation.status === 'pending' ? 'Adding...' : 'add to cart'}
 				</Button>
-				<Link href={'/cart'}>
+				<Link href='/cart'>
 					<Button className='text-base' endIcon={<ShoppingCartCheckoutTwoToneIcon />}>
 						buy now
 					</Button>

@@ -10,10 +10,8 @@ import { useSession } from 'next-auth/react'
 const Navbar = () => {
 	const { navRef } = useNavigationHeight()
 	const { data: session } = useSession()
-	const { data: caps } = trpc.exchange.getTotalCaps.useQuery(undefined, {
-		enabled: !!session,
-	})
-	const { data: cart } = trpc.cart.getTotalItems.useQuery()
+	const { data: caps } = trpc.exchange.getTotalCaps.useQuery(undefined, { enabled: !!session })
+	const { data: cart } = trpc.cart.getTotalItems.useQuery(undefined, { enabled: !!session })
 
 	const totalCaps = caps?.total ?? 0
 	const cartCount = cart?.total

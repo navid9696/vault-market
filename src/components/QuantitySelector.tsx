@@ -1,25 +1,25 @@
 import { FormControl, IconButton, InputLabel, OutlinedInput } from '@mui/material'
-import { useState } from 'react'
 import { FaPlus as Plus } from 'react-icons/fa'
 import { FaMinus as Minus } from 'react-icons/fa'
 import useStore from '~/store/useStore'
 
-const QuantitySelector = () => {
-	const [selectedQuantity, setSelectedQuantity] = useState(1)
-	const availability = useStore(state => state.product?.available) ?? 0
+interface QuantitySelector {
+	selectedQuantity: number
+	setSelectedQuantity: (value: number) => void
+}
 
+const QuantitySelector = ({ selectedQuantity, setSelectedQuantity }: QuantitySelector) => {
+	const availability = useStore(state => state.product?.available) ?? 0
 	const handleIncrement = () => {
 		if (selectedQuantity < availability) {
-			setSelectedQuantity(prev => prev + 1)
+			setSelectedQuantity(selectedQuantity + 1)
 		}
 	}
-
 	const handleDecrement = () => {
 		if (selectedQuantity > 1) {
-			setSelectedQuantity(prev => prev - 1)
+			setSelectedQuantity(selectedQuantity - 1)
 		}
 	}
-
 	return (
 		<div className='flex sm:scale-100 scale-75'>
 			<IconButton
@@ -28,7 +28,6 @@ const QuantitySelector = () => {
 				className='text-green-950 rounded-none rounded-tl-md rounded-bl-md shadow-inset-1'>
 				<Minus />
 			</IconButton>
-
 			<FormControl className='w-16' size='small'>
 				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
 					Amount
@@ -47,7 +46,6 @@ const QuantitySelector = () => {
 					}}
 				/>
 			</FormControl>
-
 			<IconButton
 				onClick={handleIncrement}
 				disabled={selectedQuantity >= availability}
