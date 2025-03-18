@@ -68,7 +68,7 @@ const ProductModal = () => {
 				</div>
 				<div className='md:w-1/2 w-full flex justify-around md:gap-8 gap-2'>
 					<div className='absolute'>
-						<h2 className='relative w-full font-semibold text-xl'>
+						<h2 className='relative w-full font-semibold text-2xl'>
 							{product.name}
 							<IconButton
 								className='absolute -top-2 group'

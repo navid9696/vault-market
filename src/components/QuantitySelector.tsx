@@ -1,33 +1,28 @@
 import { FormControl, IconButton, InputLabel, OutlinedInput } from '@mui/material'
 import { FaPlus as Plus } from 'react-icons/fa'
 import { FaMinus as Minus } from 'react-icons/fa'
-import useStore from '~/store/useStore'
 
-interface QuantitySelector {
+interface QuantitySelectorProps {
 	selectedQuantity: number
 	setSelectedQuantity: (value: number) => void
+	availability: number
 }
 
-const QuantitySelector = ({ selectedQuantity, setSelectedQuantity }: QuantitySelector) => {
-	const availability = useStore(state => state.product?.available) ?? 0
-	const handleIncrement = () => {
-		if (selectedQuantity < availability) {
-			setSelectedQuantity(selectedQuantity + 1)
-		}
+const QuantitySelector = ({ selectedQuantity, setSelectedQuantity, availability }: QuantitySelectorProps) => {
+	const handleChange = (step: number) => {
+		const newQuantity = selectedQuantity + step
+		setSelectedQuantity(newQuantity)
 	}
-	const handleDecrement = () => {
-		if (selectedQuantity > 1) {
-			setSelectedQuantity(selectedQuantity - 1)
-		}
-	}
+
 	return (
 		<div className='flex sm:scale-100 scale-75'>
 			<IconButton
 				disabled={selectedQuantity <= 1}
-				onClick={handleDecrement}
+				onClick={() => handleChange(-1)}
 				className='text-green-950 rounded-none rounded-tl-md rounded-bl-md shadow-inset-1'>
 				<Minus />
 			</IconButton>
+			<p>{availability}</p>
 			<FormControl className='w-16' size='small'>
 				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
 					Amount
@@ -40,15 +35,12 @@ const QuantitySelector = ({ selectedQuantity, setSelectedQuantity }: QuantitySel
 					readOnly
 					disabled
 					label='Amount'
-					inputProps={{
-						min: '1',
-						style: { WebkitTextFillColor: 'rgba(0, 0, 0, 1.0)', textAlign: 'center' },
-					}}
+					inputProps={{ min: '1', style: { WebkitTextFillColor: 'rgba(0, 0, 0, 1.0)', textAlign: 'center' } }}
 				/>
 			</FormControl>
 			<IconButton
-				onClick={handleIncrement}
-				disabled={selectedQuantity >= availability}
+				onClick={() => handleChange(+1)}
+				disabled={availability <= 0}
 				className='text-green-950 rounded-none rounded-tr-md rounded-br-md shadow-inset-1'>
 				<Plus />
 			</IconButton>

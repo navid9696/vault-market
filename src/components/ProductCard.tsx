@@ -36,8 +36,9 @@ export interface ProductCardProps {
 	description: string
 }
 
-const ProductCard = ({ id, name, price, rating, discount, available, imgURL, description }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: ProductCardProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
+
 	const setProduct = useStore(state => state.setProduct)
 	const utils = trpc.useUtils()
 
@@ -46,10 +47,11 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL, des
 		utils.favorite.getFavorites.invalidate()
 	}, [utils])
 
-	const handleOpen = () => {
-		setProduct({ id, name, price, rating, discount, available, description, imgURL })
+	const handleOpen = useCallback(async () => {
+		const updatedProduct = await utils.product.getById.fetch({ id })
+		setProduct(updatedProduct)
 		setModalOpen(true)
-	}
+	}, [id, setProduct, utils.product.getById])
 
 	return (
 		// container

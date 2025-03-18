@@ -12,11 +12,14 @@ import useStore from '~/store/useStore'
 const PriceSection = () => {
 	const utils = trpc.useUtils()
 	const product = useStore(state => state.product)
+	const setProduct = useStore(state => state.setProduct)
 	const [selectedQuantity, setSelectedQuantity] = useState(1)
 	if (!product) return null
 	const addCartItemMutation = trpc.cart.addCartItem.useMutation({
 		onSuccess: () => {
 			toast.success('Item added to cart!')
+			setProduct({ ...product, available: product.available - selectedQuantity })
+			utils.cart.getTotalItems.invalidate()
 		},
 		onError: error => {
 			console.error('Error adding to cart', error)
@@ -28,7 +31,7 @@ const PriceSection = () => {
 			productId: product.id,
 			quantity: selectedQuantity,
 		})
-		utils.cart.getTotalItems.invalidate()
+		
 	}
 	return (
 		<div className='w-1/2 flex flex-col justify-evenly items-center'>
@@ -48,7 +51,11 @@ const PriceSection = () => {
 				</div>
 			</div>
 			<div>
-				<QuantitySelector selectedQuantity={selectedQuantity} setSelectedQuantity={setSelectedQuantity} />
+				<QuantitySelector
+					selectedQuantity={selectedQuantity}
+					setSelectedQuantity={setSelectedQuantity}
+					availability={product.available}
+				/>
 				<p className='text-xs'>in stock {product.available}</p>
 			</div>
 			<div className='flex flex-col gap-4'>
@@ -56,7 +63,8 @@ const PriceSection = () => {
 					className='text-base'
 					onClick={handleAddToCart}
 					disabled={addCartItemMutation.status === 'pending'}
-					endIcon={<AddShoppingCartTwoToneIcon />}>
+					endIcon={<AddShoppingCartTwoToneIcon />}
+				>
 					{addCartItemMutation.status === 'pending' ? 'Adding...' : 'add to cart'}
 				</Button>
 				<Link href='/cart'>

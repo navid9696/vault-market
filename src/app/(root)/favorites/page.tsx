@@ -1,10 +1,7 @@
 'use client'
 
-import Header from '~/components/Header'
 import Navbar from '~/components/Navbar'
-import ProductsBrowsing from '~/components/ProductsBrowsing'
 import { ToastContainer } from 'react-toastify'
-import OnSaleList from '~/components/OnSaleList'
 import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
 import { ThemeProvider } from '@mui/material'

@@ -4,7 +4,7 @@ import { trpc } from '~/server/client'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { CircularProgress } from '@mui/material'
 
-const FavoritesList: React.FC = () => {
+const FavoritesList = () => {
 	const { navHeight } = useNavigationHeight()
 	const { data: favorites, isLoading, error } = trpc.favorite.getFavorites.useQuery()
 
