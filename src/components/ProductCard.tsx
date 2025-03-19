@@ -26,7 +26,7 @@ export interface ProductCardProps {
 	price: number
 	rating: number
 	available: number
-	popularity?: number
+	popularity: number
 	discount: number
 	categoryId?: number
 	subCategoryId?: number | null

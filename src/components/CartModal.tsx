@@ -17,7 +17,10 @@ const CartModal = () => {
 	if (!data || data.length === 0) return <div>No items in cart</div>
 
 	const totalAmount = data.reduce((sum, item) => {
-		const price = item.product.discount > 0 ? item.product.price * (1 - item.product.discount) : item.product.price
+		const price =
+			item.product.discount > 0
+				? Math.round(item.product.price * (1 - item.product.discount))
+				: Math.round(item.product.price)
 		return sum + price * item.quantity
 	}, 0)
 
@@ -27,7 +30,7 @@ const CartModal = () => {
 				<CartItem key={item.id} item={item} refetchCart={refetch} />
 			))}
 			<div className='mt-4 border-t pt-4'>
-				<p>Total: ${totalAmount.toFixed(0)}</p>
+				<p>Total: ${totalAmount}</p>
 			</div>
 		</div>
 	)

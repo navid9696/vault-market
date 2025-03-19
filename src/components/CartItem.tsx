@@ -3,6 +3,7 @@ import { trpc } from '~/server/client'
 import QuantitySelector from './QuantitySelector'
 import { Button } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
+import Image from 'next/image'
 
 interface CartItemType {
 	product: ProductCardProps
@@ -44,20 +45,24 @@ const CartItem = ({ item, refetchCart }: CartItemProps) => {
 
 	const displayPrice =
 		currentProduct.discount > 0
-			? (currentProduct.price * (1 - currentProduct.discount)).toFixed(0)
-			: currentProduct.price.toFixed(0)
+			? Math.round(currentProduct.price * (1 - currentProduct.discount))
+			: Math.round(currentProduct.price)
 
 	return (
-		<div className='border p-2 mb-2 flex items-center justify-between'>
+		<div className='border p-2 mb-2 flex items-center justify-between gap-8'>
 			<div>
+				<div className='relative h-36 w-32'>
+					<Image className='object-contain transition-transform' src={currentProduct.imgURL} fill alt='Product Image' />
+				</div>
 				<h2 className='text-lg font-bold'>{currentProduct.name}</h2>
 				<p>Price: {displayPrice}</p>
 			</div>
-			<div className='flex items-center gap-4'>
+			<div className='flex items-center gap-2'>
 				<QuantitySelector
 					selectedQuantity={item.quantity}
 					setSelectedQuantity={handleQuantityChange}
 					availability={currentProduct.available}
+					
 				/>
 				<Button variant='outlined' color='error' onClick={handleRemove}>
 					Remove

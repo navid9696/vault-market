@@ -55,6 +55,7 @@ const PriceSection = () => {
 					selectedQuantity={selectedQuantity}
 					setSelectedQuantity={setSelectedQuantity}
 					availability={product.available}
+					strictLimit
 				/>
 				<p className='text-xs'>in stock {product.available}</p>
 			</div>

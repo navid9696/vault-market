@@ -6,9 +6,15 @@ interface QuantitySelectorProps {
 	selectedQuantity: number
 	setSelectedQuantity: (value: number) => void
 	availability: number
+	strictLimit?: boolean
 }
 
-const QuantitySelector = ({ selectedQuantity, setSelectedQuantity, availability }: QuantitySelectorProps) => {
+const QuantitySelector = ({
+	strictLimit,
+	selectedQuantity,
+	setSelectedQuantity,
+	availability,
+}: QuantitySelectorProps) => {
 	const handleChange = (step: number) => {
 		const newQuantity = selectedQuantity + step
 		setSelectedQuantity(newQuantity)
@@ -22,7 +28,7 @@ const QuantitySelector = ({ selectedQuantity, setSelectedQuantity, availability 
 				className='text-green-950 rounded-none rounded-tl-md rounded-bl-md shadow-inset-1'>
 				<Minus />
 			</IconButton>
-			<p>{availability}</p>
+
 			<FormControl className='w-16' size='small'>
 				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
 					Amount
@@ -40,7 +46,7 @@ const QuantitySelector = ({ selectedQuantity, setSelectedQuantity, availability 
 			</FormControl>
 			<IconButton
 				onClick={() => handleChange(+1)}
-				disabled={availability <= 0}
+				disabled={strictLimit ? selectedQuantity >= availability : availability <= 0}
 				className='text-green-950 rounded-none rounded-tr-md rounded-br-md shadow-inset-1'>
 				<Plus />
 			</IconButton>
