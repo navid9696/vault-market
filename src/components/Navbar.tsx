@@ -34,7 +34,7 @@ const Navbar = () => {
 					<div className='p-2 flex items-center justify-between h-14 border-2 border-green-600 bg-gradient-to-r from-green-950 via-green-900 to-green-950  md:rounded-full z-10'>
 						<div className='flex items-center '>
 							<div>
-								<Link href={'#top'}>
+								<Link href={'/#top'}>
 									<Image src={'/imgs/logo.png'} width={50} height={50} alt='logo with vault boy' loading='lazy' />
 								</Link>
 							</div>

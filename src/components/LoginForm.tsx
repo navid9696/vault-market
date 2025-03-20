@@ -15,7 +15,6 @@ import GoogleButton from 'react-google-button'
 type LoginForm = z.infer<typeof loginSchema>
 
 const LoginForm = () => {
-	const { data: session } = useSession()
 	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [isFocusedField, setIsFocusedField] = useState<string | null>(null)
@@ -63,12 +62,6 @@ const LoginForm = () => {
 				console.log(error)
 			})
 	}
-
-	useEffect(() => {
-		if (session) {
-			router.push('/')
-		}
-	}, [session, router])
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {

@@ -108,16 +108,18 @@ export const userCartRouter = router({
 			include: { product: true },
 			orderBy: { createdAt: 'asc' },
 		})
-		return items
+		return items.filter(item => item.product !== null)
 	}),
 
 	getTotalItems: procedure.output(totalItemsSchema).query(async ({ ctx }) => {
 		const userId = ctx.session?.user?.id
 		if (!userId) throw new Error('Not authenticated')
-		const aggregate = await prisma.userCart.aggregate({
-			_sum: { quantity: true },
+		const items = await prisma.userCart.findMany({
 			where: { userId },
+			include: { product: true },
 		})
-		return { total: aggregate._sum.quantity ?? 0 }
+		const filteredItems = items.filter(item => item.product !== null)
+		const total = filteredItems.reduce((sum, item) => sum + item.quantity, 0)
+		return { total }
 	}),
 })

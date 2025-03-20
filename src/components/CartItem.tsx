@@ -1,23 +1,35 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { trpc } from '~/server/client'
 import QuantitySelector from './QuantitySelector'
-import { Button } from '@mui/material'
+import { Button, IconButton } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import Image from 'next/image'
-
-interface CartItemType {
-	product: ProductCardProps
-	quantity: number
-}
+import { BiTrash } from 'react-icons/bi'
+import TransitionsModal from './TransitionModal'
+import ProductModal from './ProductModal'
+import useStore from '~/store/useStore'
 
 interface CartItemProps {
-	item: CartItemType
+	product: ProductCardProps
+	quantity: number
 	refetchCart: () => void
 }
 
-const CartItem = ({ item, refetchCart }: CartItemProps) => {
-	const currentProduct = item.product
+const CartItem = ({ product, quantity, refetchCart }: CartItemProps) => {
+	const [modalOpen, setModalOpen] = useState(false)
+	const setProduct = useStore(state => state.setProduct)
 	const utils = trpc.useUtils()
+
+	const handleOpen = useCallback(async () => {
+		const updatedProduct = await utils.product.getById.fetch({ id: product.id })
+		setProduct(updatedProduct)
+		setModalOpen(true)
+	}, [product.id, setProduct, utils.product])
+
+	const handleModalClose = useCallback(() => {
+		setModalOpen(false)
+		utils.favorite.getFavorites.invalidate()
+	}, [utils.favorite])
 
 	const updateMutation = trpc.cart.updateCartItem.useMutation({
 		onSuccess: () => {
@@ -34,41 +46,46 @@ const CartItem = ({ item, refetchCart }: CartItemProps) => {
 	})
 
 	const handleQuantityChange = (newQuantity: number) => {
-		const maxAvailable = currentProduct.available + item.quantity
+		const maxAvailable = product.available + quantity
 		if (newQuantity < 1 || newQuantity > maxAvailable) return
-		updateMutation.mutate({ productId: currentProduct.id, quantity: newQuantity })
+		updateMutation.mutate({ productId: product.id, quantity: newQuantity })
 	}
 
 	const handleRemove = () => {
-		removeMutation.mutate({ productId: currentProduct.id })
+		removeMutation.mutate({ productId: product.id })
 	}
 
 	const displayPrice =
-		currentProduct.discount > 0
-			? Math.round(currentProduct.price * (1 - currentProduct.discount))
-			: Math.round(currentProduct.price)
+		product.discount > 0 ? Math.round(product.price * (1 - product.discount)) : Math.round(product.price)
 
 	return (
-		<div className='border p-2 mb-2 flex items-center justify-between gap-8'>
-			<div>
-				<div className='relative h-36 w-32'>
-					<Image className='object-contain transition-transform' src={currentProduct.imgURL} fill alt='Product Image' />
+		<>
+			<div className='border p-2 mb-2 mr-2 flex sm:flex-row flex-col items-center justify-between gap-4'>
+				<div onClick={handleOpen} className='w-full cursor-pointer'>
+					<div className='relative flex justify-center items-center'>
+						<Image className='object-contain' src={product.imgURL} width={75} height={200} alt='Product Image' />
+					</div>
+					<h2 className='text-lg font-bold'>{product.name}</h2>
 				</div>
-				<h2 className='text-lg font-bold'>{currentProduct.name}</h2>
-				<p>Price: {displayPrice}</p>
+
+				<div className='flex flex-col sm:flex-row items-center sm:items-start gap-x-1  '>
+					<div className='flex flex-col items-center justify-center'>
+						<QuantitySelector
+							selectedQuantity={quantity}
+							setSelectedQuantity={handleQuantityChange}
+							availability={product.available}
+						/>
+						<p>Price: {displayPrice}</p>
+					</div>
+					<IconButton size='large' color='error' onClick={handleRemove}>
+						<BiTrash />
+					</IconButton>
+				</div>
 			</div>
-			<div className='flex items-center gap-2'>
-				<QuantitySelector
-					selectedQuantity={item.quantity}
-					setSelectedQuantity={handleQuantityChange}
-					availability={currentProduct.available}
-					
-				/>
-				<Button variant='outlined' color='error' onClick={handleRemove}>
-					Remove
-				</Button>
-			</div>
-		</div>
+			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
+				<ProductModal />
+			</TransitionsModal>
+		</>
 	)
 }
 

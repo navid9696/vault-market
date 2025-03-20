@@ -31,7 +31,6 @@ const PriceSection = () => {
 			productId: product.id,
 			quantity: selectedQuantity,
 		})
-		
 	}
 	return (
 		<div className='w-1/2 flex flex-col justify-evenly items-center'>
@@ -64,15 +63,9 @@ const PriceSection = () => {
 					className='text-base'
 					onClick={handleAddToCart}
 					disabled={addCartItemMutation.status === 'pending'}
-					endIcon={<AddShoppingCartTwoToneIcon />}
-				>
+					endIcon={<AddShoppingCartTwoToneIcon />}>
 					{addCartItemMutation.status === 'pending' ? 'Adding...' : 'add to cart'}
 				</Button>
-				<Link href='/cart'>
-					<Button className='text-base' endIcon={<ShoppingCartCheckoutTwoToneIcon />}>
-						buy now
-					</Button>
-				</Link>
 			</div>
 		</div>
 	)

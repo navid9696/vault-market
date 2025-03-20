@@ -66,6 +66,6 @@ export const favoriteRouter = router({
 				product: true,
 			},
 		})
-		return favorites
+		return favorites.filter(fav => fav.product !== null)
 	}),
 })

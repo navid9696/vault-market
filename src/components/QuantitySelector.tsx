@@ -21,7 +21,7 @@ const QuantitySelector = ({
 	}
 
 	return (
-		<div className='flex sm:scale-100 scale-75'>
+		<div className='flex'>
 			<IconButton
 				disabled={selectedQuantity <= 1}
 				onClick={() => handleChange(-1)}

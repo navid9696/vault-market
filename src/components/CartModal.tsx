@@ -1,7 +1,7 @@
 import React from 'react'
 import { trpc } from '~/server/client'
 import CartItem from './CartItem'
-import { CircularProgress, Typography } from '@mui/material'
+import { CircularProgress } from '@mui/material'
 
 const CartModal = () => {
 	const { data, isLoading, error, refetch } = trpc.cart.getCartItems.useQuery()
@@ -25,10 +25,12 @@ const CartModal = () => {
 	}, 0)
 
 	return (
-		<div className='p-4'>
-			{data.map(item => (
-				<CartItem key={item.id} item={item} refetchCart={refetch} />
-			))}
+		<div className='p-2'>
+			<div className='max-h-96 overflow-y-auto'>
+				{data.map(item => (
+					<CartItem key={item.id} product={item.product} quantity={item.quantity} refetchCart={refetch} />
+				))}
+			</div>
 			<div className='mt-4 border-t pt-4'>
 				<p>Total: ${totalAmount}</p>
 			</div>
