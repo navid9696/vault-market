@@ -1,7 +1,8 @@
 import React from 'react'
 import { trpc } from '~/server/client'
 import CartItem from './CartItem'
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, Button } from '@mui/material'
+import Link from 'next/link'
 
 const CartModal = () => {
 	const { data, isLoading, error, refetch } = trpc.cart.getCartItems.useQuery()
@@ -31,8 +32,13 @@ const CartModal = () => {
 					<CartItem key={item.id} product={item.product} quantity={item.quantity} refetchCart={refetch} />
 				))}
 			</div>
-			<div className='mt-4 border-t pt-4'>
-				<p>Total: ${totalAmount}</p>
+			<div className='mt-4 border-t pt-4 flex items-center justify-between'>
+				<p className='mr-4'>Total: ${totalAmount}</p>
+				<Link href='/checkout'>
+					<Button variant='contained' color='primary'>
+						Proceed to Checkout
+					</Button>
+				</Link>
 			</div>
 		</div>
 	)

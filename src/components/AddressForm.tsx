@@ -19,7 +19,7 @@ import { toast } from 'react-toastify'
 import { statesOfAmerica } from '~/data/statesOfAmerica'
 import { SettingFormsProps } from '~/lib/types'
 import { addressSchema } from '~/schemas/addressSchema'
-
+import { trpc } from '~/server/client'
 
 interface AddressFormInput {
 	address: string
@@ -33,6 +33,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	const [isFocusedField, setIsFocusedField] = useState<string | boolean>(false)
 	const [state, setState] = useState('')
 
+	const { data: userData, isLoading: userLoading, refetch } = trpc.user.getAddress.useQuery()
 	const handleChange = (event: SelectChangeEvent) => {
 		setState(event.target.value)
 	}
@@ -46,19 +47,49 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 		clearErrors,
 	} = useForm<AddressFormInput>({
 		resolver: zodResolver(addressSchema),
+		defaultValues: {
+			address: '',
+			addressOptional: '',
+			city: '',
+			state: '',
+			zipCode: '',
+		},
 	})
 
-	const onSubmit: SubmitHandler<AddressFormInput> = data => {
-		toast.success('Address updated successfully')
-		reset()
+	const updateAddressMutation = trpc.user.updateAddress.useMutation()
+
+	useEffect(() => {
+		if (userData) {
+			reset({
+				address: userData?.street || '',
+				addressOptional: userData?.addressOptional || '',
+				city: userData?.city || '',
+				state: userData?.state || '',
+				zipCode: userData?.zipCode || '',
+			})
+			setState(userData?.state || '')
+		}
+	}, [userData, reset])
+
+	const onSubmit: SubmitHandler<AddressFormInput> = async data => {
+		try {
+			await updateAddressMutation.mutateAsync(data)
+			toast.success('Address updated successfully')
+			refetch()
+		} catch (error) {
+			toast.error('Error updating address. Please try again.')
+		}
 	}
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {
 			setIsFocusedField(false)
-			reset()
 		}
 	}, [formState, reset])
+
+	if (userLoading) {
+		return <div>Loading user data...</div>
+	}
 
 	return (
 		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
@@ -101,6 +132,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					variant='filled'
 					helperText={<span className='block h-6'>{errors.address?.message}</span>}
 				/>
+
 				<TextField
 					className='relative max-w-72 w-full'
 					size='small'
@@ -127,6 +159,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					variant='filled'
 					helperText={<span className='block h-6'>{errors.addressOptional?.message}</span>}
 				/>
+
 				<TextField
 					className='relative max-w-72 w-full'
 					size='small'
@@ -160,7 +193,6 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 							<FaAngleRight />
 						</InputAdornment>
 					)}
-
 					<Select
 						size='small'
 						label='State'
@@ -175,9 +207,9 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 							onChange: handleChange,
 						})}
 						onFocus={() => setIsFocusedField('state')}>
-						{statesOfAmerica.map(state => (
-							<MenuItem key={state} value={state}>
-								{state}
+						{statesOfAmerica.map(stateName => (
+							<MenuItem key={stateName} value={stateName}>
+								{stateName}
 							</MenuItem>
 						))}
 					</Select>

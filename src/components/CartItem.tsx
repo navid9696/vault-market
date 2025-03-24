@@ -13,9 +13,10 @@ interface CartItemProps {
 	product: ProductCardProps
 	quantity: number
 	refetchCart: () => void
+	showControls?: boolean
 }
 
-const CartItem = ({ product, quantity, refetchCart }: CartItemProps) => {
+const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartItemProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const setProduct = useStore(state => state.setProduct)
 	const utils = trpc.useUtils()
@@ -65,22 +66,29 @@ const CartItem = ({ product, quantity, refetchCart }: CartItemProps) => {
 					<div className='relative flex justify-center items-center'>
 						<Image className='object-contain' src={product.imgURL} width={75} height={200} alt='Product Image' />
 					</div>
-					<h2 className='text-lg font-bold'>{product.name}</h2>
+					<h2 className=' text-lg font-bold'>{product.name}</h2>
 				</div>
-
-				<div className='flex flex-col sm:flex-row items-center sm:items-start gap-x-1  '>
-					<div className='flex flex-col items-center justify-center'>
-						<QuantitySelector
-							selectedQuantity={quantity}
-							setSelectedQuantity={handleQuantityChange}
-							availability={product.available}
-						/>
+				{showControls ? (
+					<div className='flex flex-col sm:flex-row items-center sm:items-start gap-x-1'>
+						<div className='flex flex-col items-center justify-center'>
+							<QuantitySelector
+								selectedQuantity={quantity}
+								setSelectedQuantity={handleQuantityChange}
+								availability={product.available}
+							/>
+							<p>Price: {displayPrice}</p>
+						</div>
+						<IconButton size='large' color='error' onClick={handleRemove}>
+							<BiTrash />
+						</IconButton>
+					</div>
+				) : (
+					<div className='w-full flex gap-2 font-semibold text-xl'>
+						<p>{quantity}</p>
+						<p>x</p>
 						<p>Price: {displayPrice}</p>
 					</div>
-					<IconButton size='large' color='error' onClick={handleRemove}>
-						<BiTrash />
-					</IconButton>
-				</div>
+				)}
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				<ProductModal />

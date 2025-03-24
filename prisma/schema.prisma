@@ -33,6 +33,7 @@ model User {
   emailVerified DateTime?
   password      String?
   image         String?
+  address       Address?
   accounts      Account[]
   sessions      Session[]
   favorites     Favorite[]
@@ -40,6 +41,14 @@ model User {
   userCarts     UserCart[]  
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+}
+
+type Address {
+  street          String
+  addressOptional String? 
+  city            String
+  state           String
+  zipCode         String
 }
 
 model Favorite {
