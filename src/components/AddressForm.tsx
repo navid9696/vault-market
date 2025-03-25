@@ -14,14 +14,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { toast } from 'react-toastify'
 import { statesOfAmerica } from '~/data/statesOfAmerica'
 import { SettingFormsProps } from '~/lib/types'
 import { addressSchema } from '~/schemas/addressSchema'
 import { trpc } from '~/server/client'
 
-interface AddressFormInput {
+export interface AddressFormInput {
 	address: string
 	addressOptional: string
 	city: string
@@ -29,11 +29,18 @@ interface AddressFormInput {
 	zipCode: string
 }
 
-const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
+interface AddressFormProps extends Partial<SettingFormsProps> {
+	isCheckout?: boolean
+	onSuccess?: (data: AddressFormInput) => void
+	setIsDetailsVisible?: Dispatch<SetStateAction<boolean>>
+}
+
+const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: AddressFormProps) => {
 	const [isFocusedField, setIsFocusedField] = useState<string | boolean>(false)
 	const [state, setState] = useState('')
 
 	const { data: userData, isLoading: userLoading, refetch } = trpc.user.getAddress.useQuery()
+
 	const handleChange = (event: SelectChangeEvent) => {
 		setState(event.target.value)
 	}
@@ -42,7 +49,6 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 		register,
 		handleSubmit,
 		reset,
-		formState,
 		formState: { errors },
 		clearErrors,
 	} = useForm<AddressFormInput>({
@@ -61,13 +67,13 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	useEffect(() => {
 		if (userData) {
 			reset({
-				address: userData?.street || '',
-				addressOptional: userData?.addressOptional || '',
-				city: userData?.city || '',
-				state: userData?.state || '',
-				zipCode: userData?.zipCode || '',
+				address: userData.street || '',
+				addressOptional: userData.addressOptional || '',
+				city: userData.city || '',
+				state: userData.state || '',
+				zipCode: userData.zipCode || '',
 			})
-			setState(userData?.state || '')
+			setState(userData.state || '')
 		}
 	}, [userData, reset])
 
@@ -76,16 +82,20 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 			await updateAddressMutation.mutateAsync(data)
 			toast.success('Address updated successfully')
 			refetch()
+			if (onSuccess) {
+				onSuccess(data)
+			}
 		} catch (error) {
 			toast.error('Error updating address. Please try again.')
 		}
 	}
 
 	useEffect(() => {
-		if (formState.isSubmitSuccessful) {
+		if (userLoading) return
+		if (updateAddressMutation.isSuccess) {
 			setIsFocusedField(false)
 		}
-	}, [formState, reset])
+	}, [updateAddressMutation.isSuccess, userLoading])
 
 	if (userLoading) {
 		return <div>Loading user data...</div>
@@ -93,18 +103,22 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 	return (
 		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
-			<Typography variant='h4' component='h3' gutterBottom>
-				Address Update
-			</Typography>
+			{!isCheckout && (
+				<Typography variant='h4' component='h3' gutterBottom>
+					Address Update
+				</Typography>
+			)}
 			<div
 				onBlur={() => {
 					setIsFocusedField(false)
 					clearErrors()
 				}}
 				className='flex flex-wrap justify-center gap-x-5'>
-				<Typography gutterBottom variant='h6' component='h4'>
-					Modify Your Address
-				</Typography>
+				{!isCheckout && (
+					<Typography gutterBottom variant='h6' component='h4'>
+						Modify Your Address
+					</Typography>
+				)}
 
 				<TextField
 					className='relative max-w-72 w-full'
@@ -189,7 +203,7 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 				<FormControl className='relative max-w-72 w-full text-left' variant='filled' error={!!errors.state}>
 					<InputLabel id='demo-simple-select-filled-label'>State</InputLabel>
 					{isFocusedField === 'state' && (
-						<InputAdornment className='top-4 -left-[2px] absolute ' position='start'>
+						<InputAdornment className='top-4 -left-[2px] absolute' position='start'>
 							<FaAngleRight />
 						</InputAdornment>
 					)}
@@ -204,7 +218,9 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 								setIsFocusedField(false)
 								clearErrors('state')
 							},
-							onChange: handleChange,
+							onChange: e => {
+								handleChange(e)
+							},
 						})}
 						onFocus={() => setIsFocusedField('state')}>
 						{statesOfAmerica.map(stateName => (
@@ -244,18 +260,20 @@ const AddressForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					helperText={<span className='block h-6'>{errors.zipCode?.message}</span>}
 				/>
 			</div>
-			<div className='flex justify-center gap-20'>
-				<Button
-					size='large'
-					onClick={() => {
-						setIsDetailsVisible(false)
-					}}>
-					Return
-				</Button>
-				<Button size='large' type='submit'>
-					Submit
-				</Button>
-			</div>
+			{!isCheckout && (
+				<div className='flex justify-center gap-20'>
+					<Button
+						size='large'
+						onClick={() => {
+							if (setIsDetailsVisible) setIsDetailsVisible(false)
+						}}>
+						Return
+					</Button>
+					<Button size='large' type='submit'>
+						Submit
+					</Button>
+				</div>
+			)}
 		</form>
 	)
 }

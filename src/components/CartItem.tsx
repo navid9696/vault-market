@@ -61,12 +61,19 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 
 	return (
 		<>
-			<div className='border p-2 mb-2 mr-2 flex sm:flex-row flex-col items-center justify-between gap-4'>
-				<div onClick={handleOpen} className='w-full cursor-pointer'>
+			<div
+				className={`border p-2 mb-2 mr-2 flex ${
+					showControls && `sm:flex-row flex-col`
+				} items-center justify-between gap-4`}>
+				<div
+					onClick={handleOpen}
+					className={`w-full cursor-pointer ${
+						!showControls && 'flex flex-col sm:flex-row items-center justify-start gap-x-4'
+					} `}>
 					<div className='relative flex justify-center items-center'>
 						<Image className='object-contain' src={product.imgURL} width={75} height={200} alt='Product Image' />
 					</div>
-					<h2 className=' text-lg font-bold'>{product.name}</h2>
+					<h2 className=' text-xl font-bold text-center'>{product.name}</h2>
 				</div>
 				{showControls ? (
 					<div className='flex flex-col sm:flex-row items-center sm:items-start gap-x-1'>
@@ -83,7 +90,7 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 						</IconButton>
 					</div>
 				) : (
-					<div className='w-full flex gap-2 font-semibold text-xl'>
+					<div className='w-full flex gap-4 text-xl justify-center items-center text-center'>
 						<p>{quantity}</p>
 						<p>x</p>
 						<p>Price: {displayPrice}</p>

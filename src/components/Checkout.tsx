@@ -18,6 +18,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { addressSchema } from '~/schemas/addressSchema'
 import { statesOfAmerica } from '~/data/statesOfAmerica'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
+import AddressForm from './AddressForm'
+import { GiBottleCap } from 'react-icons/gi'
 
 interface AddressFormInput {
 	address: string
@@ -39,7 +41,8 @@ const Checkout = () => {
 
 	const { data: addressData, isLoading: addressLoading } = trpc.user.getAddress.useQuery()
 
-	const [shippingMethod, setShippingMethod] = useState<string>('fallout')
+	const [shippingMethod, setShippingMethod] = useState<string>('')
+
 	const {
 		register,
 		handleSubmit,
@@ -68,8 +71,32 @@ const Checkout = () => {
 		}
 	}, [addressData, reset])
 
-	const onSubmit: SubmitHandler<AddressFormInput> = data => {
-		console.log('Placing order with shipping method:', shippingMethod, 'and address:', data)
+	const totalProductsPrice =
+		cartData?.reduce((sum, item) => {
+			const price =
+				item.product.discount > 0
+					? Math.round(item.product.price * (1 - item.product.discount))
+					: Math.round(item.product.price)
+			return sum + price * item.quantity
+		}, 0) || 0
+
+	let deliveryPrice = 0
+	if (shippingMethod === 'caravan') {
+		deliveryPrice = 150
+	} else if (shippingMethod === 'courier') {
+		deliveryPrice = 500
+	} else if (shippingMethod === 'vertibird') {
+		deliveryPrice = 1500
+	}
+
+	const totalAmount = totalProductsPrice + deliveryPrice
+
+	const handleCheckoutSubmit = (e: React.FormEvent) => {
+		e.preventDefault()
+		console.log('Order confirmed with shipping method:', shippingMethod)
+		console.log('Products Price:', totalProductsPrice)
+		console.log('Delivery Price:', deliveryPrice)
+		console.log('Total Amount:', totalAmount)
 	}
 
 	if (cartLoading || addressLoading) {
@@ -82,16 +109,8 @@ const Checkout = () => {
 	if (cartError) return <div>Error: {cartError.message}</div>
 	if (!cartData || cartData.length === 0) return <div>Your cart is empty.</div>
 
-	const totalAmount = cartData.reduce((sum, item) => {
-		const price =
-			item.product.discount > 0
-				? Math.round(item.product.price * (1 - item.product.discount))
-				: Math.round(item.product.price)
-		return sum + price * item.quantity
-	}, 0)
-
 	return (
-		<div style={{ marginTop: `${navHeight}px` }} className='p-4 h-with-navbar bg-white'>
+		<div style={{ marginTop: `${navHeight}px` }} className='p-4 bg-white'>
 			<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 			<div className='flex flex-col md:flex-row gap-4'>
 				<div className='flex-1 max-h-96 overflow-y-auto'>
@@ -109,10 +128,8 @@ const Checkout = () => {
 				<div className='w-full md:w-1/3'>
 					<FormControl>
 						<FormLabel
-							sx={{
-								'&.Mui-focused': { color: '#00d30b' },
-							}}
-							className='text-green-600 text-lg font-semibold uppercase'
+							sx={{ '&.Mui-focused': { color: '#00d30b' } }}
+							className='text-green-600 text-2xl font-bold'
 							id='shipping-method-group-label'>
 							Shipping Method
 						</FormLabel>
@@ -123,19 +140,51 @@ const Checkout = () => {
 							value={shippingMethod}
 							onChange={e => setShippingMethod(e.target.value)}>
 							<FormControlLabel
-								value='fallout'
-								control={<Radio sx={{ color: '#00a651', '&.Mui-checked': { color: '#00d30b' } }} />}
-								label='Fallout Delivery'
+								value='caravan'
+								control={
+									<Radio
+										sx={{
+											color: '#00a651',
+											'&.Mui-checked': { color: '#00d30b' },
+										}}
+									/>
+								}
+								label={
+									<span className='flex justify-center items-center gap-4'>
+										<p>Caravan</p>
+										<p className='flex items-center justify-center gap-1'>
+											150
+											<GiBottleCap />
+										</p>
+									</span>
+								}
 							/>
+
 							<FormControlLabel
 								value='courier'
 								control={<Radio sx={{ color: '#00a651', '&.Mui-checked': { color: '#00d30b' } }} />}
-								label='Courier'
+								label={
+									<span className='flex justify-center items-center gap-4'>
+										<p>Courier</p>
+										<p className='flex items-center justify-center gap-1'>
+											500
+											<GiBottleCap />
+										</p>
+									</span>
+								}
 							/>
 							<FormControlLabel
 								value='vertibird'
 								control={<Radio sx={{ color: '#00a651', '&.Mui-checked': { color: '#00d30b' } }} />}
-								label='Vertibird'
+								label={
+									<span className='flex justify-center items-center gap-4'>
+										<p>Vertibird</p>
+										<p className='flex items-center justify-center gap-1'>
+											1500
+											<GiBottleCap />
+										</p>
+									</span>
+								}
 							/>
 						</RadioGroup>
 					</FormControl>
@@ -143,61 +192,21 @@ const Checkout = () => {
 			</div>
 
 			<div className='mt-6'>
-				<h3 className='text-xl font-bold mb-2'>Delivery Address</h3>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<TextField
-						fullWidth
-						margin='normal'
-						label='Address'
-						variant='filled'
-						{...register('address')}
-						error={!!errors.address}
-						helperText={errors.address?.message}
-					/>
-					<TextField
-						fullWidth
-						margin='normal'
-						label='Address 2 (Optional)'
-						variant='filled'
-						{...register('addressOptional')}
-						error={!!errors.addressOptional}
-						helperText={errors.addressOptional?.message}
-					/>
-					<TextField
-						fullWidth
-						margin='normal'
-						label='City'
-						variant='filled'
-						{...register('city')}
-						error={!!errors.city}
-						helperText={errors.city?.message}
-					/>
-					<TextField
-						fullWidth
-						margin='normal'
-						label='State'
-						variant='filled'
-						{...register('state')}
-						error={!!errors.state}
-						helperText={errors.state?.message}
-					/>
-					<TextField
-						fullWidth
-						margin='normal'
-						label='Zip Code'
-						variant='filled'
-						{...register('zipCode')}
-						error={!!errors.zipCode}
-						helperText={errors.zipCode?.message}
-					/>
-					<div className='mt-4 border-t pt-4'>
-						<p className='text-lg font-semibold'>Total: ${totalAmount}</p>
-					</div>
-					<Button type='submit' variant='contained' color='primary' className='mt-4'>
-						Place Order
-					</Button>
-				</form>
+				<h2 className='text-2xl font-bold mb-2'>Delivery Address</h2>
+				<AddressForm isCheckout />
 			</div>
+
+			<div className='mt-6 border-t pt-4'>
+				<p className='text-lg font-semibold'>Products Price: ${totalProductsPrice}</p>
+				<p className='text-lg font-semibold'>Delivery Price: ${deliveryPrice}</p>
+				<p className='text-lg font-semibold'>Total Price: ${totalAmount}</p>
+			</div>
+
+			<form onSubmit={handleCheckoutSubmit} className='mt-4'>
+				<Button type='submit' variant='contained' color='primary'>
+					Confirm Transaction
+				</Button>
+			</form>
 		</div>
 	)
 }
