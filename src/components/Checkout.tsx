@@ -110,7 +110,10 @@ const Checkout = () => {
 	if (!cartData || cartData.length === 0) return <div>Your cart is empty.</div>
 
 	return (
-		<div style={{ marginTop: `${navHeight}px` }} className='p-4 bg-white'>
+		<form
+			onSubmit={handleCheckoutSubmit}
+			style={{ marginTop: `${navHeight}px` }}
+			className='p-4 text-green-600 bg-zinc-900'>
 			<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 			<div className='flex flex-col md:flex-row gap-4'>
 				<div className='flex-1 max-h-96 overflow-y-auto'>
@@ -190,24 +193,25 @@ const Checkout = () => {
 					</FormControl>
 				</div>
 			</div>
+			<div className='flex flex-col sm:flex-row'>
+				<div className='sm:w-1/2 p-4'>
+					<h2 className='text-2xl font-bold mb-2'>Delivery Address</h2>
+					<AddressForm isCheckout />
+				</div>
+				<div className='sm:w-1/2 p-4 flex flex-col  '>
+					<h2 className='text-2xl font-bold mb-2'>Summary</h2>
+					<div className=''>
+						<p className='text-lg font-semibold'>Products Price: ${totalProductsPrice}</p>
+						<p className='text-lg font-semibold my-4'>Delivery Price: ${deliveryPrice}</p>
+						<p className='text-lg font-semibold'>Total Price: ${totalAmount}</p>
+					</div>
 
-			<div className='mt-6'>
-				<h2 className='text-2xl font-bold mb-2'>Delivery Address</h2>
-				<AddressForm isCheckout />
+					<Button className='w-fit mt-4 p-2' type='submit' variant='contained' color='primary'>
+						Confirm Transaction
+					</Button>
+				</div>
 			</div>
-
-			<div className='mt-6 border-t pt-4'>
-				<p className='text-lg font-semibold'>Products Price: ${totalProductsPrice}</p>
-				<p className='text-lg font-semibold'>Delivery Price: ${deliveryPrice}</p>
-				<p className='text-lg font-semibold'>Total Price: ${totalAmount}</p>
-			</div>
-
-			<form onSubmit={handleCheckoutSubmit} className='mt-4'>
-				<Button type='submit' variant='contained' color='primary'>
-					Confirm Transaction
-				</Button>
-			</form>
-		</div>
+		</form>
 	)
 }
 

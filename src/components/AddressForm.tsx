@@ -121,7 +121,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 				)}
 
 				<TextField
-					className='relative max-w-72 w-full'
+					className='relative  w-full'
 					size='small'
 					{...register('address', {
 						onBlur: () => {
@@ -131,6 +131,10 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 					})}
 					onFocus={() => setIsFocusedField('address')}
 					InputProps={{
+						sx: {
+							'&:after': { borderBottomColor: '#00d30b' },
+						},
+						style: { color: '#16a34a' },
 						startAdornment: isFocusedField === 'address' && (
 							<InputAdornment
 								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
@@ -139,6 +143,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 							</InputAdornment>
 						),
 					}}
+					InputLabelProps={{ sx: { color: '#16a34a', '&.Mui-focused': { color: '#00d30b' } } }}
 					error={!!errors.address}
 					id='filled-basic-address'
 					label='Address'
@@ -148,7 +153,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 				/>
 
 				<TextField
-					className='relative max-w-72 w-full'
+					className='relative  w-full'
 					size='small'
 					{...register('addressOptional', {
 						onBlur: () => {
@@ -158,6 +163,10 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 					})}
 					onFocus={() => setIsFocusedField('addressOptional')}
 					InputProps={{
+						sx: {
+							'&:after': { borderBottomColor: '#00d30b' },
+						},
+						style: { color: '#16a34a' },
 						startAdornment: isFocusedField === 'addressOptional' && (
 							<InputAdornment
 								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
@@ -166,6 +175,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 							</InputAdornment>
 						),
 					}}
+					InputLabelProps={{ sx: { color: '#16a34a', '&.Mui-focused': { color: '#00d30b' } } }}
 					error={!!errors.addressOptional}
 					id='filled-basic-addressOptional'
 					label='Address 2 (Opt)'
@@ -175,7 +185,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 				/>
 
 				<TextField
-					className='relative max-w-72 w-full'
+					className='relative  w-full'
 					size='small'
 					{...register('city', {
 						onBlur: () => {
@@ -185,6 +195,10 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 					})}
 					onFocus={() => setIsFocusedField('city')}
 					InputProps={{
+						sx: {
+							'&:after': { borderBottomColor: '#00d30b' },
+						},
+						style: { color: '#16a34a' },
 						startAdornment: isFocusedField === 'city' && (
 							<InputAdornment
 								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
@@ -193,6 +207,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 							</InputAdornment>
 						),
 					}}
+					InputLabelProps={{ sx: { color: '#16a34a', '&.Mui-focused': { color: '#00d30b' } } }}
 					error={!!errors.city}
 					id='filled-basic-city'
 					label='City'
@@ -200,14 +215,24 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 					helperText={<span className='block h-6'>{errors.city?.message}</span>}
 				/>
 
-				<FormControl className='relative max-w-72 w-full text-left' variant='filled' error={!!errors.state}>
-					<InputLabel id='demo-simple-select-filled-label'>State</InputLabel>
+				<FormControl className='relative  w-full text-left' variant='filled' error={!!errors.state}>
+					<InputLabel
+						sx={{ color: '#16a34a', '&.Mui-focused': { color: '#00d30b' } }}
+						id='demo-simple-select-filled-label'>
+						State
+					</InputLabel>
+
 					{isFocusedField === 'state' && (
 						<InputAdornment className='top-4 -left-[2px] absolute' position='start'>
 							<FaAngleRight />
 						</InputAdornment>
 					)}
 					<Select
+						variant='filled'
+						sx={{
+							'&:after': { borderBottomColor: '#00d30b' },
+							'& .MuiFilledInput-input': { color: '#16a34a' },
+						}}
 						size='small'
 						label='State'
 						labelId='demo-simple-select-filled-label'
@@ -218,9 +243,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 								setIsFocusedField(false)
 								clearErrors('state')
 							},
-							onChange: e => {
-								handleChange(e)
-							},
+							onChange: e => handleChange(e),
 						})}
 						onFocus={() => setIsFocusedField('state')}>
 						{statesOfAmerica.map(stateName => (
@@ -229,13 +252,14 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 							</MenuItem>
 						))}
 					</Select>
+
 					<FormHelperText>
 						<span className='block h-6'>{errors.state?.message}</span>
 					</FormHelperText>
 				</FormControl>
 
 				<TextField
-					className='relative max-w-72 w-full'
+					className='relative  w-full'
 					size='small'
 					{...register('zipCode', {
 						onBlur: () => {
@@ -245,6 +269,10 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 					})}
 					onFocus={() => setIsFocusedField('zipCode')}
 					InputProps={{
+						sx: {
+							'&:after': { borderBottomColor: '#00d30b' },
+						},
+						style: { color: '#16a34a' },
 						startAdornment: isFocusedField === 'zipCode' && (
 							<InputAdornment
 								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
@@ -253,6 +281,7 @@ const AddressForm = ({ setIsDetailsVisible, isCheckout = false, onSuccess }: Add
 							</InputAdornment>
 						),
 					}}
+					InputLabelProps={{ sx: { color: '#16a34a', '&.Mui-focused': { color: '#00d30b' } } }}
 					error={!!errors.zipCode}
 					id='filled-basic-zipCode'
 					label='Zip code'
