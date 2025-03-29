@@ -140,7 +140,7 @@ const Checkout = () => {
 		<>
 			<form
 				style={{ marginTop: `${navHeight}px` }}
-				className='p-4 bg-white text-green-600'
+				className='p-4 bg-zinc-800 text-green-600'
 				onSubmit={handleCheckoutSubmit}>
 				<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 				<div className='flex flex-col md:flex-row gap-4'>

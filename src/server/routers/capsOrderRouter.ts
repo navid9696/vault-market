@@ -26,7 +26,7 @@ export const capsOrderRouter = router({
 		.input(capsOrderInputSchema)
 		.output(capsOrderOutputSchema)
 		.mutation(async ({ input, ctx }) => {
-			const userId = ctx.session?.user?.id
+			const userId = ctx.session?.sub
 			if (!userId) throw new Error('Not authenticated')
 
 			const order = await prisma.capsOrder.create({
@@ -41,7 +41,7 @@ export const capsOrderRouter = router({
 		}),
 
 	getCapsOrders: procedure.output(z.array(capsOrderOutputSchema)).query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const orders = await prisma.capsOrder.findMany({
@@ -52,7 +52,7 @@ export const capsOrderRouter = router({
 	}),
 
 	getTotalCaps: procedure.output(totalCapsSchema).query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const aggregate = await prisma.capsOrder.aggregate({

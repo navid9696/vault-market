@@ -47,7 +47,7 @@ export const userRouter = router({
 		}
 	}),
 	updateAddress: procedure.input(addressSchema).mutation(async ({ input, ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const updatedUser = await prisma.user.update({
@@ -65,7 +65,7 @@ export const userRouter = router({
 		return updatedUser
 	}),
 	getAddress: procedure.query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const user = await prisma.user.findUnique({

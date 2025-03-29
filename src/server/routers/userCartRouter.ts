@@ -15,7 +15,7 @@ const totalItemsSchema = z.object({
 
 export const userCartRouter = router({
 	addCartItem: procedure.input(cartItemInputSchema).mutation(async ({ input, ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 		const result = await prisma.$transaction(async prisma => {
 			const product = await prisma.products.findUnique({ where: { id: input.productId } })
@@ -49,7 +49,7 @@ export const userCartRouter = router({
 	}),
 
 	updateCartItem: procedure.input(cartItemInputSchema).mutation(async ({ input, ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 		const result = await prisma.$transaction(async prisma => {
 			const existingItem = await prisma.userCart.findUnique({
@@ -81,7 +81,7 @@ export const userCartRouter = router({
 	}),
 
 	removeCartItem: procedure.input(z.object({ productId: z.string() })).mutation(async ({ input, ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 		const result = await prisma.$transaction(async prisma => {
 			const cartItem = await prisma.userCart.findUnique({
@@ -101,7 +101,7 @@ export const userCartRouter = router({
 	}),
 
 	getCartItems: procedure.query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 		const items = await prisma.userCart.findMany({
 			where: { userId },
@@ -112,7 +112,7 @@ export const userCartRouter = router({
 	}),
 
 	getTotalItems: procedure.output(totalItemsSchema).query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 		const items = await prisma.userCart.findMany({
 			where: { userId },
