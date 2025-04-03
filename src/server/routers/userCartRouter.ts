@@ -122,4 +122,10 @@ export const userCartRouter = router({
 		const total = filteredItems.reduce((sum, item) => sum + item.quantity, 0)
 		return { total }
 	}),
+	clearCart: procedure.mutation(async ({ ctx }) => {
+		const userId = ctx.session?.sub
+		if (!userId) throw new Error('Not authenticated')
+		await prisma.userCart.deleteMany({ where: { userId } })
+		return { success: true }
+	}),
 })

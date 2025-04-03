@@ -16,7 +16,7 @@ const Home = () => {
 				<NavigationProvider>
 					<Navbar />
 					<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-					<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl'>
+					<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl bg-zinc-800'>
 						<Checkout />
 					</main>
 					<Footer />

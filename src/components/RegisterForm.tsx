@@ -25,6 +25,14 @@ const RegisterForm = () => {
 		},
 	})
 
+	
+	const onSubmit: SubmitHandler<RegisterInput> = async data => {
+		await toast.promise(registerMutation.mutateAsync(data), {
+			pending: '📡 Uploading resident data...',
+			success: '✅ Registration confirmed! Enjoy your Vault life.',
+			error: '❌ ERROR: Data corrupted. Please try again.',
+		})
+	}
 	const {
 		register,
 		handleSubmit,
@@ -35,14 +43,6 @@ const RegisterForm = () => {
 	} = useForm<RegisterInput>({
 		resolver: zodResolver(registerSchema),
 	})
-
-	const onSubmit: SubmitHandler<RegisterInput> = async data => {
-		await toast.promise(registerMutation.mutateAsync(data), {
-			pending: '📡 Uploading resident data...',
-			success: '✅ Registration confirmed! Enjoy your Vault life.',
-			error: '❌ ERROR: Data corrupted. Please try again.',
-		})
-	}
 
 	useEffect(() => {
 		if (formState.isSubmitSuccessful) {

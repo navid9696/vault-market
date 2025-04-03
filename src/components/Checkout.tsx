@@ -6,15 +6,16 @@ import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import AddressForm, { AddressFormInput } from './AddressForm'
 import { GiBottleCap } from 'react-icons/gi'
 import ConfirmationModal from './ConfirmationModal'
+import TransitionsModal from './TransitionModal'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { addressSchema } from '~/schemas/addressSchema'
-import TransitionsModal from './TransitionModal'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 
 const Checkout = () => {
+	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
-
 	const {
 		data: cartData,
 		isLoading: cartLoading,
@@ -22,31 +23,41 @@ const Checkout = () => {
 		refetch: refetchCart,
 	} = trpc.cart.getCartItems.useQuery()
 	const { data: addressData, isLoading: addressLoading } = trpc.user.getAddress.useQuery()
+	const createOrderMutation = trpc.orders.createOrder.useMutation()
 	const updateAddressMutation = trpc.user.updateAddress.useMutation()
+	const clearCartMutation = trpc.cart.clearCart.useMutation()
 	const [shippingMethod, setShippingMethod] = useState<string>('caravan')
 	const [originalAddress, setOriginalAddress] = useState<AddressFormInput | null>(null)
 	const [currentAddress, setCurrentAddress] = useState<AddressFormInput | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const {
-		register,
-		handleSubmit,
-		reset,
-		getValues,
-		formState: { errors },
-	} = useForm<AddressFormInput>({
+	const { handleSubmit, reset, getValues, watch, register } = useForm<AddressFormInput>({
 		resolver: zodResolver(addressSchema),
 		defaultValues: { address: '', addressOptional: '', city: '', state: '', zipCode: '' },
 	})
 
 	useEffect(() => {
+		const subscription = watch(value => {
+			const newAddress: AddressFormInput = {
+				address: value.address ?? '',
+				addressOptional: value.addressOptional ?? '',
+				city: value.city ?? '',
+				state: value.state ?? '',
+				zipCode: value.zipCode ?? '',
+			}
+			setCurrentAddress(newAddress)
+		})
+		return () => subscription.unsubscribe()
+	}, [watch])
+
+	useEffect(() => {
 		if (addressData) {
 			const defaultAddress: AddressFormInput = {
-				address: addressData.street || '',
-				addressOptional: addressData.addressOptional || '',
-				city: addressData.city || '',
-				state: addressData.state || '',
-				zipCode: addressData.zipCode || '',
+				address: addressData.street ?? '',
+				addressOptional: addressData.addressOptional ?? '',
+				city: addressData.city ?? '',
+				state: addressData.state ?? '',
+				zipCode: addressData.zipCode ?? '',
 			}
 			reset(defaultAddress)
 			setOriginalAddress(defaultAddress)
@@ -79,12 +90,39 @@ const Checkout = () => {
 	const deliveryPrice = getDeliveryPrice(shippingMethod)
 	const totalAmount = totalProductsPrice + deliveryPrice
 
-	const submitOrder = (address: AddressFormInput | null) => {
-		console.log('Order confirmed with shipping method:', shippingMethod)
-		console.log('Address:', address)
-		console.log('Products Price:', totalProductsPrice)
-		console.log('Delivery Price:', deliveryPrice)
-		console.log('Total Amount:', totalAmount)
+	const submitOrder = async (address: AddressFormInput) => {
+		const orderItems =
+			cartData?.map(item => ({
+				productId: item.product.id,
+				name: item.product.name,
+				price:
+					item.product.discount > 0
+						? Math.round(item.product.price * (1 - item.product.discount))
+						: Math.round(item.product.price),
+				quantity: item.quantity,
+			})) || []
+		const payload = {
+			shippingMethod,
+			address: {
+				street: address.address,
+				addressOptional: address.addressOptional,
+				city: address.city,
+				state: address.state,
+				zipCode: address.zipCode,
+			},
+			orderDate: new Date(),
+			totalAmount,
+			orderItems,
+		}
+		try {
+			await createOrderMutation.mutateAsync(payload)
+			toast.success('Order placed successfully')
+			await clearCartMutation.mutateAsync()
+			refetchCart()
+			router.push('/')
+		} catch (error: any) {
+			toast.error('Error placing order. Please try again.')
+		}
 	}
 
 	const onSubmit: SubmitHandler<AddressFormInput> = data => {
@@ -140,7 +178,7 @@ const Checkout = () => {
 		<>
 			<form
 				style={{ marginTop: `${navHeight}px` }}
-				className='p-4 bg-zinc-800 text-green-600'
+				className='p-4 bg-white text-green-600'
 				onSubmit={handleCheckoutSubmit}>
 				<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 				<div className='flex flex-col md:flex-row gap-4'>
@@ -209,7 +247,7 @@ const Checkout = () => {
 				<div className='flex flex-col sm:flex-row'>
 					<div className='sm:w-1/2 p-4'>
 						<h2 className='text-2xl font-bold mb-2'>Delivery Address</h2>
-						<AddressForm isCheckout onSuccess={data => setCurrentAddress(data)} register={register} errors={errors} />
+						<AddressForm isCheckout onSuccess={data => setCurrentAddress(data)} register={register} />
 					</div>
 					<div className='sm:w-1/2 p-4 flex flex-col'>
 						<h2 className='text-2xl font-bold mb-2'>Summary</h2>
