@@ -13,7 +13,7 @@ import CartModal from './CartModal'
 const Navbar = () => {
 	const { navRef } = useNavigationHeight()
 	const { data: session } = useSession()
-	const { data: caps } = trpc.exchange.getTotalCaps.useQuery(undefined, { enabled: !!session })
+	const { data: caps } = trpc.exchange.getCapsBalance.useQuery(undefined, { enabled: !!session })
 	const { data: cart } = trpc.cart.getTotalItems.useQuery(undefined, { enabled: !!session })
 	const [modalOpen, setModalOpen] = useState(false)
 	const handleModalClose = useCallback(() => {
@@ -24,7 +24,7 @@ const Navbar = () => {
 		setModalOpen(true)
 	}, [setModalOpen])
 
-	const totalCaps = caps?.total ?? 0
+	const totalCaps = caps?.balance ?? 0
 	const cartCount = cart?.total
 
 	return (

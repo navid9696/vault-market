@@ -22,10 +22,12 @@ const Checkout = () => {
 		error: cartError,
 		refetch: refetchCart,
 	} = trpc.cart.getCartItems.useQuery()
-	const { data: addressData, isLoading: addressLoading } = trpc.user.getAddress.useQuery()
+	const { data: addressData, isLoading: addressLoading, refetch: refetchAddress } = trpc.user.getAddress.useQuery()
 	const createOrderMutation = trpc.orders.createOrder.useMutation()
 	const updateAddressMutation = trpc.user.updateAddress.useMutation()
 	const clearCartMutation = trpc.cart.clearCart.useMutation()
+	const spendCapsMutation = trpc.exchange.spendCaps.useMutation()
+
 	const [shippingMethod, setShippingMethod] = useState<string>('caravan')
 	const [originalAddress, setOriginalAddress] = useState<AddressFormInput | null>(null)
 	const [currentAddress, setCurrentAddress] = useState<AddressFormInput | null>(null)
@@ -115,13 +117,14 @@ const Checkout = () => {
 			orderItems,
 		}
 		try {
+			await spendCapsMutation.mutateAsync({ amount: totalAmount })
 			await createOrderMutation.mutateAsync(payload)
 			toast.success('Order placed successfully')
 			await clearCartMutation.mutateAsync()
 			refetchCart()
 			router.push('/')
 		} catch (error: any) {
-			toast.error('Error placing order. Please try again.')
+			toast.error(error.message || 'Error placing order. Please try again.')
 		}
 	}
 
@@ -143,6 +146,7 @@ const Checkout = () => {
 		try {
 			await updateAddressMutation.mutateAsync(data)
 			toast.success('Address updated successfully')
+			await refetchAddress()
 			handleModalClose()
 			submitOrder(data)
 		} catch (error) {
@@ -152,8 +156,6 @@ const Checkout = () => {
 
 	const handleModalCancel = () => {
 		handleModalClose()
-		const data = getValues()
-		submitOrder(data)
 	}
 
 	const handleOpen = () => {

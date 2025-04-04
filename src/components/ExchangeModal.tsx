@@ -20,10 +20,10 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 		onSuccess: () => {
 			setCapsAmount('')
 			setUsdValue('')
-			utils.exchange.getTotalCaps.invalidate()
+			utils.exchange.getCapsBalance.invalidate()
 			setTimeout(() => {
 				onClose()
-			}, 3000)
+			}, 2000)
 		},
 		onError: (error: unknown) => {
 			console.error('Error creating order:', error)
