@@ -7,7 +7,7 @@ const prisma = new PrismaClient()
 export const favoriteRouter = router({
 	addFavorite: procedure.input(z.object({ productId: z.string() })).mutation(async ({ input, ctx }) => {
 		try {
-			const userId = ctx.session?.user?.id
+			const userId = ctx.session?.sub
 			if (!userId) throw new Error('Not authenticated')
 
 			const product = await prisma.products.findUnique({ where: { id: input.productId } })
@@ -42,7 +42,7 @@ export const favoriteRouter = router({
 	}),
 
 	removeFavorite: procedure.input(z.object({ productId: z.string() })).mutation(async ({ input, ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const removed = await prisma.favorite.delete({
@@ -57,7 +57,7 @@ export const favoriteRouter = router({
 	}),
 
 	getFavorites: procedure.query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const favorites = await prisma.favorite.findMany({
@@ -66,6 +66,6 @@ export const favoriteRouter = router({
 				product: true,
 			},
 		})
-		return favorites
+		return favorites.filter(fav => fav.product !== null)
 	}),
 })

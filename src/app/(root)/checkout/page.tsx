@@ -7,7 +7,7 @@ import { NavigationProvider } from '~/context/NavbarHeightContext'
 import { ThemeProvider } from '@mui/material'
 import theme from '~/lib/theme'
 import { SessionProvider } from 'next-auth/react'
-import Favorites from '~/components/Favorites'
+import Checkout from '~/components/Checkout'
 
 const Home = () => {
 	return (
@@ -16,8 +16,8 @@ const Home = () => {
 				<NavigationProvider>
 					<Navbar />
 					<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-					<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl'>
-						<Favorites />
+					<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl bg-zinc-800'>
+						<Checkout />
 					</main>
 					<Footer />
 				</NavigationProvider>

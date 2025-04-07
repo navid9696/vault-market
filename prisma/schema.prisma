@@ -23,6 +23,7 @@ model Products {
   subCategoryId   Int?
   subCategoryName String?
   favorites       Favorite[]
+  userCarts       UserCart[]  
 }
 
 model User {
@@ -32,12 +33,23 @@ model User {
   emailVerified DateTime?
   password      String?
   image         String?
+  address       Address?
   accounts      Account[]
   sessions      Session[]
   favorites     Favorite[]
-  capsOrders    CapsOrder[] 
+  capsOrders    CapsOrder[]
+  userCarts     UserCart[]  
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  userOrders UserOrders[]
+}
+
+type Address {
+  street          String
+  addressOptional String? 
+  city            String
+  state           String
+  zipCode         String
 }
 
 model Favorite {
@@ -58,6 +70,45 @@ model CapsOrder {
   quantity  Int
   usdValue  Float
   createdAt DateTime @default(now())
+}
+
+model UserOrders {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String      @db.ObjectId
+  street          String
+  addressOptional String?
+  city            String
+  state           String
+  zipCode         String
+  shippingMethod  String
+  orderDate       DateTime    @default(now())
+  totalAmount     Float
+  orderItems      OrderItem[]
+}
+
+model OrderItem {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  order      UserOrders @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId    String     @db.ObjectId
+  productId  String     @db.ObjectId
+  name       String
+  price      Int
+  quantity   Int
+}
+
+
+model UserCart {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String    @db.ObjectId
+  product   Products  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String    @db.ObjectId
+  quantity  Int       
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, productId], name: "userId_productId_cart")
 }
 
 model Account {

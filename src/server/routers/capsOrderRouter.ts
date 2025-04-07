@@ -26,7 +26,7 @@ export const capsOrderRouter = router({
 		.input(capsOrderInputSchema)
 		.output(capsOrderOutputSchema)
 		.mutation(async ({ input, ctx }) => {
-			const userId = ctx.session?.user?.id
+			const userId = ctx.session?.sub
 			if (!userId) throw new Error('Not authenticated')
 
 			const order = await prisma.capsOrder.create({
@@ -41,7 +41,7 @@ export const capsOrderRouter = router({
 		}),
 
 	getCapsOrders: procedure.output(z.array(capsOrderOutputSchema)).query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const orders = await prisma.capsOrder.findMany({
@@ -52,7 +52,7 @@ export const capsOrderRouter = router({
 	}),
 
 	getTotalCaps: procedure.output(totalCapsSchema).query(async ({ ctx }) => {
-		const userId = ctx.session?.user?.id
+		const userId = ctx.session?.sub
 		if (!userId) throw new Error('Not authenticated')
 
 		const aggregate = await prisma.capsOrder.aggregate({
@@ -63,4 +63,46 @@ export const capsOrderRouter = router({
 		const total = aggregate._sum.quantity ?? 0
 		return { total }
 	}),
+	spendCaps: procedure.input(z.object({ amount: z.number().min(1) })).mutation(async ({ input, ctx }) => {
+		const userId = ctx.session?.sub
+		if (!userId) throw new Error('Not authenticated')
+
+		const aggregate = await prisma.capsOrder.aggregate({
+			_sum: { quantity: true },
+			where: { userId },
+		})
+
+		const totalCaps = aggregate._sum.quantity ?? 0
+		const spentCaps = await prisma.userOrders.aggregate({
+			_sum: { totalAmount: true },
+			where: { userId },
+		})
+
+		const totalSpent = spentCaps._sum.totalAmount ?? 0
+		const availableCaps = totalCaps - totalSpent
+
+		if (availableCaps < input.amount) {
+			throw new Error('Not enough caps')
+		}
+
+		
+		return { success: true, remainingCaps: availableCaps - input.amount }
+	}),
+	getCapsBalance: procedure.output(z.object({ balance: z.number() })).query(async ({ ctx }) => {
+		const userId = ctx.session?.sub
+		if (!userId) throw new Error('Not authenticated')
+	
+		const aggregate = await prisma.capsOrder.aggregate({
+			_sum: { quantity: true },
+			where: { userId },
+		})
+		const spent = await prisma.userOrders.aggregate({
+			_sum: { totalAmount: true },
+			where: { userId },
+		})
+	
+		const balance = (aggregate._sum.quantity ?? 0) - (spent._sum.totalAmount ?? 0)
+		return { balance }
+	})
+	
 })

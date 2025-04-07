@@ -4,42 +4,68 @@ import ShoppingCartCheckoutTwoToneIcon from '@mui/icons-material/ShoppingCartChe
 import { GiBottleCap as Caps } from 'react-icons/gi'
 import QuantitySelector from './QuantitySelector'
 import Link from 'next/link'
+import { useState } from 'react'
+import { trpc } from '~/server/client'
+import { toast } from 'react-toastify'
 import useStore from '~/store/useStore'
 
-// will be improved in future
 const PriceSection = () => {
-	const isDiscount = useStore(state => state.isDiscount)
-
+	const utils = trpc.useUtils()
+	const product = useStore(state => state.product)
+	const setProduct = useStore(state => state.setProduct)
+	const [selectedQuantity, setSelectedQuantity] = useState(1)
+	if (!product) return null
+	const addCartItemMutation = trpc.cart.addCartItem.useMutation({
+		onSuccess: () => {
+			toast.success('Item added to cart!')
+			setProduct({ ...product, available: product.available - selectedQuantity })
+			utils.cart.getTotalItems.invalidate()
+		},
+		onError: error => {
+			console.error('Error adding to cart', error)
+			toast.error('Error adding item. Please try again.')
+		},
+	})
+	const handleAddToCart = () => {
+		addCartItemMutation.mutate({
+			productId: product.id,
+			quantity: selectedQuantity,
+		})
+	}
 	return (
-		<div className='w-1/2 flex flex-col justify-evenly items-center '>
+		<div className='w-1/2 flex flex-col justify-evenly items-center'>
 			<div className='sm:w-full flex flex-col items-center text-green-950'>
 				<h3 className='w-full text-left font-semibold text-sm'>PRICE</h3>
 				<div className='w-full flex flex-col sm:flex-row justify-start gap-4'>
 					<p className='flex items-center gap-1 md:text-2xl text-xl'>
-						1500
+						{product.price}
 						<Caps />
 					</p>
-					{isDiscount && (
+					{!!product.discount && (
 						<p className='flex items-center gap-1 line-through md:text-base text-sm decoration-red-500 decoration-2'>
-							2100
+							{(product.price / (1 - product.discount)).toFixed(0)}
 							<Caps />
 						</p>
 					)}
 				</div>
 			</div>
 			<div>
-				<QuantitySelector />
-				<p className='text-xs'>in stock {123}</p>
+				<QuantitySelector
+					selectedQuantity={selectedQuantity}
+					setSelectedQuantity={setSelectedQuantity}
+					availability={product.available}
+					strictLimit
+				/>
+				<p className='text-xs'>in stock {product.available}</p>
 			</div>
 			<div className='flex flex-col gap-4'>
-				<Button className='text-base' endIcon={<AddShoppingCartTwoToneIcon />}>
-					add to cart
+				<Button
+					className='text-base'
+					onClick={handleAddToCart}
+					disabled={addCartItemMutation.status === 'pending'}
+					endIcon={<AddShoppingCartTwoToneIcon />}>
+					{addCartItemMutation.status === 'pending' ? 'Adding...' : 'add to cart'}
 				</Button>
-				<Link href={'/cart'}>
-					<Button className='text-base' endIcon={<ShoppingCartCheckoutTwoToneIcon />}>
-						buy now
-					</Button>
-				</Link>
 			</div>
 		</div>
 	)

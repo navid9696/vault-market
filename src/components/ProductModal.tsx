@@ -1,12 +1,13 @@
+import { IconButton, Rating, styled } from '@mui/material'
 import { ImHeart as FavoriteIcon } from 'react-icons/im'
 import StarIcon from '@mui/icons-material/Star'
 import Image from 'next/image'
 import { useCallback, useEffect, useState } from 'react'
-import { IconButton, Rating, styled } from '@mui/material'
-import ModalPriceSection from './ModalPriceSection'
 import ReviewList from './ReviewList'
-import TransitionsModal from './TransitionModal'
+import ModalPriceSection from './ModalPriceSection'
 import { trpc } from '~/server/client'
+import useStore from '~/store/useStore'
+import TransitionsModal from './TransitionModal'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -19,13 +20,14 @@ const StyledRating = styled(Rating)({
 	},
 })
 
-export interface ProductModalProps {
-	productId: string
-}
+const ProductModal = () => {
+	const { product } = useStore(state => ({
+		product: state.product,
+	}))
 
-const ProductModal = ({ productId }: ProductModalProps) => {
 	const [isFavorite, setIsFavorite] = useState(false)
 	const [modalOpen, setModalOpen] = useState(false)
+
 	const addFavoriteMutation = trpc.favorite.addFavorite.useMutation()
 	const removeFavoriteMutation = trpc.favorite.removeFavorite.useMutation()
 	const { data: favorites } = trpc.favorite.getFavorites.useQuery()
@@ -39,21 +41,24 @@ const ProductModal = ({ productId }: ProductModalProps) => {
 	}, [])
 
 	const handleToggleFavorite = useCallback(() => {
+		if (!product) return
 		if (isFavorite) {
-			removeFavoriteMutation.mutate({ productId })
+			removeFavoriteMutation.mutate({ productId: product.id })
 			setIsFavorite(false)
 		} else {
-			addFavoriteMutation.mutate({ productId })
+			addFavoriteMutation.mutate({ productId: product.id })
 			setIsFavorite(true)
 		}
-	}, [isFavorite, productId, addFavoriteMutation, removeFavoriteMutation])
+	}, [isFavorite, product, addFavoriteMutation, removeFavoriteMutation])
 
 	useEffect(() => {
-		if (favorites) {
-			const favExists = favorites.some(fav => fav.product.id === productId)
+		if (favorites && product) {
+			const favExists = favorites.some(fav => fav.product.id === product.id)
 			setIsFavorite(favExists)
 		}
-	}, [favorites, productId])
+	}, [favorites, product])
+
+	if (!product) return null
 
 	return (
 		<>
@@ -63,8 +68,8 @@ const ProductModal = ({ productId }: ProductModalProps) => {
 				</div>
 				<div className='md:w-1/2 w-full flex justify-around md:gap-8 gap-2'>
 					<div className='absolute'>
-						<h2 className='relative w-full font-semibold text-xl'>
-							Stimpak
+						<h2 className='relative w-full font-semibold text-2xl'>
+							{product.name}
 							<IconButton
 								className='absolute -top-2 group'
 								disableFocusRipple
@@ -89,11 +94,11 @@ const ProductModal = ({ productId }: ProductModalProps) => {
 						<div
 							onClick={handleModalOpen}
 							className='p-4 flex flex-col shadow-inset-1 rounded-2xl text-black bg-green-700 md:hover:bg-green-700 hover:bg-green-500 md:cursor-default cursor-pointer transition-colors'>
-							<p className='font-semibold text-xl'>{3.5}</p>
+							<p className='font-semibold text-xl'>{product.rating.toFixed(2)}</p>
 							<StyledRating
 								emptyIcon={<StarIcon fontSize='inherit' />}
 								className='text-2xl'
-								value={3.5}
+								value={product.rating}
 								max={5}
 								precision={0.25}
 								name='read-only'
@@ -105,15 +110,14 @@ const ProductModal = ({ productId }: ProductModalProps) => {
 								<div className='relative min-h-36 h-full min-w-32'>
 									<Image
 										className='hover:scale-110 object-contain transition-transform'
-										src={'/imgs/stimpak.webp'}
+										src={product.imgURL}
 										fill
 										alt='Product Image'
 									/>
 								</div>
 							</div>
 							<div className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-green-400 via-green-200 to-green-500 md:text-sm text-xs text-green-950 font-semibold'>
-								Stimpak provides rapid healing, instantly restoring your health. Essential for surviving the
-								Wasteland&apos;s dangers.
+								{product.description}
 							</div>
 						</div>
 					</div>

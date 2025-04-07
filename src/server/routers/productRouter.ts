@@ -78,4 +78,16 @@ export const productRouter = router({
 			throw new Error('Failed to delete product: ' + (error as Error).message)
 		}
 	}),
+
+	getById: procedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
+		try {
+			const product = await prisma.products.findUnique({
+				where: { id: input.id },
+			})
+			if (!product) throw new Error('Product not found')
+			return product
+		} catch (error) {
+			throw new Error('Failed to retrieve product: ' + (error as Error).message)
+		}
+	}),
 })
