@@ -138,7 +138,7 @@ export default function AccountMenu() {
 					</Link>
 				</MenuItem>
 				<MenuItem onClick={handleClose}>
-					<Link href={'/orders'}>
+					<Link href={'/userOrders'}>
 						<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
 					</Link>
 				</MenuItem>
