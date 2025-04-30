@@ -7,18 +7,19 @@ interface OrderCardProps {
 
 const OrderCard = ({ order }: OrderCardProps) => (
 	<div className='w-80 border border-green-700 bg-black text-green-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300'>
-		<div className='mb-2 text-sm text-green-400'>
+		<div className='mb-2 text-sm text-green-600'>
 			<span className='font-semibold text-green-300'>Order Date:</span> {new Date(order.orderDate).toLocaleString()}
 		</div>
 		<div className='mb-2 text-lg font-semibold text-green-300'>
 			<span className='text-green-500'>Total Amount:</span> {order.totalAmount} caps
 		</div>
-		<div className='mb-2 text-sm text-green-400'>
-			<span className='font-semibold text-green-300'>Shipping Method:</span> {order.shippingMethod}
+		<div className='mb-2 text-sm text-green-600'>
+			<span className='font-semibold text-green-300'>Shipping Method:</span>
+			<span className='uppercase'> {order.shippingMethod}</span>
 		</div>
 		<div className='mt-4'>
 			<h4 className='mb-2 font-semibold text-green-300'>Items:</h4>
-			<ul className='list-disc ml-5 space-y-1 text-sm text-green-400'>
+			<ul className='list-disc ml-5 space-y-1 text-sm text-green-600'>
 				{order.orderItems.map(item => (
 					<li key={item.id}>
 						{item.name} × {item.quantity} — {item.price} caps
