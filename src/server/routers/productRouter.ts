@@ -1,6 +1,7 @@
 import { procedure, router } from '../trpc'
 import { z } from 'zod'
 import { PrismaClient } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 
 export const trpcProductSchema = z.object({
 	id: z.string().optional(),
@@ -90,4 +91,46 @@ export const productRouter = router({
 			throw new Error('Failed to retrieve product: ' + (error as Error).message)
 		}
 	}),
+	getComments: procedure.input(z.object({ productId: z.string() })).query(async ({ input }) => {
+		return await prisma.comment.findMany({
+			where: { productId: input.productId },
+			orderBy: { createdAt: 'desc' },
+			include: { user: { select: { id: true, name: true, image: true } } },
+		})
+	}),
+
+	addComment: procedure
+		.input(
+			z.object({
+				productId: z.string(),
+				content: z.string().min(1).max(150),
+				rating: z.number().int().min(0).max(5),
+			})
+		)
+		.mutation(async ({ ctx, input }) => {
+			const userId = ctx.session?.sub
+			if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+			const newComment = await prisma.comment.create({
+				data: {
+					content: input.content,
+					rating: input.rating,
+					product: { connect: { id: input.productId } },
+					user: { connect: { id: userId } },
+				},
+				include: { user: { select: { id: true, name: true, image: true } } },
+			})
+
+			const agg = await prisma.comment.aggregate({
+				where: { productId: input.productId },
+				_avg: { rating: true },
+			})
+
+			await prisma.products.update({
+				where: { id: input.productId },
+				data: { rating: agg._avg.rating ?? 0 },
+			})
+
+			return newComment
+		}),
 })

@@ -4,8 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button, TextField, Typography, InputAdornment, styled, Rating } from '@mui/material'
 import { FaAngleRight } from 'react-icons/fa'
-import { toast } from 'react-toastify'
 import StarIcon from '@mui/icons-material/Star'
+import { toast } from 'react-toastify'
+import { trpc } from '~/server/client'
 
 const VisuallyHiddenInput = styled('input')({
 	clip: 'rect(0 0 0 0)',
@@ -35,7 +36,7 @@ const ReviewSchema = z.object({
 		.string()
 		.min(1, { message: 'Review cannot be empty' })
 		.max(150, { message: 'Keep your review within 150 characters' }),
-	rating: z.number(),
+	rating: z.number().int().min(0).max(5),
 })
 
 interface ReviewFormInput {
@@ -44,47 +45,71 @@ interface ReviewFormInput {
 }
 
 interface ReviewFormProps {
+	productId: string
 	handleClose: () => void
 }
 
-const ReviewForm = ({ handleClose }: ReviewFormProps) => {
-	const [isFocusedField, setIsFocusedField] = useState<string | boolean>(false)
+export default function ReviewForm({ productId, handleClose }: ReviewFormProps) {
+	const [isFocusedField, setIsFocusedField] = useState(false)
 	const [rating, setRating] = useState(1)
-
+	const utils = trpc.useUtils()
 	const {
 		register,
 		handleSubmit,
 		reset,
 		setValue,
-		formState,
-		formState: { errors },
-		clearErrors,
+		formState: { errors, isSubmitSuccessful },
 	} = useForm<ReviewFormInput>({
 		resolver: zodResolver(ReviewSchema),
+		defaultValues: { rating: 1 },
+	})
+
+	const addComment = trpc.product.addComment.useMutation({
+		onSuccess: () => {
+			utils.product.getComments.invalidate({ productId })
+		},
+		onError: err => {
+			console.log('ReviewForm productId =', productId)
+			console.error('addComment error:', err)
+			console.log('raw error data:', err.data)
+
+			const data = err.data as any
+			if (data.zodError) {
+				console.group('Zod validation errors')
+				console.table(data.zodError.fieldErrors)
+				console.groupEnd()
+			}
+
+			toast.error(err.message)
+		},
 	})
 
 	const onSubmit: SubmitHandler<ReviewFormInput> = data => {
-		console.log(data)
+		addComment.mutate({
+			productId,
+			content: data.review,
+			rating: data.rating,
+		})
 	}
 
 	useEffect(() => {
-		if (formState.isSubmitSuccessful) {
-			setIsFocusedField(false)
-			toast.success('Review submitted successfully')
-			setRating(1)
+		if (isSubmitSuccessful && addComment.isSuccess) {
+			toast.success('Comment added successfully')
 			reset()
+			setRating(1)
+			handleClose()
 		}
-	}, [formState, reset])
+	}, [isSubmitSuccessful, addComment.isSuccess, reset, handleClose])
 
 	return (
 		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
 			<Typography variant='h4' component='h3' gutterBottom>
-				Leave a Review
+				Add Comment
 			</Typography>
 
 			<div className='flex flex-wrap justify-center gap-x-5'>
 				<Typography gutterBottom variant='h6' component='h4'>
-					Share your thoughts with us
+					Share your thoughts
 				</Typography>
 				<TextField
 					className='relative w-full'
@@ -92,51 +117,47 @@ const ReviewForm = ({ handleClose }: ReviewFormProps) => {
 					maxRows={8}
 					size='medium'
 					{...register('review', {
-						onBlur: () => {
-							setIsFocusedField(false)
-							clearErrors('review')
-						},
+						onBlur: () => setIsFocusedField(false),
 					})}
 					onFocus={() => setIsFocusedField(true)}
 					InputProps={{
 						startAdornment: isFocusedField && (
-							<InputAdornment
-								className={`-ml-[14px] top-5 absolute ${isFocusedField && 'input-adornment-enter-active'}`}
-								position='start'>
+							<InputAdornment className='-ml-[14px] top-5 absolute input-adornment-enter-active' position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
 					}}
 					error={!!errors.review}
-					id={`filled-basic-review`}
-					label='Review'
+					label='Comment'
 					variant='filled'
-					helperText={<span className='block h-4'>{errors.review?.message}</span>}
+					helperText={errors.review?.message}
 				/>
 			</div>
+
 			<div className='flex items-center'>
-				<p className='text-black mr-2'>Rating:</p>
-				<VisuallyHiddenInput type='number' value={rating} readOnly {...register('rating', { valueAsNumber: true })} />
+				<Typography className='mr-2'>Rating:</Typography>
+				<VisuallyHiddenInput type='number' {...register('rating', { valueAsNumber: true })} value={rating} readOnly />
 				<StyledRating
 					emptyIcon={<StarIcon fontSize='inherit' />}
-					className='text-xl'
 					precision={1}
 					value={rating}
-					onChange={(_, newRating) => {
-						setRating(newRating || 1)
+					onChange={(_, newValue) => {
+						const v = newValue || 1
+						setRating(v)
+						setValue('rating', v, { shouldValidate: true })
 					}}
+					className='text-xl'
 				/>
 			</div>
+
 			<div className='flex justify-center gap-20 mt-4'>
 				<Button onClick={handleClose} size='large'>
-					Return
+					Cancel
 				</Button>
-				<Button size='large' type='submit'>
-					Submit
+				<Button size='large' type='submit' disabled={addComment.status === 'pending'}>
+					{addComment.status === 'pending' ? 'Submitting...' : 'Submit'}
 				</Button>
 			</div>
 		</form>
 	)
 }
-
-export default ReviewForm

@@ -1,70 +1,21 @@
+import React, { useCallback, useState } from 'react'
 import { BiCommentAdd as AddReview } from 'react-icons/bi'
-import { Button, Box, ListItem } from '@mui/material'
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { Button, Box, ListItem, Typography } from '@mui/material'
 import Review from './ReviewCard'
-import { ListChildComponentProps, FixedSizeList as ResponsiveList } from 'react-window'
 import TransitionsModal from './TransitionModal'
-import { useCallback, useState, useEffect } from 'react'
 import CommentForm from './ReviewForm'
+import { trpc } from '~/server/client'
 
-// Sample review data used temporarily for component creation purposes
-const reviewData = [
-	{
-		username: 'John Doe',
-		userAvatar: '',
-		comment: 'This is a great product! Highly recommend it.',
-		rating: 2,
-	},
-	{
-		username: 'Jane Smith',
-		userAvatar: '',
-		comment: 'Not bad, but there are better options out there.',
-		rating: 0.5,
-	},
-	{
-		username: 'John Doe',
-		userAvatar: '',
-		comment:
-			'lorem ipsum dolor sit amet, consectetur adip e justo sed diam non  proident, sed diam non proident du contratibus et justo sed diam non proident et justo sed dilorem ipsum dolor   ',
-		rating: 4,
-	},
-	{
-		username: 'Jane Smith',
-		userAvatar: '',
-		comment:
-			'nnnnnnnnbvnvbnbvnvvvvvvv vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv vvvvvvvvvvvvvvvvvvvvvvvvvvvvv vvvvvvvvvvvvvvvvvvvvvvvvv',
-		rating: 2.5,
-	},
-]
-
-function renderRow(props: ListChildComponentProps) {
-	const { index, style } = props
-	const review = reviewData[index]
-
-	return (
-		<ListItem className='p-2 w-full' style={style} key={index} component='div' disablePadding>
-			<Review
-				username={review.username}
-				userAvatar={review.userAvatar}
-				comment={review.comment}
-				rating={review.rating}
-			/>
-		</ListItem>
-	)
+interface ReviewListProps {
+	productId: string
 }
 
-const ReviewList = () => {
+const ReviewList = ({ productId }: ReviewListProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const [showCommentForm, setShowCommentForm] = useState(false)
 
-	const handleModalClose = useCallback(() => {
-		setModalOpen(false)
-	}, [])
-
-	const handleModalOpen = useCallback(() => {
-		setModalOpen(true)
-	}, [])
-
+	const handleModalOpen = useCallback(() => setModalOpen(true), [])
+	const handleModalClose = useCallback(() => setModalOpen(false), [])
 	const handleAddReview = useCallback(() => {
 		if (window.innerWidth < 768) {
 			setShowCommentForm(true)
@@ -73,8 +24,13 @@ const ReviewList = () => {
 		}
 	}, [handleModalOpen])
 
+	const { data: comments = [], isLoading } = trpc.product.getComments.useQuery(
+		{ productId },
+		{ enabled: Boolean(productId) }
+	)
+
 	if (showCommentForm) {
-		return <CommentForm handleClose={() => setShowCommentForm(false)} />
+		return <CommentForm productId={productId} handleClose={() => setShowCommentForm(false)} />
 	}
 
 	return (
@@ -87,30 +43,36 @@ const ReviewList = () => {
 					</Button>
 				</div>
 				<Box
+					className='bg-green-50 rounded-xl overflow-y-auto p-2'
 					sx={{
 						width: '70dvw',
 						height: '75dvh',
 						bgcolor: 'background.paper',
-						'@media (min-width: 768px)': {
-							width: '100%',
-						},
+						'@media (min-width: 768px)': { width: '100%' },
 					}}>
-					<AutoSizer>
-						{({ height, width }) => (
-							<ResponsiveList
-								className='bg-green-50 rounded-xl'
-								height={height}
-								itemCount={reviewData.length}
-								itemSize={250}
-								width={width}>
-								{renderRow}
-							</ResponsiveList>
-						)}
-					</AutoSizer>
+					{isLoading ? (
+						<Typography align='center' sx={{ pt: 4 }}>
+							Loading…
+						</Typography>
+					) : (
+						<div className='flex flex-col gap-4'>
+							{comments.map(c => (
+								<ListItem key={c.id} component='div' disablePadding className='px-2 w-full'>
+									<Review
+										username={c.user.name ?? 'Unknown'}
+										userAvatar={c.user.image ?? ''}
+										comment={c.content}
+										rating={c.rating}
+									/>
+								</ListItem>
+							))}
+						</div>
+					)}
 				</Box>
 			</div>
+
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
-				<CommentForm handleClose={handleModalClose} />
+				<CommentForm productId={productId} handleClose={handleModalClose} />
 			</TransitionsModal>
 		</>
 	)

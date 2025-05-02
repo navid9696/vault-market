@@ -1,4 +1,4 @@
-import { IconButton, Rating, styled } from '@mui/material'
+import { IconButton, Rating, styled, Typography, Box } from '@mui/material'
 import { ImHeart as FavoriteIcon } from 'react-icons/im'
 import StarIcon from '@mui/icons-material/Star'
 import Image from 'next/image'
@@ -21,42 +21,43 @@ const StyledRating = styled(Rating)({
 })
 
 const ProductModal = () => {
-	const { product } = useStore(state => ({
-		product: state.product,
-	}))
-
+	const { product } = useStore(state => ({ product: state.product }))
 	const [isFavorite, setIsFavorite] = useState(false)
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const addFavoriteMutation = trpc.favorite.addFavorite.useMutation()
-	const removeFavoriteMutation = trpc.favorite.removeFavorite.useMutation()
+	const addFavorite = trpc.favorite.addFavorite.useMutation()
+	const removeFavorite = trpc.favorite.removeFavorite.useMutation()
 	const { data: favorites } = trpc.favorite.getFavorites.useQuery()
-
-	const handleModalClose = useCallback(() => {
-		setModalOpen(false)
-	}, [])
 
 	const handleModalOpen = useCallback(() => {
 		if (window.innerWidth < 768) setModalOpen(true)
 	}, [])
 
+	const handleModalClose = useCallback(() => {
+		setModalOpen(false)
+	}, [])
+
 	const handleToggleFavorite = useCallback(() => {
 		if (!product) return
 		if (isFavorite) {
-			removeFavoriteMutation.mutate({ productId: product.id })
-			setIsFavorite(false)
+			removeFavorite.mutate({ productId: product.id })
 		} else {
-			addFavoriteMutation.mutate({ productId: product.id })
-			setIsFavorite(true)
+			addFavorite.mutate({ productId: product.id })
 		}
-	}, [isFavorite, product, addFavoriteMutation, removeFavoriteMutation])
+	}, [isFavorite, product, addFavorite, removeFavorite])
 
 	useEffect(() => {
 		if (favorites && product) {
-			const favExists = favorites.some(fav => fav.product.id === product.id)
-			setIsFavorite(favExists)
+			setIsFavorite(favorites.some(fav => fav.product.id === product.id))
 		}
 	}, [favorites, product])
+
+	const { data: comments = [] } = trpc.product.getComments.useQuery(
+		{ productId: product?.id ?? '' },
+		{ enabled: !!product }
+	)
+
+	const avgRating = comments.length > 0 ? comments.reduce((sum, c) => sum + c.rating, 0) / comments.length : 0
 
 	if (!product) return null
 
@@ -64,44 +65,35 @@ const ProductModal = () => {
 		<>
 			<div className='h-[80dvh] w-[80dvw] flex md:gap-8 gap-2'>
 				<div className='hidden md:block md:w-1/2'>
-					<ReviewList />
+					<ReviewList productId={product.id} />
 				</div>
 				<div className='md:w-1/2 w-full flex justify-around md:gap-8 gap-2'>
 					<div className='absolute'>
 						<h2 className='relative w-full font-semibold text-2xl'>
 							{product.name}
-							<IconButton
-								className='absolute -top-2 group'
-								disableFocusRipple
-								disableRipple
-								disableTouchRipple
-								onClick={handleToggleFavorite}>
-								{isFavorite ? (
-									<FavoriteIcon
-										className='stroke-green-950 stroke-1 overflow-visible text-green-600 transition-colors'
-										fontSize={26}
-									/>
-								) : (
-									<FavoriteIcon
-										className='stroke-green-950 stroke-1 overflow-visible text-transparent group-hover:text-green-200 transition-colors'
-										fontSize={26}
-									/>
-								)}
+							<IconButton className='absolute -top-2 group' disableRipple onClick={handleToggleFavorite}>
+								<FavoriteIcon
+									className={
+										isFavorite
+											? 'stroke-green-950 stroke-1 text-green-600'
+											: 'stroke-green-950 stroke-1 text-transparent group-hover:text-green-200'
+									}
+									fontSize={26}
+								/>
 							</IconButton>
 						</h2>
 					</div>
 					<div className='w-1/2 sm:scale-100 scale-90 flex flex-col items-center justify-evenly'>
 						<div
 							onClick={handleModalOpen}
-							className='p-4 flex flex-col shadow-inset-1 rounded-2xl text-black bg-green-700 md:hover:bg-green-700 hover:bg-green-500 md:cursor-default cursor-pointer transition-colors'>
-							<p className='font-semibold text-xl'>{product.rating.toFixed(2)}</p>
+							className='p-4 flex flex-col shadow-inset-1 rounded-2xl text-black bg-green-700 hover:bg-green-500 cursor-pointer transition-colors'>
+							<Typography className='font-semibold text-xl'>{avgRating.toFixed(2)}</Typography>
 							<StyledRating
 								emptyIcon={<StarIcon fontSize='inherit' />}
 								className='text-2xl'
-								value={product.rating}
+								value={avgRating}
 								max={5}
 								precision={0.25}
-								name='read-only'
 								readOnly
 							/>
 						</div>
@@ -125,7 +117,7 @@ const ProductModal = () => {
 				</div>
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
-				<ReviewList />
+				<ReviewList productId={product.id} />
 			</TransitionsModal>
 		</>
 	)
