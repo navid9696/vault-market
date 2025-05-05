@@ -3,10 +3,11 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { toast } from 'react-toastify'
-import { updatePasswordSchema } from '~/schemas/passwordSchema'
+import { trpc } from '~/server/client'
 import { SettingFormsProps } from '~/lib/types'
+import { updatePasswordSchema } from '~/schemas/passwordSchema'
 
 interface PasswordFormInput {
 	currentPassword: string
@@ -21,24 +22,35 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 		register,
 		handleSubmit,
 		reset,
-		formState,
 		formState: { errors },
 		clearErrors,
 	} = useForm<PasswordFormInput>({
 		resolver: zodResolver(updatePasswordSchema),
+		defaultValues: {
+			currentPassword: '',
+			password: '',
+			confirmPassword: '',
+		},
+	})
+
+	const updatePassword = trpc.user.updatePassword.useMutation({
+		onSuccess: () => {
+			toast.success('Password updated successfully')
+			reset()
+			setIsDetailsVisible(false)
+		},
+		onError: err => {
+			toast.error(err.message)
+		},
 	})
 
 	const onSubmit: SubmitHandler<PasswordFormInput> = data => {
-		console.log(data)
+		updatePassword.mutate({
+			currentPassword: data.currentPassword,
+			password: data.password,
+			confirmPassword: data.confirmPassword,
+		})
 	}
-
-	useEffect(() => {
-		if (formState.isSubmitSuccessful) {
-			setIsFocusedField(false)
-			toast.success('Password updated successfully')
-			reset()
-		}
-	}, [formState, reset])
 
 	return (
 		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
@@ -50,9 +62,11 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 				<Typography gutterBottom variant='h6' component='h4'>
 					Secure Your Account with a New Password
 				</Typography>
+
 				<TextField
 					className='relative md:w-3/4 w-full'
 					size='small'
+					type='password'
 					{...register('currentPassword', {
 						onBlur: () => {
 							setIsFocusedField(false)
@@ -62,9 +76,7 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('currentPassword')}
 					InputProps={{
 						startAdornment: isFocusedField === 'currentPassword' && (
-							<InputAdornment
-								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
-								position='start'>
+							<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -75,9 +87,11 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					variant='filled'
 					helperText={<span className='block h-11'>{errors.currentPassword?.message}</span>}
 				/>
+
 				<TextField
 					className='relative md:w-3/4 w-full'
 					size='small'
+					type='password'
 					{...register('password', {
 						onBlur: () => {
 							setIsFocusedField(false)
@@ -87,9 +101,7 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('password')}
 					InputProps={{
 						startAdornment: isFocusedField === 'password' && (
-							<InputAdornment
-								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
-								position='start'>
+							<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -100,9 +112,11 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					variant='filled'
 					helperText={<span className='block h-11'>{errors.password?.message}</span>}
 				/>
+
 				<TextField
 					className='relative md:w-3/4 w-full'
 					size='small'
+					type='password'
 					{...register('confirmPassword', {
 						onBlur: () => {
 							setIsFocusedField(false)
@@ -112,9 +126,7 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					onFocus={() => setIsFocusedField('confirmPassword')}
 					InputProps={{
 						startAdornment: isFocusedField === 'confirmPassword' && (
-							<InputAdornment
-								className={`-ml-[14px] absolute ${isFocusedField ? 'input-adornment-enter-active' : ''}`}
-								position='start'>
+							<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 								<FaAngleRight />
 							</InputAdornment>
 						),
@@ -126,16 +138,13 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 					helperText={<span className='block h-11'>{errors.confirmPassword?.message}</span>}
 				/>
 			</div>
+
 			<div className='flex justify-center gap-20 mt-4'>
-				<Button
-					size='large'
-					onClick={() => {
-						setIsDetailsVisible(false)
-					}}>
+				<Button size='large' onClick={() => setIsDetailsVisible(false)}>
 					Return
 				</Button>
-				<Button size='large' type='submit'>
-					Submit
+				<Button size='large' type='submit' disabled={updatePassword.status === 'pending'}>
+					{updatePassword.status === 'pending' ? 'Saving...' : 'Submit'}
 				</Button>
 			</div>
 		</form>
