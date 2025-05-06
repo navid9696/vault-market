@@ -110,4 +110,14 @@ export const userRouter = router({
 		})
 		return { success: true }
 	}),
+	deleteAccount: procedure.mutation(async ({ ctx }) => {
+		const userId = ctx.session?.sub
+		if (!userId) {
+			throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Not authenticated' })
+		}
+		await prisma.user.delete({
+			where: { id: userId },
+		})
+		return { success: true }
+	}),
 })
