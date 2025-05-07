@@ -71,11 +71,19 @@ export const userRouter = router({
 	updateName: procedure.input(z.object({ name: z.string().min(1) })).mutation(async ({ ctx, input }) => {
 		const userId = ctx.session?.sub
 		if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
-		return prisma.user.update({
+
+		const updated = await prisma.user.update({
 			where: { id: userId },
 			data: { name: input.name },
 			select: { name: true },
 		})
+
+		await prisma.comment.updateMany({
+			where: { userId },
+			data: { authorName: input.name },
+		})
+
+		return updated
 	}),
 
 	updateEmail: procedure.input(z.object({ email: z.string().email() })).mutation(async ({ ctx, input }) => {
@@ -87,6 +95,7 @@ export const userRouter = router({
 			select: { email: true },
 		})
 	}),
+
 	updatePassword: procedure.input(updatePasswordSchema).mutation(async ({ ctx, input }) => {
 		const userId = ctx.session?.sub
 		if (!userId) {
@@ -110,6 +119,7 @@ export const userRouter = router({
 		})
 		return { success: true }
 	}),
+
 	deleteAccount: procedure.mutation(async ({ ctx }) => {
 		const userId = ctx.session?.sub
 		if (!userId) {

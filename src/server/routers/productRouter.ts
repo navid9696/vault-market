@@ -91,11 +91,21 @@ export const productRouter = router({
 			throw new Error('Failed to retrieve product: ' + (error as Error).message)
 		}
 	}),
+
 	getComments: procedure.input(z.object({ productId: z.string() })).query(async ({ input }) => {
 		return await prisma.comment.findMany({
 			where: { productId: input.productId },
+			select: {
+				id: true,
+				content: true,
+				rating: true,
+				createdAt: true,
+				authorName: true,
+				user: {
+					select: { image: true },
+				},
+			},
 			orderBy: { createdAt: 'desc' },
-			include: { user: { select: { id: true, name: true, image: true } } },
 		})
 	}),
 
@@ -111,21 +121,29 @@ export const productRouter = router({
 			const userId = ctx.session?.sub
 			if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
 
+			const me = await prisma.user.findUnique({
+				where: { id: userId },
+				select: { name: true },
+			})
+			const authorName = me?.name ?? 'Unknown'
+
 			const newComment = await prisma.comment.create({
 				data: {
 					content: input.content,
 					rating: input.rating,
-					product: { connect: { id: input.productId } },
+					authorName,
 					user: { connect: { id: userId } },
+					product: { connect: { id: input.productId } },
 				},
-				include: { user: { select: { id: true, name: true, image: true } } },
+				include: {
+					user: { select: { id: true, image: true } },
+				},
 			})
 
 			const agg = await prisma.comment.aggregate({
 				where: { productId: input.productId },
 				_avg: { rating: true },
 			})
-
 			await prisma.products.update({
 				where: { id: input.productId },
 				data: { rating: agg._avg.rating ?? 0 },
