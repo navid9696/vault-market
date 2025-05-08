@@ -130,4 +130,30 @@ export const userRouter = router({
 		})
 		return { success: true }
 	}),
+
+	updateAvatar: procedure.input(z.object({ avatarUrl: z.string().nonempty() })).mutation(async ({ ctx, input }) => {
+		const userId = ctx.session?.sub
+		if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
+		return prisma.user.update({
+			where: { id: userId },
+			data: { image: input.avatarUrl },
+			select: { image: true },
+		})
+	}),
+
+	getProfile: procedure.query(async ({ ctx }) => {
+		const userId = ctx.session?.sub
+		if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
+		const user = await prisma.user.findUnique({
+			where: { id: userId },
+			select: {
+				id: true,
+				email: true,
+				name: true,
+				image: true,
+			},
+		})
+		if (!user) throw new TRPCError({ code: 'NOT_FOUND' })
+		return user
+	}),
 })

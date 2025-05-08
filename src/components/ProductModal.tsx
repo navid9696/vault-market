@@ -25,9 +25,17 @@ const ProductModal = () => {
 	const [isFavorite, setIsFavorite] = useState(false)
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const addFavorite = trpc.favorite.addFavorite.useMutation()
-	const removeFavorite = trpc.favorite.removeFavorite.useMutation()
 	const { data: favorites } = trpc.favorite.getFavorites.useQuery()
+	const addFavorite = trpc.favorite.addFavorite.useMutation({
+		onSuccess: () => {
+			setIsFavorite(true)
+		},
+	})
+	const removeFavorite = trpc.favorite.removeFavorite.useMutation({
+		onSuccess: () => {
+			setIsFavorite(false)
+		},
+	})
 
 	const handleModalOpen = useCallback(() => {
 		if (window.innerWidth < 768) setModalOpen(true)

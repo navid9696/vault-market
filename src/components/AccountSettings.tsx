@@ -1,5 +1,5 @@
 import { Avatar, Badge, Button, Typography, styled } from '@mui/material'
-import { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { AiTwotoneEdit as EditIcon } from 'react-icons/ai'
 import { FaLongArrowAltRight as ArrowRight } from 'react-icons/fa'
 import { FaTrashAlt as Trash } from 'react-icons/fa'
@@ -9,6 +9,9 @@ import TransitionsModal from './TransitionModal'
 import DeleteAccountModal from './DeleteAccountModal'
 import PasswordForm from './PasswordForm'
 import AddressForm from './AddressForm'
+import { toast } from 'react-toastify'
+import { trpc } from '~/server/client'
+import { useSession } from 'next-auth/react'
 
 const VisuallyHiddenInput = styled('input')({
 	clip: 'rect(0 0 0 0)',
@@ -38,10 +41,12 @@ const renderForm = (contentId: string | null, setIsFormVisible: Dispatch<SetStat
 }
 
 const AccountSettings = () => {
-	const [avatar, setAvatar] = useState<string | undefined>(undefined)
+	const [avatar, setAvatar] = useState<string>()
 	const [isFormVisible, setIsFormVisible] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
+	const utils = trpc.useUtils()
+	const { data: profile } = trpc.user.getProfile.useQuery()
 
 	const handleModalClose = () => {
 		setModalOpen(false)
@@ -52,12 +57,40 @@ const AccountSettings = () => {
 		setIsFormVisible(true)
 	}
 
-	const handleAvatarChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files) {
-			const avatar = e.target.files[0]
-			setAvatar(URL.createObjectURL(avatar))
+	const updateAvatar = trpc.user.updateAvatar.useMutation({
+		onSuccess: async () => {
+			toast.success('Avatar updated')
+			await utils.user.getProfile.invalidate()
+		},
+		onError: () => toast.error('Failed to update avatar'),
+	})
+
+	useEffect(() => {
+		if (profile?.image) {
+			const raw = profile.image
+			const url = raw.startsWith('http') ? raw : window.location.origin + raw
+			setAvatar(url)
 		}
-	}, [])
+	}, [profile?.image])
+
+	const handleAvatarChange = useCallback(
+		async (e: React.ChangeEvent<HTMLInputElement>) => {
+			const file = e.target.files?.[0]
+			if (!file) return
+			const form = new FormData()
+			form.append('avatar', file)
+			const res = await fetch('/api/uploadAvatar', { method: 'POST', body: form })
+			if (!res.ok) {
+				toast.error('Upload failed')
+				return
+			}
+			const { url } = await res.json()
+			const fullUrl = window.location.origin + url
+			setAvatar(fullUrl)
+			await updateAvatar.mutateAsync({ avatarUrl: fullUrl })
+		},
+		[updateAvatar]
+	)
 
 	return (
 		<>
@@ -74,7 +107,7 @@ const AccountSettings = () => {
 						overlap='circular'
 						anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 						badgeContent={<EditIcon className='mt-3 ml-3' fontSize={32} />}>
-						<Avatar className='h-32 w-32 border-4 border-black bg-slate-200' alt='Remy Sharp' src={avatar} />
+						<Avatar className='h-32 w-32 border-4 border-black bg-slate-200' src={avatar} />
 						<VisuallyHiddenInput type='file' accept='image/*' onChange={handleAvatarChange}></VisuallyHiddenInput>
 					</Badge>
 					<div>
