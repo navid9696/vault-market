@@ -59,8 +59,8 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 							{comments.map(c => (
 								<ListItem key={c.id} component='div' disablePadding className='px-2 w-full'>
 									<Review
-										username={c.user.name ?? 'Unknown'}
-										userAvatar={c.user.image ?? ''}
+										username={c.authorName}
+										userAvatar={c.user?.image ?? ''}
 										comment={c.content}
 										rating={c.rating}
 									/>

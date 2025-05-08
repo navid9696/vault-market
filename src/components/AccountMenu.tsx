@@ -22,6 +22,7 @@ import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
 import LoginIcon from '@mui/icons-material/Login'
 import TransitionsModal from './TransitionModal'
 import AccountSettings from './AccountSettings'
+import { trpc } from '~/server/client'
 
 const getFirstLetterOfEmail = (email?: string | null) => {
 	if (!email || email.length === 0) return ''
@@ -44,13 +45,15 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 })
 
 export default function AccountMenu() {
-	const { data: session } = useSession()
+	const { data: session, update } = useSession()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
-	const userImage = session?.user.image
-	const userEmail = session?.user.email
+	const { data: me } = trpc.user.getProfile.useQuery()
+	const rawImage = me?.image
+	const userImage = rawImage ? (rawImage.startsWith('http') ? rawImage : window.location.origin + rawImage) : undefined
+	const userEmail = me?.email
 
 	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(e.currentTarget)
@@ -91,9 +94,7 @@ export default function AccountMenu() {
 						aria-controls={open ? 'account-menu' : undefined}
 						aria-haspopup='true'
 						aria-expanded={open ? 'true' : undefined}>
-						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }}>
-							{!userImage && getFirstLetterOfEmail(userEmail)}
-						</Avatar>
+						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }}></Avatar>
 					</IconButton>
 				</Tooltip>
 			</Box>

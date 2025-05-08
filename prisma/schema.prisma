@@ -67,17 +67,19 @@ model Favorite {
 
 model CapsOrder {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @db.ObjectId
+  userId    String?  @db.ObjectId
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   quantity  Int
   usdValue  Float
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model UserOrders {
   id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String      @db.ObjectId
+  userId          String?     @db.ObjectId
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   street          String
   addressOptional String?
   city            String
@@ -90,13 +92,13 @@ model UserOrders {
 }
 
 model OrderItem {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  order     UserOrders @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId   String     @db.ObjectId
-  productId String     @db.ObjectId
-  name      String
-  price     Int
-  quantity  Int
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  orderId    String      @db.ObjectId
+  order      UserOrders  @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  productId  String      @db.ObjectId
+  name       String
+  price      Int
+  quantity   Int
 }
 
 model UserCart {
@@ -153,12 +155,13 @@ model VerificationToken {
 }
 
 model Comment {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  content   String
-  rating   Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @db.ObjectId
-  product   Products @relation(fields: [productId], references: [id], onDelete: Cascade)
-  productId String   @db.ObjectId
-  createdAt DateTime @default(now())
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  content     String
+  rating      Int
+  userId      String?   @db.ObjectId
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName  String    
+  product     Products  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   String    @db.ObjectId
+  createdAt   DateTime  @default(now())
 }
