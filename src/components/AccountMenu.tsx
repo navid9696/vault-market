@@ -24,11 +24,6 @@ import TransitionsModal from './TransitionModal'
 import AccountSettings from './AccountSettings'
 import { trpc } from '~/server/client'
 
-const getFirstLetterOfEmail = (email?: string | null) => {
-	if (!email || email.length === 0) return ''
-	return email[0].toUpperCase()
-}
-
 const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	ssr: false,
 	loading: () => (
@@ -45,7 +40,7 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 })
 
 export default function AccountMenu() {
-	const { data: session, update } = useSession()
+	const { data: session } = useSession()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -53,7 +48,6 @@ export default function AccountMenu() {
 	const { data: me } = trpc.user.getProfile.useQuery()
 	const rawImage = me?.image
 	const userImage = rawImage ? (rawImage.startsWith('http') ? rawImage : window.location.origin + rawImage) : undefined
-	const userEmail = me?.email
 
 	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(e.currentTarget)
@@ -133,32 +127,36 @@ export default function AccountMenu() {
 				}}
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
-				<MenuItem onClick={handleClose}>
-					<Link href={'/favorites'}>
-						<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
-					</Link>
-				</MenuItem>
-				<MenuItem onClick={handleClose}>
-					<Link href={'/userOrders'}>
-						<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
-					</Link>
-				</MenuItem>
-				<MenuItem onClick={() => handleModalOpen('exchange')}>
-					<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
-				</MenuItem>
-				<Divider />
+				{session && [
+					<MenuItem key='favorites' onClick={handleClose}>
+						<Link href='/favorites'>
+							<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
+						</Link>
+					</MenuItem>,
+					<MenuItem key='orders' onClick={handleClose}>
+						<Link href='/userOrders'>
+							<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
+						</Link>
+					</MenuItem>,
+					<MenuItem key='exchange' onClick={() => handleModalOpen('exchange')}>
+						<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
+					</MenuItem>,
+					<Divider key='divider' />,
+					<MenuItem key='profile' onClick={() => handleModalOpen('profile')}>
+						<ListItemIcon className='mr-2'>
+							<SettingsIcon fontSize='small' />
+						</ListItemIcon>
+						Profile Settings
+					</MenuItem>,
+				]}
+
 				<MenuItem>
 					<ListItemIcon>
 						<ContrastIcon fontSize='small' />
 					</ListItemIcon>
 					<Switch />
 				</MenuItem>
-				<MenuItem onClick={() => handleModalOpen('profile')}>
-					<ListItemIcon className='mr-2'>
-						<SettingsIcon fontSize='small' />
-					</ListItemIcon>
-					Profile Settings
-				</MenuItem>
+
 				{session ? (
 					<MenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
 						<ListItemIcon className='mr-2'>
