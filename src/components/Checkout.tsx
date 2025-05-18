@@ -129,11 +129,18 @@ const Checkout = () => {
 	}
 
 	const onSubmit: SubmitHandler<AddressFormInput> = data => {
-		if (originalAddress && JSON.stringify(data) !== JSON.stringify(originalAddress)) {
+		if (!originalAddress) {
 			handleOpen()
-		} else {
-			submitOrder(data)
+			return
 		}
+
+		const isChanged = JSON.stringify(data) !== JSON.stringify(originalAddress)
+		if (isChanged) {
+			handleOpen()
+			return
+		}
+
+		submitOrder(data)
 	}
 
 	const handleCheckoutSubmit = (e: React.FormEvent) => {

@@ -45,12 +45,18 @@ export const authOptions: NextAuthOptions = {
 		updateAge: 60 * 60,
 	},
 	callbacks: {
-		async jwt({ token, user }) {
+		async jwt({ token, user, account }) {
 			if (user) token.id = user.id
+			if (account) {
+				token.provider = account.provider
+			}
 			return token
 		},
 		async session({ session, token }) {
 			if (session?.user) session.user.id = token.id as string
+			if (session.user) {
+				session.user.provider = token.provider as string
+			}
 			return session
 		},
 	},
