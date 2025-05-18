@@ -45,7 +45,7 @@ export default function AccountMenu() {
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
-	const { data: me } = trpc.user.getProfile.useQuery()
+	const { data: me } = trpc.user.getProfile.useQuery(undefined, { enabled: !!session })
 	const rawImage = me?.image
 	const userImage = rawImage ? (rawImage.startsWith('http') ? rawImage : window.location.origin + rawImage) : undefined
 

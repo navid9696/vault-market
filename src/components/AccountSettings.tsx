@@ -47,6 +47,8 @@ const AccountSettings = () => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const utils = trpc.useUtils()
 	const { data: profile } = trpc.user.getProfile.useQuery()
+	const { data: session } = useSession()
+	const provider = session?.user.provider
 
 	const handleModalClose = () => {
 		setModalOpen(false)
@@ -120,20 +122,25 @@ const AccountSettings = () => {
 								variant='outlined'>
 								Nickname
 							</Button>
-							<Button
-								onClick={() => handleOpenSettings('email')}
-								className='md:w-1/2 w-3/4 justify-between  font-semibold'
-								endIcon={<ArrowRight />}
-								variant='outlined'>
-								Email
-							</Button>
-							<Button
-								onClick={() => handleOpenSettings('password')}
-								className='md:w-1/2 w-3/4 justify-between  font-semibold'
-								endIcon={<ArrowRight />}
-								variant='outlined'>
-								Password
-							</Button>
+							{provider !== 'google' && (
+								<>
+									<Button
+										onClick={() => handleOpenSettings('email')}
+										className='md:w-1/2 w-3/4 justify-between font-semibold'
+										endIcon={<ArrowRight />}
+										variant='outlined'>
+										Email
+									</Button>
+									<Button
+										onClick={() => handleOpenSettings('password')}
+										className='md:w-1/2 w-3/4 justify-between font-semibold'
+										endIcon={<ArrowRight />}
+										variant='outlined'>
+										Password
+									</Button>
+								</>
+							)}
+
 							<Button
 								onClick={() => handleOpenSettings('address')}
 								className='md:w-1/2 w-3/4 justify-between  font-semibold'

@@ -8,6 +8,7 @@ import ModalPriceSection from './ModalPriceSection'
 import { trpc } from '~/server/client'
 import useStore from '~/store/useStore'
 import TransitionsModal from './TransitionModal'
+import { useSession } from 'next-auth/react'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -24,8 +25,9 @@ const ProductModal = () => {
 	const { product } = useStore(state => ({ product: state.product }))
 	const [isFavorite, setIsFavorite] = useState(false)
 	const [modalOpen, setModalOpen] = useState(false)
+	const { data: session } = useSession()
 
-	const { data: favorites } = trpc.favorite.getFavorites.useQuery()
+	const { data: favorites } = trpc.favorite.getFavorites.useQuery(undefined, { enabled: !!session })
 	const addFavorite = trpc.favorite.addFavorite.useMutation({
 		onSuccess: () => {
 			setIsFavorite(true)
