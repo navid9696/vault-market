@@ -65,7 +65,7 @@ const ProductsBrowsing = () => {
 				ref={sectionRef}
 				className='h-with-navbar w-full
 		grid grid-cols-10 grid-rows-12'>
-				<div className='flex items-center justify-center col-span-10 row-span-2 xl:border-b-8 xl:border-black bg-zinc-900 '>
+				<div className='flex items-center justify-center col-span-10 row-span-2 xl:border-b-8 xl:border-black bg-bg '>
 					<CategoriesTabs scrollToSection={scrollToSection} />
 				</div>
 
@@ -83,7 +83,7 @@ const ProductsBrowsing = () => {
 					<Filters setFilteredProducts={updateFilteredProducts} searchTerm={searchTerm} />
 				</div>
 
-				<div className='xl:col-span-7 col-span-10 row-span-1 bg-green-700'>
+				<div className='xl:col-span-7 col-span-10 row-span-1 bg-surface'>
 					<SortAndSearch
 						setProducts={updateProducts}
 						handleDrawer={handleDrawer}
@@ -95,7 +95,7 @@ const ProductsBrowsing = () => {
 				<div
 					className='py-1 flex flex-wrap justify-center items-start content-start
 					xl:col-span-7 col-span-10 row-span-9
-					bg-zinc-900 overflow-y-scroll'>
+					bg-bg overflow-y-scroll'>
 					{state.visibleProducts.map(product => (
 						<ProductCard
 							id={product.id}

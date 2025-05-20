@@ -51,7 +51,7 @@ const ratingOptions = [
 const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
 	const { activeCategory, activeSubCategory } = useStore()
-	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery({})
+	const { data: products } = trpc.product.getProducts.useQuery({})
 
 	const filteredProducts = useMemo(() => {
 		return (
@@ -111,8 +111,8 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	)
 
 	return (
-		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600 bg-zinc-900'>
-			<div className='p-2 px-6 border-2 border-green-600 rounded-xl'>
+		<div className='h-full px-4 py-8 flex flex-col justify-around text-text bg-bg'>
+			<div className='p-2 px-6 border-2 border-border rounded-xl'>
 				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
 					getAriaLabel={() => 'Price range'}
@@ -185,7 +185,7 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 							color: '#00d30b',
 						},
 					}}
-					className='text-green-600 text-lg font-semibold uppercase'
+					className='text-text text-lg font-semibold uppercase'
 					id='ratings-group-label'>
 					Ratings
 				</FormLabel>

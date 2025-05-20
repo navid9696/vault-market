@@ -16,7 +16,7 @@ const footerLinks = [
 const Footer = () => {
 	return (
 		<MediaContextProvider>
-			<footer className='min-h-28 border-black border-t-8 text-green-600 bg-zinc-950'>
+			<footer className='min-h-28 border-black border-t-8 text-text bg-bg'>
 				<div className='flex flex-col md:flex-row justify-center'>
 					<div className='flex-1 md:w-1/2 py-2 px-8 text-center text-sm'>
 						<h3 className='mb-4 text-lg uppercase'>About</h3>
@@ -29,10 +29,10 @@ const Footer = () => {
 					</div>
 
 					<Media greaterThanOrEqual='md'>
-						<Divider className='bg-green-950' orientation='vertical' />
+						<Divider className='bg-surface' orientation='vertical' />
 					</Media>
 					<Media at='sm'>
-						<Divider className='bg-green-950' />
+						<Divider className='bg-surface' />
 					</Media>
 					<div className='flex-1 md:w-1/2 py-2 px-8 text-center'>
 						<h3 className='mb-4 text-lg uppercase'>Contact</h3>
@@ -46,7 +46,7 @@ const Footer = () => {
 					</div>
 				</div>
 
-				<Divider className='bg-green-950' />
+				<Divider className='bg-surface' />
 				<div className='p-2 flex flex-col items-center'>
 					<h3 className='mb-4 text-lg uppercase'>Follow</h3>
 					<div className='flex'>
@@ -54,14 +54,14 @@ const Footer = () => {
 							<React.Fragment key={index}>
 								<FooterLink href={link.href}>{link.icon}</FooterLink>
 								{index < footerLinks.length - 1 && (
-									<Divider className='mx-1 bg-green-950' orientation='vertical' flexItem />
+									<Divider className='mx-1 bg-surface' orientation='vertical' flexItem />
 								)}
 							</React.Fragment>
 						))}
 					</div>
 				</div>
 
-				<div className='flex justify-center p-2 text-sm bg-green-900 text-green-400'>
+				<div className='flex justify-center p-2 text-sm bg-surface text-text'>
 					<small className='text-center'>
 						&copy; {new Date().getFullYear()} Vault Market. All rights reserved. Designed for survivors, by survivors.
 					</small>

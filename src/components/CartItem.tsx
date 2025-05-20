@@ -62,7 +62,7 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 	return (
 		<>
 			<div
-				className={`border p-2 mb-2 mr-2 bg-zinc-600 flex ${
+				className={`border border-border p-2 mb-2 mr-2 bg-bg flex ${
 					showControls && `sm:flex-row flex-col`
 				} items-center justify-between gap-4`}>
 				<div

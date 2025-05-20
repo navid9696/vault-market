@@ -8,19 +8,19 @@ const DiscountList = () => {
 
 
 	return (
-		<section className='h-1/4 bg-slate-100'>
+		<section className='h-1/4'>
 			{isError && (
-				<div className='h-full p-2 flex justify-center items-center bg-gray-100'>
+				<div className='h-full p-2 flex justify-center items-center'>
 					<p>Error:${error.message}</p>
 				</div>
 			)}
 			{isLoading ? (
-				<div className='h-full p-2 flex justify-center items-center bg-gray-100'>
+				<div className='h-full p-2 flex justify-center items-center'>
 					<CircularProgress />
 				</div>
 			) : (
 				<Marquee
-					className='h-full bg-gradient-to-r from-zinc-950 via-zinc-900 to bg-zinc-950 border-2 border-green-600 shadow-[inset_0_0_10px_#16a34a]'
+					className='h-full bg-gradient-to-r from-bg via-surface to-bg border-2 border-border shadow-inner-shadow'
 					play={true}
 					pauseOnHover
 					delay={1}>

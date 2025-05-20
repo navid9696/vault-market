@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTheme as useNextTheme } from 'next-themes'
+import { useTheme as useMuiTheme } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -40,6 +42,8 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 })
 
 export default function AccountMenu() {
+	const { resolvedTheme, setTheme } = useNextTheme()
+	const muiTheme = useMuiTheme()
 	const { data: session } = useSession()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
@@ -143,24 +147,27 @@ export default function AccountMenu() {
 					</MenuItem>,
 					<Divider key='divider' />,
 					<MenuItem key='profile' onClick={() => handleModalOpen('profile')}>
-						<ListItemIcon className='mr-2'>
-							<SettingsIcon fontSize='small' />
+						<ListItemIcon>
+							<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 						</ListItemIcon>
 						Profile Settings
 					</MenuItem>,
 				]}
 
-				<MenuItem>
+				<MenuItem
+					onClick={() => {
+						setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+					}}>
 					<ListItemIcon>
-						<ContrastIcon fontSize='small' />
+						<ContrastIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 					</ListItemIcon>
-					<Switch />
+					<Switch checked={resolvedTheme === 'dark'} />
 				</MenuItem>
 
 				{session ? (
 					<MenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
-						<ListItemIcon className='mr-2'>
-							<LogoutIcon fontSize='small' />
+						<ListItemIcon>
+							<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 						</ListItemIcon>
 						Sign Out
 					</MenuItem>
@@ -171,7 +178,7 @@ export default function AccountMenu() {
 								handleClose
 							}}>
 							<ListItemIcon className='mr-2'>
-								<LoginIcon fontSize='small' />
+								<LoginIcon className='text-text' fontSize='small' />
 							</ListItemIcon>
 							Sign In
 						</MenuItem>

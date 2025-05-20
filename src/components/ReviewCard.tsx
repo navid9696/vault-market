@@ -22,15 +22,15 @@ interface ReviewCardProps {
 
 const ReviewCard = ({ username, userAvatar, comment, rating }: ReviewCardProps) => {
 	return (
-		<Card variant='outlined' className='bg-green-300'>
+		<Card variant='outlined' className='bg-surface'>
 			<CardContent>
 				<div className='flex items-center mb-2'>
 					<Avatar alt={username} src={userAvatar} className='mr-4' />
-					<h2 className='text-xl font-semibold'>{username}</h2>
+					<h2 className='text-text text-xl font-semibold'>{username}</h2>
 				</div>
-				<p className='text-gray-600 mb-2 text-sm'>{comment}</p>
+				<p className='text-text mb-2 text-sm'>{comment}</p>
 				<div className='flex items-center'>
-					<p className='text-black mr-2'>Rating:</p>
+					<p className='text-text mr-2'>Rating:</p>
 
 					<StyledRating
 						emptyIcon={<StarIcon fontSize='inherit' />}

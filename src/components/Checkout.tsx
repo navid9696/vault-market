@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react'
 import { trpc } from '~/server/client'
 import CartItem from './CartItem'
@@ -187,7 +188,7 @@ const Checkout = () => {
 		<>
 			<form
 				style={{ marginTop: `${navHeight}px` }}
-				className='p-4 bg-white text-green-600'
+				className='p-4 bg-bg text-text'
 				onSubmit={handleCheckoutSubmit}>
 				<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 				<div className='flex flex-col md:flex-row gap-4'>
@@ -204,7 +205,7 @@ const Checkout = () => {
 					</div>
 					<div className='w-full md:w-1/3'>
 						<FormControl>
-							<FormLabel className='text-green-600 text-2xl font-bold' id='shipping-method-group-label'>
+							<FormLabel className='text-text text-2xl font-bold' id='shipping-method-group-label'>
 								Shipping Method
 							</FormLabel>
 							<RadioGroup

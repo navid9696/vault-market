@@ -9,20 +9,17 @@ import theme from '~/lib/theme'
 import { SessionProvider } from 'next-auth/react'
 import Orders from '~/components/Orders'
 
-
 const Home = () => {
 	return (
 		<SessionProvider>
-			<ThemeProvider theme={theme}>
-				<NavigationProvider>
-					<Navbar />
-					<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-					<main className='mx-auto flex flex-col justify-center items-center max-w-screen-md bg-zinc-700'>
-						<Orders/>
-					</main>
-					<Footer />
-				</NavigationProvider>
-			</ThemeProvider>
+			<NavigationProvider>
+				<Navbar />
+				<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
+				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-md bg-zinc-700'>
+					<Orders />
+				</main>
+				<Footer />
+			</NavigationProvider>
 		</SessionProvider>
 	)
 }

@@ -24,7 +24,7 @@ const CategoriesTabs = ({ scrollToSection }: CategoriesTabs) => {
 		<div id='products-browsing' className='relative w-full '>
 			<div className=' flex items-center justify-center '>
 				<Tabs
-					className='text-green-500 w-fit '
+					className='text-text w-fit '
 					TabScrollButtonProps={{ sx: { marginTop: '-20px' } }}
 					value={false}
 					allowScrollButtonsMobile
@@ -44,11 +44,11 @@ const CategoriesTabs = ({ scrollToSection }: CategoriesTabs) => {
 					))}
 				</Tabs>
 			</div>
-			<div className='absolute w-full h-[2px] left-0 bottom-[45px] bg-green-500 z-10 '></div>
+			<div className='absolute w-full h-[2px] left-0 bottom-[45px] bg-text z-10 '></div>
 
 			<div className=' -mt-6 text-center'>
 				<Tabs
-					className='text-green-500'
+					className='text-text'
 					value={false}
 					allowScrollButtonsMobile
 					variant='scrollable'

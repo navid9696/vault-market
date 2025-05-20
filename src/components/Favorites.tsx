@@ -14,7 +14,7 @@ const FavoritesList = () => {
 		<div className='h-screen'>
 			<div
 				style={{ marginTop: `${navHeight}px` }}
-				className='p-4 max-w-3xl w-screen h-with-navbar bg-zinc-900 text-white overflow-hidden'>
+				className='p-4 max-w-3xl w-screen h-with-navbar bg-bg text-text overflow-hidden'>
 				<h2 className='mt-6 text-center text-2xl font-bold mb-4'>Your Favorite Products</h2>
 				{error && <h2>Error: {error.message}</h2>}
 				{(!favorites || favorites.length === 0) && !error && !isLoading && <h2>No favorites found.</h2>}

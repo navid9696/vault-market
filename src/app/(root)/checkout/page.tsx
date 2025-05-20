@@ -12,16 +12,14 @@ import Checkout from '~/components/Checkout'
 const Home = () => {
 	return (
 		<SessionProvider>
-			<ThemeProvider theme={theme}>
-				<NavigationProvider>
-					<Navbar />
-					<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-					<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl bg-zinc-800'>
-						<Checkout />
-					</main>
-					<Footer />
-				</NavigationProvider>
-			</ThemeProvider>
+			<NavigationProvider>
+				<Navbar />
+				<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
+				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl bg-zinc-800'>
+					<Checkout />
+				</main>
+				<Footer />
+			</NavigationProvider>
 		</SessionProvider>
 	)
 }
