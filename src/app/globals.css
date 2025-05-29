@@ -3,26 +3,27 @@
 @tailwind utilities;
 
 :root {
-	--bg: #181b18; 
-	--surface: #002f00;
-	--text: #00ee00; 
-	--primary: #008e00;
-	--secondary: #18ac18;
-	--border: #00ee00;
-	--focus: #15803d; 
-	 --inner-shadow: inset 0 0 10px var(--primary);
+	/* LIGHT (Pip-Boy green) */
+	--bg: #0b110b;
+	--surface: #0f200f;
+	--primary: #33cc33;
+	--secondary: #66cc66;
+	--tertiary: #99cc99;
+	--text: #66ff00;
+	--border: #77ff11;
+	--focus: #aaff00;
+	--inner-shadow: inset 0 0 10px var(--primary);
 }
-
-
 html.dark {
-	--bg: #1a130d; 
-	--surface: #4f2b1b; 
-	--text: #ffb641; 
-	--primary: #df9159; 
-	--secondary: #ffa86a; 
-	--border: #ffb641; 
-	--focus: #f59e0b; 
-	 --inner-shadow: inset 0 0 10px var(--primary);
+	--primary: #a65a1a;
+	--secondary: #d97708;
+	--tertiary: #fbbf24;
+	--text: #ffb641;
+	--border: #ffca3a;
+	--focus: #f59e0b;
+	--bg: #0f0500;
+	--surface: #361e10;
+	--inner-shadow: inset 0 0 10px var(--primary);
 }
 
 body.user {
@@ -84,7 +85,7 @@ body.user {
 
 	.MuiFormLabel-root.Mui-focused,
 	.Mui-focusVisible {
-		color: #00d30b;
+		color: var(--focus);
 	}
 }
 

@@ -1,7 +1,9 @@
+// app/layout.tsx
 import type { Metadata } from 'next'
 import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'
 import { TrpcProvider } from '~/providers/TrpcProvider'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import ThemeRegistry from '~/providers/ThemeRegistry'
 
 const shareTechMono = Share_Tech_Mono({
@@ -29,7 +31,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           text-text
         `}>
 				<TrpcProvider>
-					<ThemeRegistry>{children}</ThemeRegistry>
+					<NextThemesProvider
+						attribute='class'
+						defaultTheme='dark'
+						enableSystem={false}
+						disableTransitionOnChange
+						enableColorScheme={false}>
+						<ThemeRegistry>{children}</ThemeRegistry>
+					</NextThemesProvider>
 				</TrpcProvider>
 			</body>
 		</html>

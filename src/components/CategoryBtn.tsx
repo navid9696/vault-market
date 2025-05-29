@@ -14,7 +14,6 @@ const CategoryBtn = ({ onClick, text, isActive, isSubCategory = false }: Categor
 			disableRipple
 			onClick={onClick}
 			className={`mx-4 min-w-fit text-lg font-extrabold z-30 ${isActive && ' text-text'} `}
-			color='success'
 			variant='text'>
 			{text}
 		</Button>
@@ -32,7 +31,6 @@ const CategoryBtn = ({ onClick, text, isActive, isSubCategory = false }: Categor
 						className={` before:mr-2 before:w-3 before:h-[2px] after:ml-2 after:w-3 after:h-[2px] ${
 							isActive && 'before:bg-text after:bg-text text-text'
 						} `}
-						color='success'
 						variant='text'>
 						{text}
 					</Button>

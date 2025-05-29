@@ -1,31 +1,57 @@
 'use client'
 import { createTheme, PaletteMode } from '@mui/material'
 
-export const theme = (mode: PaletteMode) =>
-	createTheme({
+const theme = (mode: PaletteMode) => {
+	const light = mode === 'light'
+
+	return createTheme({
 		palette: {
 			mode,
 			background: {
-				default: mode === 'light' ? '#18181b' : '#78350f', // light= zinc-900, dark= amber-900
-				paper: mode === 'light' ? '#27272a' : '#92400e', // light= zinc-800, dark= amber-800
+				default: light ? '#0b110b' : '#0f0500',
+				paper: light ? '#0f200f' : '#361e10',
 			},
 			text: {
-				primary: mode === 'light' ? '#22c55e' : '#fcd34d', // light= green-500, dark= amber-300
+				primary: light ? '#66ff00' : '#ffb641',
+				secondary: light ? '#99cc99' : '#fbbf24',
 			},
 			primary: {
-				main: mode === 'light' ? '#22c55e' : '#fcd34d',
+				main: light ? '#33cc33' : '#a65a1a',
 			},
 			secondary: {
-				main: mode === 'light' ? '#15803d' : '#fde68a', // focus: green-700 / amber-200
+				main: light ? '#aaff00' : '#d97708',
 			},
-			divider: mode === 'light' ? '#22c55e' : '#fcd34d',
+			divider: light ? '#33cc33' : '#a65a1a',
+			action: {
+				active: light ? '#99cc99' : '#fbbf24',
+			},
 		},
 		components: {
+			MuiCheckbox: {
+				styleOverrides: {
+					root: ({ theme }) => ({
+						color: theme.palette.text.secondary,
+						'&.Mui-checked': {
+							color: theme.palette.primary.main,
+						},
+					}),
+				},
+			},
+			MuiRadio: {
+				styleOverrides: {
+					root: ({ theme }) => ({
+						color: theme.palette.text.secondary,
+						'&.Mui-checked': {
+							color: theme.palette.primary.main,
+						},
+					}),
+				},
+			},
 			MuiOutlinedInput: {
 				styleOverrides: {
 					root: {
 						'&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-							borderColor: mode === 'light' ? '#15803d' : '#fde68a',
+							borderColor: light ? '#aaff00' : '#f59e0b',
 						},
 					},
 				},
@@ -34,7 +60,7 @@ export const theme = (mode: PaletteMode) =>
 				styleOverrides: {
 					root: {
 						'&.Mui-focused': {
-							color: mode === 'light' ? '#15803d' : '#fde68a',
+							color: light ? '#aaff00' : '#f59e0b',
 						},
 					},
 				},
@@ -43,7 +69,7 @@ export const theme = (mode: PaletteMode) =>
 				styleOverrides: {
 					root: {
 						'&:focus-visible': {
-							outline: `2px solid ${mode === 'light' ? '#15803d' : '#fde68a'}`,
+							outline: `2px solid ${light ? '#aaff00' : '#f59e0b'}`,
 							outlineOffset: '2px',
 						},
 					},
@@ -54,5 +80,6 @@ export const theme = (mode: PaletteMode) =>
 			fontFamily: ['Share Tech Mono', '__Share_Tech_Mono_439932', '__Share_Tech_Mono_Fallback_439932'].join(','),
 		},
 	})
+}
 
 export default theme

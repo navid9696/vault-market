@@ -4,6 +4,7 @@ import '../globals.css'
 import { ThemeProvider } from '@mui/material'
 import theme from '~/lib/theme'
 import { TrpcProvider } from '~/providers/TrpcProvider'
+import ThemeRegistry from '~/providers/ThemeRegistry'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],
@@ -27,7 +28,7 @@ export default function RootLayout({
 				id='top'
 				className={`user ${shareTechMono.variable} ${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
 				<TrpcProvider>
-					<ThemeProvider theme={theme}>{children}</ThemeProvider>
+					<ThemeRegistry>{children}</ThemeRegistry>
 				</TrpcProvider>
 			</body>
 		</html>

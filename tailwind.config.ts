@@ -23,6 +23,7 @@ const config: Config = {
 				text: 'var(--text)',
 				primary: 'var(--primary)',
 				secondary: 'var(--secondary)',
+				tertiary: 'var(--tertiary)',
 				border: 'var(--border)',
 				focus: 'var(--focus)',
 			},

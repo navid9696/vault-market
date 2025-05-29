@@ -89,7 +89,7 @@ const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchT
 		<div className='h-full p-2 flex gap-x-4 justify-evenly items-center'>
 			<Button
 				variant='outlined'
-				className='text-zinc-900 hover:border-black border-black/25 border bg-green-700 hover:bg-green-600 xl:hidden'
+				className='text-text hover:border-black border-border border bg-primary hover:bg-secondary xl:hidden'
 				onClick={handleDrawer(true)}>
 				Filters
 			</Button>
@@ -99,17 +99,17 @@ const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchT
 				autoHighlight
 				handleHomeEndKeys
 				size='small'
-				className='bg-green-700 w-32'
+				className='bg-primary text-text w-32'
 				options={filteredProducts}
 				getOptionLabel={product => (product as ProductCardProps).name}
 				onInputChange={handleInputChange}
 				renderInput={params => <TextField {...params} label='Search' variant='outlined' />}
 			/>
 
-			<FormControl className='w-52 focus:bg-black focus:border-black'>
+			<FormControl className='w-52 focus:bg-focus focus:border-bg'>
 				<InputLabel id='demo-simple-select-label'>Sort</InputLabel>
 				<Select
-					className='focus:border-black'
+					className='focus:border-bg'
 					labelId='demo-simple-select-label'
 					id='demo-simple-select'
 					label='Sort'

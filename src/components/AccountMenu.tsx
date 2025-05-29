@@ -43,7 +43,6 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 
 export default function AccountMenu() {
 	const { resolvedTheme, setTheme } = useNextTheme()
-	const muiTheme = useMuiTheme()
 	const { data: session } = useSession()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
@@ -156,12 +155,16 @@ export default function AccountMenu() {
 
 				<MenuItem
 					onClick={() => {
-						setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+						setTheme(resolvedTheme === 'light' ? 'dark' : 'light')
 					}}>
 					<ListItemIcon>
 						<ContrastIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 					</ListItemIcon>
-					<Switch checked={resolvedTheme === 'dark'} />
+					<Switch
+						checked={resolvedTheme === 'light'}
+						onChange={(_, checked) => setTheme(checked ? 'light' : 'dark')}
+						color='secondary'
+					/>
 				</MenuItem>
 
 				{session ? (

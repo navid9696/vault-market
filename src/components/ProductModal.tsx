@@ -85,8 +85,8 @@ const ProductModal = () => {
 								<FavoriteIcon
 									className={
 										isFavorite
-											? 'stroke-green-950 stroke-1 text-green-600'
-											: 'stroke-green-950 stroke-1 text-transparent group-hover:text-green-200'
+											? 'stroke-border stroke-1 text-focus'
+											: 'stroke-border stroke-1 text-transparent group-hover:text-tertiary'
 									}
 									fontSize={26}
 								/>
@@ -96,7 +96,7 @@ const ProductModal = () => {
 					<div className='w-1/2 sm:scale-100 scale-90 flex flex-col items-center justify-evenly'>
 						<div
 							onClick={handleModalOpen}
-							className='p-4 flex flex-col shadow-inset-1 rounded-2xl text-black bg-green-700 hover:bg-green-500 cursor-pointer transition-colors'>
+							className='p-4 flex flex-col shadow-inset-1 rounded-2xl text-text bg-surface hover:bg-primary cursor-pointer transition-colors'>
 							<Typography className='font-semibold text-xl'>{avgRating.toFixed(2)}</Typography>
 							<StyledRating
 								emptyIcon={<StarIcon fontSize='inherit' />}
@@ -108,7 +108,7 @@ const ProductModal = () => {
 							/>
 						</div>
 						<div>
-							<div className='my-4 p-4 shadow-inset-2 rounded-xl bg-gradient-to-bl from-zinc-900 via-green-300 to-zinc-900'>
+							<div className='my-4 p-4 shadow-inset-2 rounded-xl bg-gradient-to-bl from-bg via-secondary to-bg'>
 								<div className='relative min-h-36 h-full min-w-32'>
 									<Image
 										className='hover:scale-110 object-contain transition-transform'
@@ -118,7 +118,7 @@ const ProductModal = () => {
 									/>
 								</div>
 							</div>
-							<div className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-green-400 via-green-200 to-green-500 md:text-sm text-xs text-green-950 font-semibold'>
+							<div className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary md:text-sm text-xs text-bg font-semibold'>
 								{product.description}
 							</div>
 						</div>
