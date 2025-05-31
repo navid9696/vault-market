@@ -13,10 +13,10 @@ const theme = (mode: PaletteMode) => {
 			},
 			text: {
 				primary: light ? '#66ff00' : '#ffb641',
-				secondary: light ? '#99cc99' : '#fbbf24',
+				secondary: light ? '#99cc99' : '#ffcc6e',
 			},
 			primary: {
-				main: light ? '#33cc33' : '#a65a1a',
+				main: light ? '#33cc33' : '#d37120',
 			},
 			secondary: {
 				main: light ? '#aaff00' : '#d97708',

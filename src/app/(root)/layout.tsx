@@ -1,4 +1,4 @@
-// app/layout.tsx
+
 import type { Metadata } from 'next'
 import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'

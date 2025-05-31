@@ -1,3 +1,4 @@
+'use client'
 import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { InputAdornment, TextField, Button } from '@mui/material'

@@ -10,16 +10,16 @@ import useStore from '~/store/useStore'
 import TransitionsModal from './TransitionModal'
 import { useSession } from 'next-auth/react'
 
-const StyledRating = styled(Rating)({
+const StyledRating = styled(Rating)(({ theme }) => ({
 	'& .MuiRating-iconFilled': {
-		color: '#f1f5f9',
+		color: theme.palette.primary.main,
 		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 1))',
 	},
 	'& .MuiRating-iconEmpty': {
-		color: '#1e293b',
-		fill: 'black',
+		color: theme.palette.text.secondary,
+		fill: theme.palette.background.paper,
 	},
-})
+}))
 
 const ProductModal = () => {
 	const { product } = useStore(state => ({ product: state.product }))
@@ -96,7 +96,7 @@ const ProductModal = () => {
 					<div className='w-1/2 sm:scale-100 scale-90 flex flex-col items-center justify-evenly'>
 						<div
 							onClick={handleModalOpen}
-							className='p-4 flex flex-col shadow-inset-1 rounded-2xl text-text bg-surface hover:bg-primary cursor-pointer transition-colors'>
+							className='p-4 flex flex-col shadow-inset-1 border-border border rounded-2xl text-text bg-surface hover:bg-primary cursor-pointer transition-colors'>
 							<Typography className='font-semibold text-xl'>{avgRating.toFixed(2)}</Typography>
 							<StyledRating
 								emptyIcon={<StarIcon fontSize='inherit' />}

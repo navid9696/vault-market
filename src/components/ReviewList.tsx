@@ -37,13 +37,13 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 		<>
 			<div className='flex flex-col gap-4'>
 				<div className='flex items-center justify-between gap-4'>
-					<h3 className='w-full text-left font-semibold md:text-sm text-lg'>REVIEWS</h3>
-					<Button onClick={handleAddReview} size='small' className='min-w-36 text-base' endIcon={<AddReview />}>
+					<h3 className='w-full text-left font-semibold md:text-lg text-sm'>REVIEWS</h3>
+					<Button onClick={handleAddReview} size='small' className='min-w-36 text-base text-text' endIcon={<AddReview />}>
 						Add Review
 					</Button>
 				</div>
 				<Box
-					className='bg-green-50 rounded-xl overflow-y-auto p-2'
+					className='bg-tertiary rounded-xl overflow-y-auto p-2'
 					sx={{
 						width: '70dvw',
 						height: '75dvh',
