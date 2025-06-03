@@ -1,4 +1,4 @@
-import { FormControl, IconButton, InputLabel, OutlinedInput } from '@mui/material'
+import { FormControl, IconButton, InputLabel, OutlinedInput, styled } from '@mui/material'
 import { FaPlus as Plus } from 'react-icons/fa'
 import { FaMinus as Minus } from 'react-icons/fa'
 
@@ -8,6 +8,42 @@ interface QuantitySelectorProps {
 	availability: number
 	strictLimit?: boolean
 }
+
+const BorderedIconButton = styled(IconButton)(({ theme }) => ({
+	border: '1px solid var(--border)',
+	color: 'var(--secondary)',
+	padding: theme.spacing(0.5),
+	'&.Mui-disabled': {
+		opacity: 1,
+		color: 'gray',
+		borderColor: 'var(--border)',
+	},
+}))
+
+const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
+	'& .MuiOutlinedInput-notchedOutline': {
+		border: '1px solid var(--focus) !important',
+	},
+
+	'&.Mui-focused, &:hover, &:focus-visible': {
+		boxShadow: 'none !important',
+	},
+
+	'&:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline': {
+		border: '1px solid var(--focus) !important',
+	},
+
+	backgroundColor: 'var(--surface) !important',
+	'&:hover, &.Mui-focused': {
+		backgroundColor: 'var(--surface) !important',
+	},
+	'& .MuiOutlinedInput-input': {
+		textAlign: 'center',
+	},
+	'&.Mui-disabled .MuiOutlinedInput-input': {
+		opacity: 1,
+	},
+}))
 
 const QuantitySelector = ({
 	strictLimit,
@@ -22,34 +58,40 @@ const QuantitySelector = ({
 
 	return (
 		<div className='flex'>
-			<IconButton
+			<BorderedIconButton
 				disabled={selectedQuantity <= 1}
 				onClick={() => handleChange(-1)}
-				className='text-green-950 rounded-none rounded-tl-md rounded-bl-md shadow-inset-1'>
+				sx={{
+					borderTopRightRadius: 0,
+					borderBottomRightRadius: 0,
+				}}>
 				<Minus />
-			</IconButton>
+			</BorderedIconButton>
 
 			<FormControl className='w-16' size='small'>
 				<InputLabel className='font-semibold' htmlFor='input-adornment-amount'>
 					Amount
 				</InputLabel>
-				<OutlinedInput
-					className='rounded-none hover:border-red-400 font-semibold'
+				<StyledOutlinedInput
+					className='rounded-none font-semibold'
 					value={selectedQuantity}
 					id='input-adornment-amount'
 					type='number'
 					readOnly
-					disabled
 					label='Amount'
-					inputProps={{ min: '1', style: { WebkitTextFillColor: 'rgba(0, 0, 0, 1.0)', textAlign: 'center' } }}
+					inputProps={{ min: '1' }}
 				/>
 			</FormControl>
-			<IconButton
+
+			<BorderedIconButton
 				onClick={() => handleChange(+1)}
 				disabled={strictLimit ? selectedQuantity >= availability : availability <= 0}
-				className='text-green-950 rounded-none rounded-tr-md rounded-br-md shadow-inset-1'>
+				sx={{
+					borderTopLeftRadius: 0,
+					borderBottomLeftRadius: 0,
+				}}>
 				<Plus />
-			</IconButton>
+			</BorderedIconButton>
 		</div>
 	)
 }

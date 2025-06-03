@@ -10,26 +10,23 @@ interface DeleteProductProps {
 }
 
 const DeleteProduct = ({ handleClose, product }: DeleteProductProps) => {
-	const deleteProductMutation = trpc.product.deleteProduct.useMutation();
+	const deleteProductMutation = trpc.product.deleteProduct.useMutation()
 
 	const deleteProduct = async () => {
-  try {
-    await toast.promise(
-      deleteProductMutation.mutateAsync({ id: product.id }),
-      {
-        pending: 'Deleting product... Please wait ⏳',
-        success: 'Product successfully deleted! 🗑️',
-        error: 'Failed to delete product. Something went wrong! 🚫😓',
-      }
-    );
-    handleClose();
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
+		try {
+			await toast.promise(deleteProductMutation.mutateAsync({ id: product.id }), {
+				pending: 'Deleting product... Please wait ⏳',
+				success: 'Product successfully deleted! 🗑️',
+				error: 'Failed to delete product. Something went wrong! 🚫😓',
+			})
+			handleClose()
+		} catch (error) {
+			console.error('Error:', error)
+		}
+	}
 	return (
 		<>
-			<h2 className='mb-8 text-xl'>Are you sure you want to delete your account?</h2>
+			<h2 className='mb-8 text-xl'>Are you sure you want to delete this product?</h2>
 			<div className='flex justify-center gap-20'>
 				<Button color='error' variant='outlined' size='large' onClick={deleteProduct}>
 					Delete

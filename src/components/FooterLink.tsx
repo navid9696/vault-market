@@ -7,7 +7,7 @@ interface FooterLinkProps extends PropsWithChildren {
 
 const FooterLink = ({ href, children }: FooterLinkProps) => {
 	return (
-		<Link className='p-1 hover:text-green-500 transition-colors' href={href}>
+		<Link className='p-1 hover:text-focus transition-colors' href={href}>
 			{children}
 		</Link>
 	)

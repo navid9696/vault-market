@@ -106,7 +106,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 			<Button
 				onClick={handleBuy}
 				disabled={createOrderMutation.status === 'pending'}
-				className='mt-5 font-extrabold text-green-500 hover:bg-[#13FF17] hover:text-slate-950'
+				className='mt-5 font-extrabold text-text hover:bg-text hover:text-bg'
 				size='large'
 				endIcon={createOrderMutation.status === 'pending' ? <CircularProgress size={20} /> : <Caps />}>
 				{createOrderMutation.status === 'pending' ? 'Processing...' : 'BUY'}

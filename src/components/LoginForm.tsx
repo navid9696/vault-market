@@ -1,3 +1,4 @@
+'use client'
 import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { InputAdornment, TextField, Button } from '@mui/material'
@@ -71,7 +72,7 @@ const LoginForm = () => {
 	}, [formState, reset])
 
 	return (
-		<div className='h-screen text-white'>
+		<div className='h-screen text-text'>
 			<div style={{ marginTop: `${navHeight}px` }} className='p-4 h-with-navbar'>
 				<form
 					className='h-full flex flex-col justify-center items-center text-center'
@@ -97,7 +98,7 @@ const LoginForm = () => {
 							helperText={<span className='block h-4'>{errors.email?.message}</span>}
 							InputProps={{
 								startAdornment: isFocusedField === 'email' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -121,7 +122,7 @@ const LoginForm = () => {
 							helperText={<span className='block h-4'>{errors.password?.message}</span>}
 							InputProps={{
 								startAdornment: isFocusedField === 'password' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -134,7 +135,7 @@ const LoginForm = () => {
 							Need to create an account? <Link href={'/register'}>Sign up</Link>
 						</p>
 
-						<Button variant='outlined' className='p-4 ' size='large' type='submit'>
+						<Button variant='outlined' className='px-4 py-2' size='large' type='submit'>
 							Log In
 						</Button>
 						<p>OR</p>

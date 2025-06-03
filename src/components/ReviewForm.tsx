@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -20,22 +21,19 @@ const VisuallyHiddenInput = styled('input')({
 	width: 1,
 })
 
-const StyledRating = styled(Rating)({
+const StyledRating = styled(Rating)(({ theme }) => ({
 	'& .MuiRating-iconFilled': {
-		color: '#f1f5f9',
+		color: theme.palette.primary.main,
 		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 1))',
 	},
 	'& .MuiRating-iconEmpty': {
-		color: '#1e293b',
-		fill: 'black',
+		color: theme.palette.text.secondary,
+		fill: theme.palette.background.paper,
 	},
-})
+}))
 
 const ReviewSchema = z.object({
-	review: z
-		.string()
-		.min(1, { message: 'Review cannot be empty' })
-		.max(150, { message: 'Keep your review within 150 characters' }),
+	review: z.string().min(1).max(150),
 	rating: z.number().int().min(0).max(5),
 })
 
@@ -69,17 +67,12 @@ export default function ReviewForm({ productId, handleClose }: ReviewFormProps) 
 			utils.product.getComments.invalidate({ productId })
 		},
 		onError: err => {
-			console.log('ReviewForm productId =', productId)
-			console.error('addComment error:', err)
-			console.log('raw error data:', err.data)
-
 			const data = err.data as any
 			if (data.zodError) {
 				console.group('Zod validation errors')
 				console.table(data.zodError.fieldErrors)
 				console.groupEnd()
 			}
-
 			toast.error(err.message)
 		},
 	})

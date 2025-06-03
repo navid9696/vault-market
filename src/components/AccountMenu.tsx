@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTheme as useNextTheme } from 'next-themes'
+import { useTheme as useMuiTheme } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -12,7 +14,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import { Skeleton, Switch, Typography } from '@mui/material'
+import { Skeleton, Switch, Typography, useTheme } from '@mui/material'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchangeTwoTone'
 import LogoutIcon from '@mui/icons-material/LogoutTwoTone'
 import FavoriteIcon from '@mui/icons-material/FavoriteTwoTone'
@@ -40,6 +42,8 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 })
 
 export default function AccountMenu() {
+	const { resolvedTheme, setTheme } = useNextTheme()
+	const muiTheme = useTheme()
 	const { data: session } = useSession()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
@@ -143,24 +147,39 @@ export default function AccountMenu() {
 					</MenuItem>,
 					<Divider key='divider' />,
 					<MenuItem key='profile' onClick={() => handleModalOpen('profile')}>
-						<ListItemIcon className='mr-2'>
-							<SettingsIcon fontSize='small' />
+						<ListItemIcon>
+							<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 						</ListItemIcon>
 						Profile Settings
 					</MenuItem>,
 				]}
 
-				<MenuItem>
+				<MenuItem
+					onClick={() => {
+						setTheme(resolvedTheme === 'light' ? 'dark' : 'light')
+					}}>
 					<ListItemIcon>
-						<ContrastIcon fontSize='small' />
+						<ContrastIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 					</ListItemIcon>
-					<Switch />
+					<Switch
+						checked={resolvedTheme === 'light'}
+						onChange={(_, checked) => setTheme(checked ? 'light' : 'dark')}
+						color='secondary'
+						sx={{
+							'& .MuiSwitch-switchBase.Mui-checked': {
+								color: muiTheme.palette.secondary.main,
+							},
+							'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+								color: muiTheme.palette.secondary.main,
+							},
+						}}
+					/>
 				</MenuItem>
 
 				{session ? (
 					<MenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
-						<ListItemIcon className='mr-2'>
-							<LogoutIcon fontSize='small' />
+						<ListItemIcon>
+							<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 						</ListItemIcon>
 						Sign Out
 					</MenuItem>
@@ -171,7 +190,7 @@ export default function AccountMenu() {
 								handleClose
 							}}>
 							<ListItemIcon className='mr-2'>
-								<LoginIcon fontSize='small' />
+								<LoginIcon className='text-text' fontSize='small' />
 							</ListItemIcon>
 							Sign In
 						</MenuItem>

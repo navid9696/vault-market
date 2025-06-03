@@ -31,7 +31,7 @@ const Navbar = () => {
 		<>
 			<nav className='fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full md:max-w-screen-md '>
 				<div ref={navRef} className=' '>
-					<div className='p-2 flex items-center justify-between h-14 border-2 border-green-600 bg-gradient-to-r from-green-950 via-green-900 to-green-950  md:rounded-full z-10'>
+					<div className='p-2 flex items-center justify-between h-14 border-2 border-border bg-gradient-to-r from-bg via-surface to-bg  md:rounded-full z-10'>
 						<div className='flex items-center '>
 							<div>
 								<Link href={'/#top'}>
@@ -47,22 +47,22 @@ const Navbar = () => {
 									alt='nuka cola bottle cap'
 									loading='lazy'
 								/>
-								<span className='ml-2 text-green-500 font-extrabold text-lg'>{totalCaps}</span>
+								<span className='ml-2 text-text font-extrabold text-lg'>{totalCaps}</span>
 							</div>
 						</div>
 						<div className='flex items-center'>
 							<div className='p-2 cursor-pointer' onClick={handleModalOpen}>
 								<Badge badgeContent={cartCount} color='warning' max={99}>
-									<ShoppingCart className=' text-green-600' />
+									<ShoppingCart className=' text-text' />
 								</Badge>
 							</div>
 							<AccountMenu />
 						</div>
 					</div>
 				</div>
-				<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-1 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
-				<div className='absolute hidden lg:block inset-0 bg-green-600 w-[1000px] h-2 top-6 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
-				<div className='absolute hidden lg:block inset-0 bg-green-600 w-[900px] h-2 top-11 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
+				<div className='absolute hidden lg:block inset-0 bg-border w-[900px] h-2 top-1 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
+				<div className='absolute hidden lg:block inset-0 bg-border w-[1000px] h-2 top-6 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
+				<div className='absolute hidden lg:block inset-0 bg-border w-[900px] h-2 top-11 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
 			</nav>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				<CartModal />

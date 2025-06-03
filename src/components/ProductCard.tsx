@@ -70,7 +70,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 							className='absolute top-1 left-1 h-11 w-11 p-1 bg-orange-200
 				 shadow-inset-2 rounded-lg -z-[1] '></div>
 						{/* bagde-front */}
-						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-[#0b5c29] rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
+						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-primary rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
 							<p className='relative -top-[4px] ml-[3px] mr-[8px] my-[1px] tracking-tighter text-md '>
 								{(discount * 100).toFixed(0)}
 							</p>
@@ -93,11 +93,11 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						</>
 					)}
 					{/* content */}
-					<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-zinc-900 via-green-300 to-zinc-900 '>
+					<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-bg via-secondary to-bg '>
 						<h4
 							className={`${
 								discount > 0 && 'w-11/12 pl-3 rounded-tr-lg'
-							} w-full h-[36px] pl-0 flex items-center justify-center text-sm tracking-tighter rounded-t-lg bg-green-700 text-orange-200 font-semibold `}>
+							} w-full h-[36px] pl-0 flex items-center justify-center text-sm tracking-tighter rounded-t-lg bg-surface text-text font-semibold `}>
 							{name}
 						</h4>
 						<div className='h-full w-full p-1'>
@@ -107,13 +107,13 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						</div>
 
 						{/* content-box-info */}
-						<div className='p-2 relative flex flex-col items-start justify-center rounded-md shadow-inset-3 bg-gradient-to-b from-green-400 via-green-200 to-green-500 text-white font-semibold z-0'>
+						<div className='p-2 relative flex flex-col items-start justify-center rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary text-white font-semibold z-0'>
 							{/* ribbon-tip */}
-							<div className='absolute h-[22px] w-[4px] -right-[2px] bottom-[7px] shadow-inset-1 rounded-md bg-green-500'></div>
+							<div className='absolute h-[22px] w-[4px] -right-[2px] bottom-[7px] shadow-inset-1 rounded-md bg-primary'></div>
 							{/* ribbon-border */}
-							<div className='h-[18px] w-[86px] absolute right-0 bottom-[7px] pl-1 chevron bg-[#303030] -z-[1]'></div>
+							<div className='h-[18px] w-[86px] absolute right-0 bottom-[7px] pl-1 chevron bg-bg -z-[1]'></div>
 							{/* ribbon with ratings */}
-							<div className='h-4 w-[84px] absolute right-0 bottom-2 pl-1 chevron flex items-center bg-green-500 z-0'>
+							<div className='h-4 w-[84px] absolute right-0 bottom-2 pl-1 chevron flex items-center bg-primary z-0'>
 								<StyledRating
 									emptyIcon={<StarIcon fontSize='inherit' />}
 									className='text-base'
@@ -125,7 +125,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 								/>
 							</div>
 							{/* price-box */}
-							<div className='flex flex-col items-start pl-2 text-green-950'>
+							<div className='flex flex-col items-start pl-2 text-bg'>
 								<div className='flex items-center gap-1'>
 									{discount > 0 ? (price * (1 - discount)).toFixed(0) : price}
 									<Caps />

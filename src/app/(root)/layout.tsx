@@ -1,9 +1,10 @@
+
 import type { Metadata } from 'next'
 import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'
-import { ThemeProvider } from '@mui/material'
-import theme from '~/lib/theme'
 import { TrpcProvider } from '~/providers/TrpcProvider'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import ThemeRegistry from '~/providers/ThemeRegistry'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],
@@ -16,18 +17,28 @@ export const metadata: Metadata = {
 	description: '',
 }
 
-export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<html className='scrollbar-hide scroll-smooth' lang='en'>
+		<html lang='en' suppressHydrationWarning className='scrollbar-hide scroll-smooth'>
 			<body
 				id='top'
-				className={`user ${shareTechMono.variable} ${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
+				className={`
+          user
+          ${shareTechMono.variable}
+          ${shareTechMono.className}
+          overflow-x-hidden
+          bg-bg
+          text-text
+        `}>
 				<TrpcProvider>
-					<ThemeProvider theme={theme}>{children}</ThemeProvider>
+					<NextThemesProvider
+						attribute='class'
+						defaultTheme='dark'
+						enableSystem={false}
+						disableTransitionOnChange
+						enableColorScheme={false}>
+						<ThemeRegistry>{children}</ThemeRegistry>
+					</NextThemesProvider>
 				</TrpcProvider>
 			</body>
 		</html>

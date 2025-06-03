@@ -4,6 +4,8 @@ import '../globals.css'
 import { ThemeProvider } from '@mui/material'
 import theme from '~/lib/theme'
 import { TrpcProvider } from '~/providers/TrpcProvider'
+import ThemeRegistry from '~/providers/ThemeRegistry'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],
@@ -22,12 +24,19 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html className='scrollbar-hide scroll-smooth' lang='en'>
+		<html suppressHydrationWarning className='scrollbar-hide scroll-smooth' lang='en'>
 			<body
 				id='top'
 				className={`user ${shareTechMono.variable} ${shareTechMono.className} overflow-x-hidden bg-zinc-950`}>
 				<TrpcProvider>
-					<ThemeProvider theme={theme}>{children}</ThemeProvider>
+					<NextThemesProvider
+						attribute='class'
+						defaultTheme='dark'
+						enableSystem={false}
+						disableTransitionOnChange
+						enableColorScheme={false}>
+						<ThemeRegistry>{children}</ThemeRegistry>
+					</NextThemesProvider>
 				</TrpcProvider>
 			</body>
 		</html>

@@ -1,3 +1,6 @@
+'use client'
+
+import React, { useEffect, useMemo, useCallback, useReducer } from 'react'
 import {
 	Checkbox,
 	FormControl,
@@ -8,38 +11,30 @@ import {
 	RadioGroup,
 	Rating,
 	Slider,
-	styled,
 } from '@mui/material'
-import React, { useEffect, useMemo, useCallback, useReducer, useState } from 'react'
-import { ProductCardProps } from './ProductCard'
+import { styled, useTheme } from '@mui/material/styles'
 import StarIcon from '@mui/icons-material/Star'
-import { green } from '@mui/material/colors'
+import { trpc } from '~/server/client'
 import useStore from '~/store/useStore'
 import { filtersReducer, initialState } from '~/reducers/filtersReducer'
-import { trpc } from '~/server/client'
+import type { ProductCardProps } from './ProductCard'
 
-const StyledRating = styled(Rating)({
+const StyledRating = styled(Rating)(({ theme }) => ({
 	'& .MuiRating-iconFilled': {
-		color: '#16a34a',
-		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 1))',
+		color: theme.palette.primary.main,
+		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 0.5))',
 	},
 	'& .MuiRating-iconEmpty': {
-		color: '#71717a',
-		fill: 'black',
+		color: theme.palette.text.secondary,
+		fill: theme.palette.background.paper,
 	},
-})
-
-interface FiltersProps {
-	searchTerm: string
-	setFilteredProducts: (filtered: ProductCardProps[]) => void
-}
+}))
 
 function valuetext(value: number) {
 	return `${value}`
 }
 
 const minDistance = 500
-
 const ratingOptions = [
 	{ value: 'Any', label: 'Any' },
 	{ value: 5, label: '5', precision: 0.5 },
@@ -48,14 +43,20 @@ const ratingOptions = [
 	{ value: 3, label: '3+', precision: 0.5 },
 ]
 
-const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
+interface FiltersProps {
+	searchTerm: string
+	setFilteredProducts: (filtered: ProductCardProps[]) => void
+}
+
+export default function Filters({ setFilteredProducts, searchTerm }: FiltersProps) {
+	const theme = useTheme()
 	const [state, dispatch] = useReducer(filtersReducer, initialState)
 	const { activeCategory, activeSubCategory } = useStore()
-	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery({})
+	const { data: products } = trpc.product.getProducts.useQuery({})
 
 	const filteredProducts = useMemo(() => {
 		return (
-			products?.filter((product: ProductCardProps) => {
+			products?.filter(product => {
 				const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
 				const matchesAvailability = state.checkedShowedUnavailable || product.available > 0
 				const matchesOnSale = !state.checkedOnSale || product.discount
@@ -63,7 +64,6 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 				const matchesCategory = !activeCategory || product.categoryId === activeCategory
 				const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
 				const matchesSearchTerm = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase())
-
 				return (
 					matchesPriceRange &&
 					matchesAvailability &&
@@ -91,28 +91,27 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 	}, [filteredProducts, setFilteredProducts])
 
 	const handleRatingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value
-		dispatch({ type: 'SET_RATING_FILTER', payload: value })
+		dispatch({ type: 'SET_RATING_FILTER', payload: e.target.value })
 	}
 
 	const handlePriceChange = useCallback(
 		(e: Event, newValue: number | number[], activeThumb: number) => {
 			if (!Array.isArray(newValue)) return
-
 			if (activeThumb === 0) {
-				const newMinPrice = Math.min(newValue[0], state.price[1] - minDistance)
-				dispatch({ type: 'SET_PRICE_FILTER', payload: [newMinPrice, state.price[1]] })
+				const newMin = Math.min(newValue[0], state.price[1] - minDistance)
+				dispatch({ type: 'SET_PRICE_FILTER', payload: [newMin, state.price[1]] })
 			} else {
-				const newMaxPrice = Math.max(newValue[1], state.price[0] + minDistance)
-				dispatch({ type: 'SET_PRICE_FILTER', payload: [state.price[0], newMaxPrice] })
+				const newMax = Math.max(newValue[1], state.price[0] + minDistance)
+				dispatch({ type: 'SET_PRICE_FILTER', payload: [state.price[0], newMax] })
 			}
 		},
 		[state.price]
 	)
 
 	return (
-		<div className='h-full px-4 py-8 flex flex-col justify-around text-green-600 bg-zinc-900'>
-			<div className='p-2 px-6 border-2 border-green-600 rounded-xl'>
+		<div className='h-full px-4 py-8 flex flex-col justify-around bg-bg' style={{ color: theme.palette.text.primary }}>
+			{/* Price */}
+			<div className='p-2 px-6 border-2 border-border rounded-xl'>
 				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
 					getAriaLabel={() => 'Price range'}
@@ -124,106 +123,87 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 					min={50}
 					step={5}
 					max={5000}
-					color='success'
+					color='primary'
 				/>
 			</div>
 
+			{/* Checkboxes */}
 			<FormGroup className='my-5 flex flex-col justify-center gap-2'>
 				<FormControlLabel
 					className='w-full'
-					label={
-						<div className='flex items-center gap-2'>
-							<span>Discount</span>
-						</div>
-					}
+					sx={{ color: theme.palette.text.primary }}
+					label='Discount'
 					control={
 						<Checkbox
 							checked={state.checkedOnSale}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-								dispatch({ type: 'SET_ON_SALE_FILTER', payload: !state.checkedOnSale })
-							}
-							inputProps={{
-								'aria-label': state.checkedOnSale ? 'Uncheck to disable sale filter' : 'Check to filter items on sale',
-							}}
+							onChange={() => dispatch({ type: 'SET_ON_SALE_FILTER', payload: !state.checkedOnSale })}
 							sx={{
-								color: green[800],
-								'&.Mui-checked': {
-									color: green[600],
-								},
+								color: theme.palette.text.secondary,
+								'&.Mui-checked': { color: theme.palette.primary.main },
 							}}
 						/>
 					}
 				/>
 				<FormControlLabel
+					sx={{ color: theme.palette.text.primary }}
 					label='Show unavailable'
 					control={
 						<Checkbox
 							checked={state.checkedShowedUnavailable}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-								dispatch({ type: 'SET_UNAVAILABLE_FILTER', payload: !state.checkedShowedUnavailable })
-							}
-							inputProps={{
-								'aria-label': state.checkedShowedUnavailable
-									? 'Uncheck to hide unavailable items'
-									: 'Check to show unavailable items',
-							}}
+							onChange={() => dispatch({ type: 'SET_UNAVAILABLE_FILTER', payload: !state.checkedShowedUnavailable })}
 							sx={{
-								color: green[800],
-								'&.Mui-checked': {
-									color: green[600],
-								},
+								color: theme.palette.text.secondary,
+								'&.Mui-checked': { color: theme.palette.primary.main },
 							}}
 						/>
 					}
 				/>
 			</FormGroup>
 
+			{/* Ratings */}
 			<FormControl>
 				<FormLabel
+					id='ratings-group-label'
 					sx={{
-						'&.Mui-focused': {
-							color: '#00d30b',
-						},
-					}}
-					className='text-green-600 text-lg font-semibold uppercase'
-					id='ratings-group-label'>
+						color: theme.palette.text.primary,
+						fontWeight: 'bold',
+						'&.Mui-focused': { color: theme.palette.primary.main },
+					}}>
 					Ratings
 				</FormLabel>
 				<RadioGroup
-					className='h-full flex flex-col gap-2'
 					aria-labelledby='ratings-group-label'
+					className='h-full flex flex-col gap-2'
 					defaultValue='Any'
 					onChange={handleRatingsChange}
 					name='radio-buttons-group'>
-					{ratingOptions.map(rating => (
+					{ratingOptions.map(opt => (
 						<FormControlLabel
-							key={rating.value}
-							value={rating.value}
+							key={opt.value}
+							sx={{ color: theme.palette.text.primary }}
+							value={opt.value}
 							control={
 								<Radio
 									sx={{
-										color: green[800],
-										'&.Mui-checked': {
-											color: green[600],
-										},
+										color: theme.palette.text.secondary,
+										'&.Mui-checked': { color: theme.palette.primary.main },
 									}}
 								/>
 							}
 							label={
-								rating.precision ? (
-									<div className='flex items-center justify-center gap-2'>
+								opt.precision ? (
+									<div className='flex items-center gap-2'>
 										<StyledRating
 											emptyIcon={<StarIcon fontSize='inherit' />}
-											name='read-only'
-											value={typeof rating.value === 'number' ? rating.value : 0}
-											precision={rating.precision}
+											value={typeof opt.value === 'number' ? opt.value : 0}
+											precision={opt.precision}
 											max={5}
 											readOnly
 										/>
-										<span>{rating.label}</span>
+										<span>{opt.label}</span>
 									</div>
 								) : (
-									rating.label
+									opt.label
 								)
 							}
 						/>
@@ -233,5 +213,3 @@ const Filters = ({ setFilteredProducts, searchTerm }: FiltersProps) => {
 		</div>
 	)
 }
-
-export default Filters

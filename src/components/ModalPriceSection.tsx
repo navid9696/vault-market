@@ -34,7 +34,7 @@ const PriceSection = () => {
 	}
 	return (
 		<div className='w-1/2 flex flex-col justify-evenly items-center'>
-			<div className='sm:w-full flex flex-col items-center text-green-950'>
+			<div className='sm:w-full flex flex-col items-center text-text'>
 				<h3 className='w-full text-left font-semibold text-sm'>PRICE</h3>
 				<div className='w-full flex flex-col sm:flex-row justify-start gap-4'>
 					<p className='flex items-center gap-1 md:text-2xl text-xl'>
@@ -60,7 +60,7 @@ const PriceSection = () => {
 			</div>
 			<div className='flex flex-col gap-4'>
 				<Button
-					className='text-base'
+					className='text-base text-text'
 					onClick={handleAddToCart}
 					disabled={addCartItemMutation.status === 'pending'}
 					endIcon={<AddShoppingCartTwoToneIcon />}>
