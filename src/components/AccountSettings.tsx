@@ -108,8 +108,8 @@ const AccountSettings = () => {
 						className='my-5 cursor-pointer'
 						overlap='circular'
 						anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-						badgeContent={<EditIcon className='mt-3 ml-3' fontSize={32} />}>
-						<Avatar className='h-32 w-32 border-4 border-bg bg-surface' src={avatar} />
+						badgeContent={<EditIcon className='text-2xl' fontSize={32} />}>
+						<Avatar className='h-32 w-32 border-4 border-bg ' src={avatar} />
 						<VisuallyHiddenInput type='file' accept='image/*' onChange={handleAvatarChange}></VisuallyHiddenInput>
 					</Badge>
 					<div>
