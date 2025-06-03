@@ -13,7 +13,7 @@ const style = {
 	minWidth: 300,
 	height: 'fit-content',
 	bgcolor: 'background.paper',
-	border: '2px solid #000',
+	border: '2px solid var(--border)',
 	boxShadow: 24,
 }
 

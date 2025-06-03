@@ -8,8 +8,8 @@ const theme = (mode: PaletteMode) => {
 		palette: {
 			mode,
 			background: {
-				default: light ? '#0b110b' : '#0f0500',
-				paper: light ? '#0f200f' : '#361e10',
+				default: light ? '#0b110b' : '#361e10',
+				paper: light ? '#0f180f' : '#0f0500',
 			},
 			text: {
 				primary: light ? '#66ff00' : '#ffb641',
@@ -73,6 +73,18 @@ const theme = (mode: PaletteMode) => {
 							outlineOffset: '2px',
 						},
 					},
+				},
+			},
+			MuiSwitch: {
+				styleOverrides: {
+					root: ({ theme }) => ({
+						'& .MuiSwitch-switchBase.Mui-checked': {
+							color: light ? theme.palette.primary.main : theme.palette.secondary.main,
+						},
+						'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+							color: light ? theme.palette.primary.main : theme.palette.secondary.main,
+						},
+					}),
 				},
 			},
 		},

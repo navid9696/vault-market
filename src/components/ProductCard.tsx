@@ -70,7 +70,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 							className='absolute top-1 left-1 h-11 w-11 p-1 bg-orange-200
 				 shadow-inset-2 rounded-lg -z-[1] '></div>
 						{/* bagde-front */}
-						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-border rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
+						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-primary rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
 							<p className='relative -top-[4px] ml-[3px] mr-[8px] my-[1px] tracking-tighter text-md '>
 								{(discount * 100).toFixed(0)}
 							</p>
@@ -109,7 +109,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						{/* content-box-info */}
 						<div className='p-2 relative flex flex-col items-start justify-center rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary text-white font-semibold z-0'>
 							{/* ribbon-tip */}
-							<div className='absolute h-[22px] w-[4px] -right-[2px] bottom-[7px] shadow-inset-1 rounded-md bg-green-500'></div>
+							<div className='absolute h-[22px] w-[4px] -right-[2px] bottom-[7px] shadow-inset-1 rounded-md bg-primary'></div>
 							{/* ribbon-border */}
 							<div className='h-[18px] w-[86px] absolute right-0 bottom-[7px] pl-1 chevron bg-bg -z-[1]'></div>
 							{/* ribbon with ratings */}

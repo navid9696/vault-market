@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react'
 import { trpc } from '~/server/client'
 import CartItem from './CartItem'
@@ -186,10 +185,7 @@ const Checkout = () => {
 
 	return (
 		<>
-			<form
-				style={{ marginTop: `${navHeight}px` }}
-				className='p-4 bg-bg text-text'
-				onSubmit={handleCheckoutSubmit}>
+			<form style={{ marginTop: `${navHeight}px` }} className='p-4 bg-bg text-text' onSubmit={handleCheckoutSubmit}>
 				<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 				<div className='flex flex-col md:flex-row gap-4'>
 					<div className='flex-1 max-h-96 overflow-y-auto'>
@@ -216,7 +212,7 @@ const Checkout = () => {
 								onChange={e => setShippingMethod(e.target.value)}>
 								<FormControlLabel
 									value='caravan'
-									control={<Radio sx={{ color: '#00a651', '&.Mui-checked': { color: '#00d30b' } }} />}
+									control={<Radio />}
 									label={
 										<span className='flex justify-center items-center gap-4'>
 											<p>Caravan</p>
@@ -228,7 +224,7 @@ const Checkout = () => {
 								/>
 								<FormControlLabel
 									value='courier'
-									control={<Radio sx={{ color: '#00a651', '&.Mui-checked': { color: '#00d30b' } }} />}
+									control={<Radio />}
 									label={
 										<span className='flex justify-center items-center gap-4'>
 											<p>Courier</p>
@@ -240,7 +236,7 @@ const Checkout = () => {
 								/>
 								<FormControlLabel
 									value='vertibird'
-									control={<Radio sx={{ color: '#00a651', '&.Mui-checked': { color: '#00d30b' } }} />}
+									control={<Radio />}
 									label={
 										<span className='flex justify-center items-center gap-4'>
 											<p>Vertibird</p>

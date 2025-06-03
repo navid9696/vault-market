@@ -14,7 +14,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import { Skeleton, Switch, Typography } from '@mui/material'
+import { Skeleton, Switch, Typography, useTheme } from '@mui/material'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchangeTwoTone'
 import LogoutIcon from '@mui/icons-material/LogoutTwoTone'
 import FavoriteIcon from '@mui/icons-material/FavoriteTwoTone'
@@ -43,6 +43,7 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 
 export default function AccountMenu() {
 	const { resolvedTheme, setTheme } = useNextTheme()
+	const muiTheme = useTheme()
 	const { data: session } = useSession()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
@@ -164,6 +165,14 @@ export default function AccountMenu() {
 						checked={resolvedTheme === 'light'}
 						onChange={(_, checked) => setTheme(checked ? 'light' : 'dark')}
 						color='secondary'
+						sx={{
+							'& .MuiSwitch-switchBase.Mui-checked': {
+								color: muiTheme.palette.secondary.main,
+							},
+							'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+								color: muiTheme.palette.secondary.main,
+							},
+						}}
 					/>
 				</MenuItem>
 

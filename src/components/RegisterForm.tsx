@@ -25,7 +25,6 @@ const RegisterForm = () => {
 		},
 	})
 
-	
 	const onSubmit: SubmitHandler<RegisterInput> = async data => {
 		await toast.promise(registerMutation.mutateAsync(data), {
 			pending: '📡 Uploading resident data...',
@@ -102,7 +101,7 @@ const RegisterForm = () => {
 							helperText={<span className='block h-4'>{errors.password?.message}</span>}
 							InputProps={{
 								startAdornment: isFocusedField === 'password' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -126,7 +125,7 @@ const RegisterForm = () => {
 							helperText={<span className='block h-4'>{errors.confirmPassword?.message}</span>}
 							InputProps={{
 								startAdornment: isFocusedField === 'confirmPassword' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -139,7 +138,12 @@ const RegisterForm = () => {
 							Already have an account? <Link href={'/login'}>Log in</Link>
 						</p>
 
-						<Button variant='outlined' className='p-4' size='large' type='submit' disabled={registerMutation.status === 'pending'}>
+						<Button
+							variant='outlined'
+							className='px-4 py-2'
+							size='large'
+							type='submit'
+							disabled={registerMutation.status === 'pending'}>
 							{registerMutation.status === 'pending' ? 'Signing up...' : 'Sign Up'}
 						</Button>
 						<p>OR</p>

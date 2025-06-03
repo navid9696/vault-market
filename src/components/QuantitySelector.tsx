@@ -11,22 +11,36 @@ interface QuantitySelectorProps {
 
 const BorderedIconButton = styled(IconButton)(({ theme }) => ({
 	border: '1px solid var(--border)',
-	color: 'var(--tertiary)',
+	color: 'var(--secondary)',
 	padding: theme.spacing(0.5),
 	'&.Mui-disabled': {
 		opacity: 1,
-		color: 'var(--tertiary)',
+		color: 'gray',
 		borderColor: 'var(--border)',
 	},
 }))
 
 const StyledOutlinedInput = styled(OutlinedInput)(({ theme }) => ({
+	'& .MuiOutlinedInput-notchedOutline': {
+		border: '1px solid var(--focus) !important',
+	},
+
+	'&.Mui-focused, &:hover, &:focus-visible': {
+		boxShadow: 'none !important',
+	},
+
+	'&:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline': {
+		border: '1px solid var(--focus) !important',
+	},
+
+	backgroundColor: 'var(--surface) !important',
+	'&:hover, &.Mui-focused': {
+		backgroundColor: 'var(--surface) !important',
+	},
 	'& .MuiOutlinedInput-input': {
-		color: theme.palette.text.primary,
 		textAlign: 'center',
 	},
 	'&.Mui-disabled .MuiOutlinedInput-input': {
-		color: theme.palette.text.primary,
 		opacity: 1,
 	},
 }))

@@ -1,7 +1,7 @@
 import React from 'react'
 import { trpc } from '~/server/client'
 import CartItem from './CartItem'
-import { CircularProgress, Button } from '@mui/material'
+import { CircularProgress, Button, Divider } from '@mui/material'
 import Link from 'next/link'
 
 const CartModal = () => {
@@ -32,7 +32,8 @@ const CartModal = () => {
 					<CartItem key={item.id} product={item.product} quantity={item.quantity} refetchCart={refetch} />
 				))}
 			</div>
-			<div className='mt-4 border-t pt-4 flex items-center justify-between'>
+			<Divider className='mt-2' />
+			<div className='pt-4 flex items-center justify-between'>
 				<p className='mr-4'>Total: ${totalAmount}</p>
 				<Link href='/checkout'>
 					<Button variant='contained' color='primary'>

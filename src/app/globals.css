@@ -3,26 +3,25 @@
 @tailwind utilities;
 
 :root {
-	/* LIGHT (Pip-Boy green) */
-	--bg: #0b110b;
-	--surface: #0f200f;
-	--primary: #33cc33;
-	--secondary: #66cc66;
+	--bg: #0f180f;
+	--surface: #173117;
+	--primary: #2dad2d;
+	--secondary: #6dca6d;
 	--tertiary: #99cc99;
 	--text: #66ff00;
-	--border: #77ff11;
+	--border: #6fff00;
 	--focus: #aaff00;
 	--inner-shadow: inset 0 0 10px var(--primary);
 }
 html.dark {
-	--primary: #e27720;
+	--bg: #0f0500;
+	--surface: #361e10;
+	--primary: #cc6d1f;
 	--secondary: #d97708;
 	--tertiary: #ffcc6e;
 	--text: #ffb641;
 	--border: #ffca3a;
 	--focus: #f59e0b;
-	--bg: #0f0500;
-	--surface: #361e10;
 	--inner-shadow: inset 0 0 10px var(--primary);
 }
 
@@ -76,16 +75,61 @@ body.user {
 	}
 
 	.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-		border-color: var(--surface);
+		border-color: var(--focus);
 	}
 
+	.MuiInputLabel-root,
 	.MuiInputLabel-root.Mui-focused {
-		color: var(--surface);
+		color: var(--text);
 	}
 
-	.MuiFormLabel-root.Mui-focused,
+	.MuiFormLabel-root,
+	.MuiFormLabel-root.Mui-focused {
+		color: var(--text);
+	}
+
 	.Mui-focusVisible {
 		color: var(--focus);
+	}
+
+	.MuiSwitch-root .MuiSwitch-switchBase {
+		color: var(--focus);
+	}
+	.MuiSwitch-track {
+		background-color: var(--focus);
+	}
+	.MuiInputBase-root {
+		background-color: var(--surface);
+	}
+	.MuiFilledInput-root::before {
+		border-bottom: 1px solid var(--tertiary);
+	}
+
+	.MuiButton-root {
+		font-weight: bolder;
+	}
+	.MuiButton-contained {
+		color: #000;
+	}
+
+	.MuiBadge-badge {
+		background-color: var(--secondary);
+		font-weight: bold;
+		/* color: var(--text); */
+		color: black;
+		border: 1px solid var(--border);
+	}
+
+	.input:-internal-autofill-selected {
+		background-color: #fff;
+	}
+	input:-webkit-autofill,
+	textarea:-webkit-autofill,
+	select:-webkit-autofill {
+		-webkit-text-fill-color: var(--text) !important;
+		transition: background-color 5000s ease-in-out 0s !important;
+		-webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+		box-shadow: 0 0 0px 1000px transparent inset !important;
 	}
 }
 

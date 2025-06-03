@@ -17,7 +17,7 @@ const Home = () => {
 				<NavigationProvider>
 					<Navbar />
 					<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-					<main className='flex bg-surface '>
+					<main className='flex bg-bg '>
 						<div className='hidden md:block relative w-1/2'>
 							<Image className='object-cover' src={'/imgs/diamondCityMarket.webp'} alt='Diamond City Market' fill />
 						</div>
