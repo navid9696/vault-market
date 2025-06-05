@@ -34,6 +34,16 @@ export const favoriteRouter = router({
 					product: { connect: { id: input.productId } },
 				},
 			})
+
+			await prisma.products.update({
+				where: { id: input.productId },
+				data: {
+					popularity: {
+						increment: 2,
+					},
+				},
+			})
+
 			return favorite
 		} catch (error) {
 			console.error('Add favorite error:', error)

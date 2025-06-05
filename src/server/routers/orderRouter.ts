@@ -56,6 +56,20 @@ export const orderRouter = router({
 				orderItems: true,
 			},
 		})
+
+		await Promise.all(
+			order.orderItems.map(orderedItem =>
+				prisma.products.update({
+					where: { id: orderedItem.productId },
+					data: {
+						popularity: {
+							increment: orderedItem.quantity,
+						},
+					},
+				})
+			)
+		)
+
 		return order
 	}),
 
