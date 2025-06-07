@@ -1,5 +1,5 @@
 import { Avatar, Badge, Button, Typography, styled } from '@mui/material'
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { AiTwotoneEdit as EditIcon } from 'react-icons/ai'
 import { FaLongArrowAltRight as ArrowRight } from 'react-icons/fa'
 import { FaTrashAlt as Trash } from 'react-icons/fa'
@@ -59,13 +59,35 @@ const AccountSettings = () => {
 		setIsFormVisible(true)
 	}
 
-	const updateAvatar = trpc.user.updateAvatar.useMutation({
-		onSuccess: async () => {
-			toast.success('Avatar updated')
-			await utils.user.getProfile.invalidate()
+	const updateAvatar = trpc.user.updateAvatar.useMutation()
+
+	const handleAvatarChange = useCallback(
+		async (e: ChangeEvent<HTMLInputElement>) => {
+			const file = e.target.files?.[0]
+			if (!file) return
+
+			const form = new FormData()
+			form.append('avatar', file)
+
+			const promise = fetch('/api/uploadAvatar', {
+				method: 'POST',
+				body: form,
+			}).then(async res => {
+				if (!res.ok) throw new Error('Upload failed')
+				const { url } = await res.json()
+				setAvatar(url)
+				await updateAvatar.mutateAsync({ avatarUrl: url })
+				await utils.user.getProfile.invalidate()
+			})
+
+			toast.promise(promise, {
+				pending: 'Uploading avatar...',
+				success: 'Avatar updated!',
+				error: 'Upload failed',
+			})
 		},
-		onError: () => toast.error('Failed to update avatar'),
-	})
+		[updateAvatar, utils.user.getProfile]
+	)
 
 	useEffect(() => {
 		if (profile?.image) {
@@ -74,25 +96,6 @@ const AccountSettings = () => {
 			setAvatar(url)
 		}
 	}, [profile?.image])
-
-	const handleAvatarChange = useCallback(
-		async (e: React.ChangeEvent<HTMLInputElement>) => {
-			const file = e.target.files?.[0]
-			if (!file) return
-			const form = new FormData()
-			form.append('avatar', file)
-			const res = await fetch('/api/uploadAvatar', { method: 'POST', body: form })
-			if (!res.ok) {
-				toast.error('Upload failed')
-				return
-			}
-			const { url } = await res.json()
-			const fullUrl = window.location.origin + url
-			setAvatar(fullUrl)
-			await updateAvatar.mutateAsync({ avatarUrl: fullUrl })
-		},
-		[updateAvatar]
-	)
 
 	return (
 		<>

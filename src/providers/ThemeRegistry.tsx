@@ -1,4 +1,3 @@
-// src/providers/ThemeRegistry.tsx
 'use client'
 import { useState, useEffect, useMemo } from 'react'
 import { useTheme as useNextTheme } from 'next-themes'
