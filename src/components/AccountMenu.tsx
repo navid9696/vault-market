@@ -6,6 +6,7 @@ import { useTheme as useMuiTheme } from '@mui/material/styles'
 import dynamic from 'next/dynamic'
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Menu from '@mui/material/Menu'
@@ -31,7 +32,7 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 	loading: () => (
 		<>
 			<Skeleton variant='text' height={150}>
-				<Typography component={'h3'} variant='h3'>
+				<Typography component='h3' variant='h3'>
 					Caps&Cash Exchange
 				</Typography>
 			</Skeleton>
@@ -42,19 +43,26 @@ const ExchangeModal = dynamic(() => import('./ExchangeModal'), {
 })
 
 export default function AccountMenu() {
-	const { resolvedTheme, setTheme } = useNextTheme()
-	const muiTheme = useTheme()
 	const { data: session } = useSession()
+	const router = useRouter()
 	const [modalOpen, setModalOpen] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 	const open = Boolean(anchorEl)
 	const { data: me } = trpc.user.getProfile.useQuery(undefined, { enabled: !!session })
 	const rawImage = me?.image
-	const userImage = rawImage ? (rawImage.startsWith('http') ? rawImage : window.location.origin + rawImage) : undefined
+	const userImage = rawImage
+		? rawImage.startsWith('http')
+			? rawImage
+			: `${window.location.origin}${rawImage}`
+		: undefined
 
 	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(e.currentTarget)
+		if (session) {
+			setAnchorEl(e.currentTarget)
+		} else {
+			router.push('/register')
+		}
 	}
 
 	const handleClose = () => {
@@ -84,7 +92,7 @@ export default function AccountMenu() {
 	return (
 		<>
 			<Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-				<Tooltip title='Account settings'>
+				<Tooltip title={session ? 'Account settings' : 'Register'}>
 					<IconButton
 						onClick={handleClick}
 						size='small'
@@ -92,10 +100,11 @@ export default function AccountMenu() {
 						aria-controls={open ? 'account-menu' : undefined}
 						aria-haspopup='true'
 						aria-expanded={open ? 'true' : undefined}>
-						<Avatar src={userImage ?? undefined} sx={{ width: 32, height: 32 }}></Avatar>
+						<Avatar src={userImage} sx={{ width: 32, height: 32 }} />
 					</IconButton>
 				</Tooltip>
 			</Box>
+
 			<Menu
 				anchorEl={anchorEl}
 				id='account-menu'
@@ -145,58 +154,23 @@ export default function AccountMenu() {
 					<MenuItem key='exchange' onClick={() => handleModalOpen('exchange')}>
 						<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
 					</MenuItem>,
-					<Divider key='divider' />,
+					<Divider key='divider-1' />,
 					<MenuItem key='profile' onClick={() => handleModalOpen('profile')}>
 						<ListItemIcon>
 							<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 						</ListItemIcon>
 						Profile Settings
 					</MenuItem>,
-				]}
-
-				<MenuItem
-					onClick={() => {
-						setTheme(resolvedTheme === 'light' ? 'dark' : 'light')
-					}}>
-					<ListItemIcon>
-						<ContrastIcon className='-ml-2 mr-2 text-text' fontSize='large' />
-					</ListItemIcon>
-					<Switch
-						checked={resolvedTheme === 'light'}
-						onChange={(_, checked) => setTheme(checked ? 'light' : 'dark')}
-						color='secondary'
-						sx={{
-							'& .MuiSwitch-switchBase.Mui-checked': {
-								color: muiTheme.palette.secondary.main,
-							},
-							'& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-								color: muiTheme.palette.secondary.main,
-							},
-						}}
-					/>
-				</MenuItem>
-
-				{session ? (
-					<MenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
+					<Divider key='divider-2' />,
+					<MenuItem key='signout' onClick={() => signOut({ callbackUrl: '/login' })}>
 						<ListItemIcon>
 							<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 						</ListItemIcon>
 						Sign Out
-					</MenuItem>
-				) : (
-					<Link href={'/login'}>
-						<MenuItem
-							onClick={() => {
-								handleClose
-							}}>
-							<ListItemIcon className='mr-2'>
-								<LoginIcon className='text-text' fontSize='small' />
-							</ListItemIcon>
-							Sign In
-						</MenuItem>
-					</Link>
-				)}
+					</MenuItem>,
+				]}
 			</Menu>
+
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				{renderModalContent()}
 			</TransitionsModal>
