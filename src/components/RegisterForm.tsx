@@ -51,7 +51,7 @@ const RegisterForm = () => {
 	}, [formState, reset])
 
 	return (
-		<div className='h-screen text-white'>
+		<div className='h-screen text-text'>
 			<div style={{ marginTop: `${navHeight}px` }} className='p-4 h-with-navbar'>
 				<form
 					className='h-full flex flex-col justify-center items-center text-center'
