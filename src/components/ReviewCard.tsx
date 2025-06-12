@@ -27,14 +27,14 @@ const ReviewCard = ({ username, userAvatar, comment, rating }: ReviewCardProps) 
 			<CardContent>
 				<div className='flex items-center mb-2'>
 					<Avatar alt={username} src={userAvatar} className='mr-4' />
-					<h2 className='text-text text-xl font-semibold'>{username}</h2>
+					<h2 className='text-text text-2xl font-semibold'>{username}</h2>
 				</div>
-				<p className='text-text mb-2 text-sm'>{comment}</p>
+				<p className='text-text mb-2 text-base'>{comment}</p>
 				<div className='flex items-center'>
-					<p className='text-text mr-2'>Rating:</p>
+					<p className='text-xl text-text mr-2'>Rating:</p>
 					<StyledRating
 						emptyIcon={<StarIcon fontSize='inherit' />}
-						className='text-base'
+						className='text-xl'
 						name='read-only'
 						value={rating}
 						max={5}
