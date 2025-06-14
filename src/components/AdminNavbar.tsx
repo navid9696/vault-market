@@ -16,8 +16,14 @@ import AdbIcon from '@mui/icons-material/Adb'
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { signOut } from 'next-auth/react'
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+const pages = [
+	{ label: 'Dashboard', href: '/admin/dashboard' },
+	{ label: 'Products', href: '/admin/products' },
+]
+
+const settings = ['Profile', 'Account', 'Logout']
 
 const AdminNavbar = () => {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
@@ -29,25 +35,28 @@ const AdminNavbar = () => {
 	const handleOpenUserMenu = (e: React.MouseEvent<HTMLElement>) => {
 		setAnchorElUser(e.currentTarget)
 	}
-
 	const handleCloseNavMenu = () => {
 		setAnchorElNav(null)
 	}
-
-	const handleCloseUserMenu = () => {
+	const handleCloseUserMenu = (setting?: string) => {
 		setAnchorElUser(null)
+		if (setting === 'Logout') {
+			signOut()
+		}
 	}
 
 	return (
 		<AppBar position='static'>
 			<Container maxWidth='xl'>
 				<Toolbar disableGutters>
-					<div className='mr-4'>
-						<Image src='/imgs/vaultboy-ok.png' alt='dsa' width={50} height={50} />
-					</div>
+					<Box className='mr-4'>
+						<Image src='/imgs/vaultboy-ok.png' alt='Vault Market' width={50} height={50} />
+					</Box>
 					<Typography
 						variant='h6'
 						noWrap
+						component={Link}
+						href='/'
 						sx={{
 							mr: 2,
 							display: { xs: 'none', md: 'flex' },
@@ -61,50 +70,33 @@ const AdminNavbar = () => {
 					</Typography>
 
 					<Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-						<IconButton
-							size='large'
-							aria-label='account of current user'
-							aria-controls='menu-appbar'
-							aria-haspopup='true'
-							onClick={handleOpenNavMenu}
-							color='inherit'>
+						<IconButton size='large' aria-label='menu' onClick={handleOpenNavMenu} color='inherit'>
 							<MenuIcon />
 						</IconButton>
 						<Menu
-							id='menu-appbar'
 							anchorEl={anchorElNav}
-							anchorOrigin={{
-								vertical: 'bottom',
-								horizontal: 'left',
-							}}
+							anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
 							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'left',
-							}}
+							transformOrigin={{ vertical: 'top', horizontal: 'left' }}
 							open={Boolean(anchorElNav)}
 							onClose={handleCloseNavMenu}
-							sx={{
-								display: { xs: 'block', md: 'none' },
-							}}>
-							<MenuItem onClick={handleCloseNavMenu}>
-								<Link href={'/dashboard'}>
-									<Typography textAlign='center'>Dashboard</Typography>
-								</Link>
-							</MenuItem>
-							<MenuItem onClick={handleCloseNavMenu}>
-								<Link href={'/products'}>
-									<Typography textAlign='center'>Products</Typography>
-								</Link>
-							</MenuItem>
+							sx={{ display: { xs: 'block', md: 'none' } }}>
+							{pages.map(page => (
+								<MenuItem key={page.href} onClick={handleCloseNavMenu}>
+									<Link href={page.href}>
+										<Typography textAlign='center'>{page.label}</Typography>
+									</Link>
+								</MenuItem>
+							))}
 						</Menu>
 					</Box>
+
 					<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 					<Typography
 						variant='h5'
 						noWrap
 						component='a'
-						href='#app-bar-with-responsive-menu'
+						href='#'
 						sx={{
 							mr: 2,
 							display: { xs: 'flex', md: 'none' },
@@ -117,38 +109,34 @@ const AdminNavbar = () => {
 						}}>
 						LOGO
 					</Typography>
+
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-						<Button onClick={handleCloseNavMenu} sx={{ my: 2, ml: 2, color: 'white', display: 'block' }}>
-							<Link href={'/dashboard'}>Dashboard</Link>
-						</Button>
-						<Button onClick={handleCloseNavMenu} sx={{ my: 2, ml: 2, color: 'white', display: 'block' }}>
-							<Link href={'/products'}>Products</Link>
-						</Button>
+						{pages.map(page => (
+							<Button
+								key={page.href}
+								onClick={handleCloseNavMenu}
+								sx={{ my: 2, ml: 2, color: 'white', display: 'block' }}>
+								<Link href={page.href}>{page.label}</Link>
+							</Button>
+						))}
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title='Open settings'>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt='A' src='' />
+								<Avatar alt='Admin' src='' />
 							</IconButton>
 						</Tooltip>
 						<Menu
 							sx={{ mt: '45px' }}
-							id='menu-appbar'
 							anchorEl={anchorElUser}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
+							anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
+							transformOrigin={{ vertical: 'top', horizontal: 'right' }}
 							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}>
+							onClose={() => handleCloseUserMenu()}>
 							{settings.map(setting => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
+								<MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
 									<Typography textAlign='center'>{setting}</Typography>
 								</MenuItem>
 							))}
@@ -159,4 +147,5 @@ const AdminNavbar = () => {
 		</AppBar>
 	)
 }
+
 export default AdminNavbar

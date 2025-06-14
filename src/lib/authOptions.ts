@@ -45,6 +45,12 @@ export const authOptions: NextAuthOptions = {
 		updateAge: 60 * 60,
 	},
 	callbacks: {
+		// async signIn({ user }) {
+		// 	if (user.email === 'admin@admin.admin') {
+		// 		return `${process.env.NEXTAUTH_URL}/admin/dashboard`
+		// 	}
+		// 	return true
+		// },
 		async jwt({ token, user, account }) {
 			if (user) token.id = user.id
 			if (account) {

@@ -65,7 +65,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 	}
 
 	return (
-		<div className='text-center'>
+		<>
 			<Typography component='h3' variant='h3' gutterBottom>
 				Caps&Cash Exchange
 			</Typography>
@@ -111,7 +111,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 				endIcon={createOrderMutation.status === 'pending' ? <CircularProgress size={20} /> : <Caps />}>
 				{createOrderMutation.status === 'pending' ? 'Processing...' : 'BUY'}
 			</Button>
-		</div>
+		</>
 	)
 }
 

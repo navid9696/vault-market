@@ -1,7 +1,8 @@
+'use client'
+import { useState, useEffect } from 'react'
+import { InputAdornment, TextField, Button } from '@mui/material'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { InputAdornment, TextField, Button } from '@mui/material'
-import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { registerSchema, RegisterInput } from '~/schemas/registerSchema'
@@ -9,46 +10,88 @@ import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
 import { trpc } from '~/server/client'
 import { useRouter } from 'next/navigation'
-import GoogleButton from 'react-google-button'
 import { signIn } from 'next-auth/react'
+import GoogleButton from 'react-google-button'
 
-const RegisterForm = () => {
+export default function RegisterForm() {
 	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
-	const [isFocusedField, setIsFocusedField] = useState<string | null>(null)
+	const [focused, setFocused] = useState<string | null>(null)
 
-	const registerMutation = trpc.user.registerUser.useMutation({
-		onSuccess: () => {
-			setTimeout(() => {
-				router.push('/login')
-			}, 2000)
-		},
-	})
+	const registerMutation = trpc.user.registerUser.useMutation()
 
-	const onSubmit: SubmitHandler<RegisterInput> = async data => {
-		await toast.promise(registerMutation.mutateAsync(data), {
-			pending: '📡 Uploading resident data...',
-			success: '✅ Registration confirmed! Enjoy your Vault life.',
-			error: '❌ ERROR: Data corrupted. Please try again.',
-		})
-	}
 	const {
 		register,
 		handleSubmit,
 		reset,
-		formState,
-		formState: { errors },
+		formState: { errors, isSubmitSuccessful },
 		clearErrors,
 	} = useForm<RegisterInput>({
 		resolver: zodResolver(registerSchema),
 	})
 
 	useEffect(() => {
-		if (formState.isSubmitSuccessful) {
-			setIsFocusedField(null)
+		if (isSubmitSuccessful) {
+			setFocused(null)
 			reset()
 		}
-	}, [formState, reset])
+	}, [isSubmitSuccessful, reset])
+
+	const onSubmit: SubmitHandler<RegisterInput> = async data => {
+		const toastId = toast.loading('📡 Uploading resident data...')
+		try {
+			await registerMutation.mutateAsync(data)
+			toast.update(toastId, {
+				render: '✅ Registration confirmed! Enjoy your Vault life.',
+				type: 'success',
+				isLoading: false,
+				autoClose: 1500,
+			})
+		} catch (e) {
+			toast.update(toastId, {
+				render: '❌ ERROR: Data corrupted. Please try again.',
+				type: 'error',
+				isLoading: false,
+				autoClose: 3000,
+			})
+			return
+		}
+
+		const loginToastId = toast.loading('🔑 Logging you in...')
+		const res = await signIn('credentials', {
+			redirect: false,
+			email: data.email,
+			password: data.password,
+		})
+
+		if (!res || res.error) {
+			toast.update(loginToastId, {
+				render: '🚫 Authentication failed. Please login manually.',
+				type: 'error',
+				isLoading: false,
+				autoClose: 3000,
+			})
+			router.push('/login')
+			return
+		}
+
+		toast.update(loginToastId, {
+			render: '🎉 Logged in successfully!',
+			type: 'success',
+			isLoading: false,
+			autoClose: 1000,
+		})
+
+		router.refresh()
+
+		setTimeout(() => {
+			if (data.email === 'admin@admin.admin') {
+				router.push('/admin/dashboard')
+			} else {
+				router.push('/')
+			}
+		}, 500)
+	}
 
 	return (
 		<div className='h-screen text-text'>
@@ -62,21 +105,20 @@ const RegisterForm = () => {
 						<h3 className='text-xl'>Enter your registration details</h3>
 
 						<TextField
-							className='relative w-3/4'
 							size='medium'
+							className='relative w-3/4'
 							{...register('email')}
-							onFocus={() => setIsFocusedField('email')}
+							onFocus={() => setFocused('email')}
 							onBlur={() => {
-								setIsFocusedField(null)
+								setFocused(null)
 								clearErrors('email')
 							}}
 							error={!!errors.email}
-							id='filled-basic-email'
 							label='Email'
 							variant='filled'
 							helperText={<span className='block h-4'>{errors.email?.message}</span>}
 							InputProps={{
-								startAdornment: isFocusedField === 'email' && (
+								startAdornment: focused === 'email' && (
 									<InputAdornment position='start'>
 										<FaAngleRight />
 									</InputAdornment>
@@ -85,23 +127,22 @@ const RegisterForm = () => {
 						/>
 
 						<TextField
-							className='relative w-3/4'
 							size='medium'
 							type='password'
+							className='relative w-3/4'
 							{...register('password')}
-							onFocus={() => setIsFocusedField('password')}
+							onFocus={() => setFocused('password')}
 							onBlur={() => {
-								setIsFocusedField(null)
+								setFocused(null)
 								clearErrors('password')
 							}}
 							error={!!errors.password}
-							id='filled-basic-password'
 							label='Password'
 							variant='filled'
 							helperText={<span className='block h-4'>{errors.password?.message}</span>}
 							InputProps={{
-								startAdornment: isFocusedField === 'password' && (
-									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
+								startAdornment: focused === 'password' && (
+									<InputAdornment position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -109,23 +150,22 @@ const RegisterForm = () => {
 						/>
 
 						<TextField
-							className='relative w-3/4'
 							size='medium'
 							type='password'
+							className='relative w-3/4'
 							{...register('confirmPassword')}
-							onFocus={() => setIsFocusedField('confirmPassword')}
+							onFocus={() => setFocused('confirmPassword')}
 							onBlur={() => {
-								setIsFocusedField(null)
+								setFocused(null)
 								clearErrors('confirmPassword')
 							}}
 							error={!!errors.confirmPassword}
-							id='filled-basic-confirm-password'
 							label='Confirm Password'
 							variant='filled'
 							helperText={<span className='block h-4'>{errors.confirmPassword?.message}</span>}
 							InputProps={{
-								startAdornment: isFocusedField === 'confirmPassword' && (
-									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
+								startAdornment: focused === 'confirmPassword' && (
+									<InputAdornment position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -135,7 +175,10 @@ const RegisterForm = () => {
 
 					<div className='flex flex-col justify-center items-center mt-4 gap-4'>
 						<p>
-							Already have an account? <Link href={'/login'}>Log in</Link>
+							Already have an account?{' '}
+							<Link href='/login' className='underline'>
+								Log in
+							</Link>
 						</p>
 
 						<Button
@@ -146,13 +189,13 @@ const RegisterForm = () => {
 							disabled={registerMutation.status === 'pending'}>
 							{registerMutation.status === 'pending' ? 'Signing up...' : 'Sign Up'}
 						</Button>
+
 						<p>OR</p>
-						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
+
+						<GoogleButton onClick={() => signIn('google')}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
 			</div>
 		</div>
 	)
 }
-
-export default RegisterForm
