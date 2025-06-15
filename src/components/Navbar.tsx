@@ -12,6 +12,7 @@ import CartModal from './CartModal'
 import { useTheme as useNextTheme } from 'next-themes'
 import { useTheme as useMuiTheme } from '@mui/material/styles'
 import { Switch } from '@mui/material'
+import { GiBottleCap } from 'react-icons/gi'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 	width: 62,
@@ -95,18 +96,11 @@ const Navbar = () => {
 						<div className='flex items-center '>
 							<div>
 								<Link href={'/#top'}>
-									<Image src={'/imgs/logo.png'} width={50} height={50} alt='logo with vault boy' loading='lazy' />
+									<Image src={'/imgs/logo2.png'} width={40} height={400} alt='logo with vault boy' loading='lazy' />
 								</Link>
 							</div>
-							<div className='ml-7 flex'>
-								<Image
-									className='object-contain'
-									src={'/icons/nuka-cap-alt.png'}
-									width={15}
-									height={15}
-									alt='nuka cola bottle cap'
-									loading='lazy'
-								/>
+							<div className='ml-7 flex items-center'>
+								<GiBottleCap />
 								<span className='ml-2 text-text font-extrabold text-lg'>{totalCaps}</span>
 							</div>
 						</div>

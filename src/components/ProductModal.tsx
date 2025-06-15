@@ -28,16 +28,8 @@ const ProductModal = () => {
 	const { data: session } = useSession()
 
 	const { data: favorites } = trpc.favorite.getFavorites.useQuery(undefined, { enabled: !!session })
-	const addFavorite = trpc.favorite.addFavorite.useMutation({
-		onSuccess: () => {
-			setIsFavorite(true)
-		},
-	})
-	const removeFavorite = trpc.favorite.removeFavorite.useMutation({
-		onSuccess: () => {
-			setIsFavorite(false)
-		},
-	})
+	const addFavorite = trpc.favorite.addFavorite.useMutation({ onSuccess: () => setIsFavorite(true) })
+	const removeFavorite = trpc.favorite.removeFavorite.useMutation({ onSuccess: () => setIsFavorite(false) })
 
 	const handleModalOpen = useCallback(() => {
 		if (window.innerWidth < 768) setModalOpen(true)
@@ -49,11 +41,7 @@ const ProductModal = () => {
 
 	const handleToggleFavorite = useCallback(() => {
 		if (!product) return
-		if (isFavorite) {
-			removeFavorite.mutate({ productId: product.id })
-		} else {
-			addFavorite.mutate({ productId: product.id })
-		}
+		isFavorite ? removeFavorite.mutate({ productId: product.id }) : addFavorite.mutate({ productId: product.id })
 	}, [isFavorite, product, addFavorite, removeFavorite])
 
 	useEffect(() => {
@@ -66,10 +54,11 @@ const ProductModal = () => {
 		{ productId: product?.id ?? '' },
 		{ enabled: !!product }
 	)
-
-	const avgRating = comments.length > 0 ? comments.reduce((sum, c) => sum + c.rating, 0) / comments.length : 0
+	const avgRating = comments.length ? comments.reduce((sum, c) => sum + c.rating, 0) / comments.length : 0
 
 	if (!product) return null
+
+	const { categoryName, subCategoryName } = product
 
 	return (
 		<>
@@ -78,10 +67,10 @@ const ProductModal = () => {
 					<ReviewList productId={product.id} />
 				</div>
 				<div className='md:w-1/2 w-full flex justify-around md:gap-8 gap-2'>
-					<div className='absolute'>
-						<h2 className='relative w-full font-semibold text-2xl'>
+					<Box className='absolute '>
+						<Typography variant='h5' className='font-semibold text-2xl text-center flex justify-center items-center'>
 							{product.name}
-							<IconButton className='absolute -top-2 group' disableRipple onClick={handleToggleFavorite}>
+							<IconButton className='ml-2' disableRipple onClick={handleToggleFavorite}>
 								<FavoriteIcon
 									className={
 										isFavorite
@@ -91,24 +80,38 @@ const ProductModal = () => {
 									fontSize={26}
 								/>
 							</IconButton>
-						</h2>
-					</div>
-					<div className='w-1/2 sm:scale-100 scale-90 flex flex-col items-center justify-evenly'>
-						<div
-							onClick={handleModalOpen}
-							className='p-4 flex flex-col shadow-inset-1 border-border border rounded-2xl text-text bg-surface hover:bg-primary cursor-pointer transition-colors'>
-							<Typography className='font-semibold text-xl'>{avgRating.toFixed(2)}</Typography>
-							<StyledRating
-								emptyIcon={<StarIcon fontSize='inherit' />}
-								className='text-2xl'
-								value={avgRating}
-								max={5}
-								precision={0.25}
-								readOnly
-							/>
+						</Typography>
+						<Box className='mt-1'>
+							<Typography variant='subtitle2' className='text-sm text-secondary'>
+								Category: {categoryName}
+							</Typography>
+							{subCategoryName && (
+								<Typography variant='subtitle2' className='text-sm text-secondary'>
+									Subcategory: {subCategoryName}
+								</Typography>
+							)}
+						</Box>
+					</Box>
+					<div className='mt-24 w-1/2 sm:scale-100 scale-90 '>
+						<div className='flex items-center justify-center'>
+							<div
+								onClick={handleModalOpen}
+								className={`p-4 w-fit flex flex-col shadow-inset-1 border-border border rounded-2xl text-text bg-surface hover:bg-bg ${
+									window.innerWidth < 768 && 'cursor-pointer'
+								} transition-colors`}>
+								<Typography className='font-semibold text-xl'>{avgRating.toFixed(2)}</Typography>
+								<StyledRating
+									emptyIcon={<StarIcon fontSize='inherit' />}
+									className='text-2xl'
+									value={avgRating}
+									max={5}
+									precision={0.25}
+									readOnly
+								/>
+							</div>
 						</div>
-						<div>
-							<div className='my-4 p-4 shadow-inset-2 rounded-xl bg-gradient-to-bl from-bg via-secondary to-bg'>
+						<div className='flex flex-col items-center justify-center'>
+							<div className='w-fit my-4 p-4 shadow-inset-2 rounded-xl bg-gradient-to-bl from-bg via-secondary to-bg'>
 								<div className='relative min-h-36 h-full min-w-32'>
 									<Image
 										className='hover:scale-110 object-contain transition-transform'
@@ -118,11 +121,12 @@ const ProductModal = () => {
 									/>
 								</div>
 							</div>
-							<div className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary md:text-sm text-xs text-bg font-semibold'>
+							<p className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary md:text-sm text-xs text-bg font-semibold'>
 								{product.description}
-							</div>
+							</p>
 						</div>
 					</div>
+
 					<ModalPriceSection />
 				</div>
 			</div>
