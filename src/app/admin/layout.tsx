@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
-import { Inter, Share_Tech_Mono } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import '../globals.css'
-import { ThemeProvider } from '@mui/material'
-import theme from '~/lib/theme'
+
 import { TrpcProvider } from '~/providers/TrpcProvider'
 import AdminNavbar from '~/components/AdminNavbar'
 

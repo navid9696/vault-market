@@ -156,4 +156,25 @@ export const userRouter = router({
 		if (!user) throw new TRPCError({ code: 'NOT_FOUND' })
 		return user
 	}),
+	getAllUsers: procedure
+		.input(z.object({ page: z.number().min(1), limit: z.number().min(1).max(100) }))
+		.query(async ({ input }) => {
+			const { page, limit } = input
+			const skip = (page - 1) * limit
+			const where = { email: { not: 'admin@admin.admin' } }
+			const [users, total] = await Promise.all([
+				prisma.user.findMany({
+					skip,
+					take: limit,
+					where,
+					select: {
+						id: true,
+						email: true,
+						address: true,
+					},
+				}),
+				prisma.user.count({ where }),
+			])
+			return { users, total }
+		}),
 })
