@@ -1,6 +1,7 @@
 import { nullable, z } from 'zod'
 import { router, procedure } from '../trpc'
 import { PrismaClient } from '@prisma/client'
+import { TRPCError } from '@trpc/server'
 
 const prisma = new PrismaClient()
 
@@ -50,6 +51,37 @@ export const capsOrderRouter = router({
 		})
 		return orders
 	}),
+
+	getCapsOrdersByUser: procedure
+		.input(
+			z.object({
+				userId: z.string().regex(/^[0-9a-fA-F]{24}$/),
+				page: z.number().min(1),
+				limit: z.number().min(1).max(100),
+			})
+		)
+		.output(
+			z.object({
+				orders: z.array(capsOrderOutputSchema),
+				total: z.number(),
+			})
+		)
+		.query(async ({ ctx, input }) => {
+			if (ctx.session?.role !== 'ADMIN') {
+				throw new TRPCError({ code: 'FORBIDDEN' })
+			}
+			const skip = (input.page - 1) * input.limit
+			const [orders, total] = await Promise.all([
+				prisma.capsOrder.findMany({
+					where: { userId: input.userId },
+					skip,
+					take: input.limit,
+					orderBy: { createdAt: 'desc' },
+				}),
+				prisma.capsOrder.count({ where: { userId: input.userId } }),
+			])
+			return { orders, total }
+		}),
 
 	getTotalCaps: procedure.output(totalCapsSchema).query(async ({ ctx }) => {
 		const userId = ctx.session?.sub

@@ -85,7 +85,7 @@ const ProductModal = () => {
 							<Typography variant='subtitle2' className='text-sm text-secondary'>
 								Category: {categoryName}
 							</Typography>
-							{subCategoryName && (
+							{subCategoryName && subCategoryName !== 'undefined' && (
 								<Typography variant='subtitle2' className='text-sm text-secondary'>
 									Subcategory: {subCategoryName}
 								</Typography>
@@ -111,7 +111,7 @@ const ProductModal = () => {
 							</div>
 						</div>
 						<div className='flex flex-col items-center justify-center'>
-							<div className='w-fit my-4 p-4 shadow-inset-2 rounded-xl bg-gradient-to-bl from-bg via-secondary to-bg'>
+							<div className='w-fit my-12 p-4 shadow-inset-2 rounded-xl bg-gradient-to-bl from-bg via-secondary to-bg'>
 								<div className='relative min-h-36 h-full min-w-32'>
 									<Image
 										className='hover:scale-110 object-contain transition-transform'
@@ -121,7 +121,7 @@ const ProductModal = () => {
 									/>
 								</div>
 							</div>
-							<p className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary md:text-sm text-xs text-bg font-semibold'>
+							<p className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary md:text-base text-sm text-bg font-semibold'>
 								{product.description}
 							</p>
 						</div>

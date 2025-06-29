@@ -1,14 +1,15 @@
 'use client'
-import { Button, MenuItem, TextField, Typography } from '@mui/material'
+import { Button, MenuItem, TextField, Typography, Box } from '@mui/material'
 import { z } from 'zod'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { categoriesData } from '~/data/categories'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Media, MediaContextProvider } from '~/context/breakpointsContext'
 import { productSchema } from '~/schemas/addOrEditProductSchema'
 import { toast } from 'react-toastify'
 import { trpc } from '~/server/client'
+import Image from 'next/image'
 
 type ProductFormData = z.infer<typeof productSchema>
 
@@ -47,50 +48,66 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 	})
 
 	const selectedCategory = watch('categoryName')
-
 	const selectedSubCategories =
-		categoriesData.categories.find(category => category.name === selectedCategory)?.subCategories || []
+		categoriesData.categories.find(cat => cat.name === selectedCategory)?.subCategories || []
+
+	const [preview, setPreview] = useState<string>(product?.imgURL ?? '')
+	const [uploading, setUploading] = useState(false)
 
 	useEffect(() => {
 		if (product) {
 			setValue('categoryName', product.categoryName)
-			setValue('subCategoryName', product.subCategoryName)
+			setValue('subCategoryName', product.subCategoryName ?? '')
+			setValue('imgURL', product.imgURL)
 		}
 	}, [product, setValue])
 
+	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0]
+		if (!file) return
+		const formData = new FormData()
+		formData.append('file', file)
+		formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!)
+		setUploading(true)
+		const res = await fetch('/api/uploadProductImg', { method: 'POST', body: formData })
+		const data = await res.json()
+		setUploading(false)
+		if (data.secure_url) {
+			setValue('imgURL', data.secure_url)
+			setPreview(data.secure_url)
+		} else {
+			toast.error('Upload failed')
+		}
+	}
+
 	const onSubmit: SubmitHandler<ProductFormData> = async data => {
 		try {
-			const category = categoriesData.categories.find(cat => cat.name === data.categoryName)
-			const subCategory = category?.subCategories.find(subCat => subCat.name === data.subCategoryName)
-
-			const productData = {
+			const category = categoriesData.categories.find(c => c.name === data.categoryName)
+			const subCategory = category?.subCategories.find(s => s.name === data.subCategoryName)
+			const payload = {
 				...data,
 				popularity: product ? product.popularity : 0,
 				rating: product ? product.rating : 0,
 				categoryId: category?.id ?? 0,
 				subCategoryId: subCategory ? subCategory.id : null,
-				categoryName: category?.name ?? '',
-				subCategoryName: subCategory?.name ?? null,
 				discount: data.discount / 100,
 			}
 
 			if (product) {
-				await toast.promise(editProductMutation.mutateAsync(productData), {
-					pending: 'Editing product... Please wait ⏳',
-					success: 'Product successfully updated! ✅',
-					error: 'Failed to update product. Something went wrong! 🚫😓',
+				await toast.promise(editProductMutation.mutateAsync({ id: product.id, ...payload }), {
+					pending: 'Editing product... ⏳',
+					success: 'Updated! ✅',
+					error: 'Update failed 🚫',
 				})
-				console.log('Product updated successfully')
 			} else {
-				await toast.promise(addProductMutation.mutateAsync(productData), {
-					pending: 'Adding product... Please wait ⏳',
-					success: 'Product successfully added! 🎉',
-					error: 'Failed to add product. Something went wrong! 🚫😓',
+				await toast.promise(addProductMutation.mutateAsync(payload), {
+					pending: 'Adding product... ⏳',
+					success: 'Added! 🎉',
+					error: 'Add failed 🚫',
 				})
-				console.log('Product added successfully')
 			}
-
 			reset()
+			setPreview('')
 		} catch (error) {
 			console.error('Error:', error)
 		}
@@ -102,7 +119,7 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 				<Typography variant='h3' component='h2' gutterBottom>
 					{product ? 'Edit Product' : 'Add New Product'}
 				</Typography>
-				<form noValidate onSubmit={handleSubmit(onSubmit)}>
+				<form className='' noValidate onSubmit={handleSubmit(onSubmit)}>
 					<div className='w-full flex flex-wrap items-center justify-between gap-x-4'>
 						<TextField
 							margin='dense'
@@ -188,15 +205,19 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 						</TextField>
 					</div>
 
-					<TextField
-						margin='dense'
-						size='medium'
-						label='Image URL'
-						fullWidth
-						{...register('imgURL')}
-						error={!!errors.imgURL}
-						helperText={errors.imgURL ? errors.imgURL.message : ' '}
-					/>
+					<Box className=' flex items-center justify-around'>
+						<Button variant='contained' component='label' disabled={uploading}>
+							{uploading ? 'Uploading…' : preview ? 'Change Image' : 'Upload Image'}
+							<input type='file' hidden accept='image/*' onChange={handleFileChange} />
+						</Button>
+
+						{preview && (
+							<Box className='relative' style={{ width: 200, height: 200 }}>
+								<Image src={preview} alt='Preview' fill objectFit='contain' />
+							</Box>
+						)}
+					</Box>
+
 					<TextField
 						margin='dense'
 						size='medium'
@@ -304,16 +325,21 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 						</TextField>
 					</div>
 
+					<Box className='flex items-center justify-around'>
+						<Button className='mr-2' variant='contained' component='label' disabled={uploading}>
+							{uploading ? 'Uploading…' : preview ? 'Change Image' : 'Upload Image'}
+							<input type='file' hidden accept='image/*' onChange={handleFileChange} />
+						</Button>
+
+						{preview && (
+							<Box className='relative' style={{ width: 150, height: 150 }}>
+								<Image src={preview} alt='Preview' fill objectFit='contain' />
+							</Box>
+						)}
+					</Box>
+
 					<TextField
-						margin='none'
-						size='small'
-						label='Image URL'
-						fullWidth
-						{...register('imgURL')}
-						error={!!errors.imgURL}
-						helperText={errors.imgURL ? errors.imgURL.message : ' '}
-					/>
-					<TextField
+						className='mt-6'
 						margin='none'
 						size='small'
 						label='Description'

@@ -1,10 +1,10 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import { NextRequest } from 'next/server'
-import { createContext } from '~/context/sessionsContext'
 import { appRouter } from '~/server'
+import { createContext } from '~/context/sessionsContext'
 
-export async function GET(req: NextRequest) {
-	return await fetchRequestHandler({
+const handler = async (req: NextRequest) => {
+	return fetchRequestHandler({
 		endpoint: '/api/trpc',
 		router: appRouter,
 		req,
@@ -12,29 +12,4 @@ export async function GET(req: NextRequest) {
 	})
 }
 
-export async function POST(req: NextRequest) {
-	return await fetchRequestHandler({
-		endpoint: '/api/trpc',
-		router: appRouter,
-		req,
-		createContext: () => createContext(req),
-	})
-}
-
-export async function PUT(req: NextRequest) {
-	return await fetchRequestHandler({
-		endpoint: '/api/trpc',
-		router: appRouter,
-		req,
-		createContext: () => createContext(req),
-	})
-}
-
-export async function DELETE(req: NextRequest) {
-	return await fetchRequestHandler({
-		endpoint: '/api/trpc',
-		router: appRouter,
-		req,
-		createContext: () => createContext(req),
-	})
-}
+export { handler as GET, handler as POST, handler as PUT, handler as DELETE }

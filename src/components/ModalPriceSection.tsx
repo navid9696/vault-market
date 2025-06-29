@@ -40,12 +40,12 @@ const PriceSection = () => {
 				<Typography className='w-full text-left font-semibold text-sm'>PRICE</Typography>
 				<Box className='w-full flex flex-col sm:flex-row justify-start gap-4'>
 					<Typography className='flex items-center gap-1 md:text-2xl text-xl'>
-						{product.price}
+						{(product.price * (1 - product.discount)).toFixed(0)}
 						<Caps />
 					</Typography>
 					{!!product.discount && (
 						<Typography className='flex items-center gap-1 line-through md:text-base text-sm decoration-red-500 decoration-2'>
-							{(product.price / (1 - product.discount)).toFixed(0)}
+							{product.price}
 							<Caps />
 						</Typography>
 					)}

@@ -1,10 +1,9 @@
-
 import type { Metadata } from 'next'
 import { Share_Tech_Mono } from 'next/font/google'
 import '../globals.css'
-import { TrpcProvider } from '~/providers/TrpcProvider'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import ThemeRegistry from '~/providers/ThemeRegistry'
+import { TrpcProvider } from '~/providers/TrpcProvider'
 
 const shareTechMono = Share_Tech_Mono({
 	subsets: ['latin'],

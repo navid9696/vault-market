@@ -53,7 +53,7 @@ const AdminDisplayProducts = () => {
 					</div>
 				</div>
 			</div>
-			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
+			<TransitionsModal open={modalOpen} handleClose={handleModalClose} border='2px solid #ddd'>
 				{renderModalContent()}
 			</TransitionsModal>
 		</>

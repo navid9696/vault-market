@@ -5,25 +5,35 @@ import Modal from '@mui/material/Modal'
 import Fade from '@mui/material/Fade'
 import CloseIcon from '@mui/icons-material/CloseTwoTone'
 
-const style = {
+const baseStyle = {
 	position: 'absolute',
 	top: '50%',
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
 	minWidth: 300,
-	height: 'fit-content',
+	maxHeight: '90vh',
 	bgcolor: 'background.paper',
-	border: '2px solid var(--border)',
 	boxShadow: 24,
+	overflowY: 'auto',
+	overflowX: 'hidden',
+	p: 5,
+	mt: 1,
+	textAlign: 'center',
 }
 
 interface TransitionsModalProps {
 	open: boolean
 	handleClose: () => void
 	children: React.ReactNode
+	border?: string
 }
 
-export default function TransitionsModal({ open, handleClose, children }: TransitionsModalProps) {
+export default function TransitionsModal({
+	open,
+	handleClose,
+	children,
+	border = '2px solid var(--border)',
+}: TransitionsModalProps) {
 	return (
 		<Modal
 			aria-labelledby='transition-modal-title'
@@ -33,16 +43,14 @@ export default function TransitionsModal({ open, handleClose, children }: Transi
 			closeAfterTransition
 			slots={{ backdrop: Backdrop }}
 			slotProps={{
-				backdrop: {
-					timeout: 500,
-				},
+				backdrop: { timeout: 500 },
 			}}>
 			<Fade in={open}>
-				<Box sx={style}>
-					<div onClick={handleClose} className=' absolute top-0 right-0 p-2 cursor-pointer z-10'>
+				<Box sx={{ ...baseStyle, border }}>
+					<div onClick={handleClose} className='absolute top-0 right-0 p-2 cursor-pointer z-10'>
 						<CloseIcon fontSize='large' />
 					</div>
-					<div className='relative overflow-hidden p-10 mt-2 text-center'>{children}</div>
+					<div>{children}</div>
 				</Box>
 			</Fade>
 		</Modal>
