@@ -55,19 +55,32 @@ export const capsOrderRouter = router({
 	getCapsOrdersByUser: procedure
 		.input(
 			z.object({
-				
-				userId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid ObjectId'),
+				userId: z.string().regex(/^[0-9a-fA-F]{24}$/),
+				page: z.number().min(1),
+				limit: z.number().min(1).max(100),
 			})
 		)
-		.output(z.array(capsOrderOutputSchema))
+		.output(
+			z.object({
+				orders: z.array(capsOrderOutputSchema),
+				total: z.number(),
+			})
+		)
 		.query(async ({ ctx, input }) => {
 			if (ctx.session?.role !== 'ADMIN') {
 				throw new TRPCError({ code: 'FORBIDDEN' })
 			}
-			return prisma.capsOrder.findMany({
-				where: { userId: input.userId },
-				orderBy: { createdAt: 'desc' },
-			})
+			const skip = (input.page - 1) * input.limit
+			const [orders, total] = await Promise.all([
+				prisma.capsOrder.findMany({
+					where: { userId: input.userId },
+					skip,
+					take: input.limit,
+					orderBy: { createdAt: 'desc' },
+				}),
+				prisma.capsOrder.count({ where: { userId: input.userId } }),
+			])
+			return { orders, total }
 		}),
 
 	getTotalCaps: procedure.output(totalCapsSchema).query(async ({ ctx }) => {

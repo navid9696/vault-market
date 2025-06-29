@@ -6,7 +6,8 @@ import bcrypt from 'bcrypt'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 
 const prisma = new PrismaClient()
-
+const ADMIN = 'ADMIN' as const
+const USER = 'USER' as const
 export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	providers: [
@@ -20,10 +21,8 @@ export const authOptions: NextAuthOptions = {
 				if (!credentials?.email || !credentials?.password) return null
 				const user = await prisma.user.findUnique({ where: { email: credentials.email } })
 				if (!user || !user.password) return null
-
 				const isValid = await bcrypt.compare(credentials.password, user.password)
 				if (!isValid) return null
-
 				return { id: user.id, email: user.email }
 			},
 		}),
@@ -46,16 +45,20 @@ export const authOptions: NextAuthOptions = {
 	},
 	callbacks: {
 		async jwt({ token, user, account }) {
-			if (user) token.id = user.id
+			if (user) {
+				token.id = user.id
+				token.role = user.email === 'admin@admin.admin' ? ADMIN : USER
+			}
 			if (account) {
 				token.provider = account.provider
 			}
 			return token
 		},
 		async session({ session, token }) {
-			if (session?.user) session.user.id = token.id as string
 			if (session.user) {
-				session.user.provider = token.provider as string
+				session.user.id = token.id
+				session.user.provider = token.provider
+				session.user.role = token.role
 			}
 			return session
 		},

@@ -10,7 +10,6 @@ import TransitionsModal from './TransitionModal'
 import { useCallback, useState } from 'react'
 import CartModal from './CartModal'
 import { useTheme as useNextTheme } from 'next-themes'
-import { useTheme as useMuiTheme } from '@mui/material/styles'
 import { Switch } from '@mui/material'
 import { GiBottleCap } from 'react-icons/gi'
 

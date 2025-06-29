@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
-
-import { TrpcProvider } from '~/providers/TrpcProvider'
 import AdminNavbar from '~/components/AdminNavbar'
+import { TrpcProvider } from '~/providers/TrpcProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,9 +15,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 	{
 		return (
 			<html className='scrollbar-hide scroll-smooth' lang='en'>
-				<body className={`admin ${inter.className} bg-zinc-900`}>
+				<body className={`admin ${inter.className} bg-white`}>
 					<TrpcProvider>
-						<div className='h-screen flex flex-col'>
+						<div className='flex flex-col'>
 							<AdminNavbar />
 							{children}
 						</div>

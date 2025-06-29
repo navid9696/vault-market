@@ -46,6 +46,7 @@
     "react-toastify": "^10.0.5",
     "react-virtualized-auto-sizer": "^1.0.24",
     "react-window": "^1.8.10",
+    "recharts": "^3.0.2",
     "server-only": "^0.0.1",
     "slick-carousel": "^1.8.1",
     "tailwind-scrollbar-hide": "^1.1.7",

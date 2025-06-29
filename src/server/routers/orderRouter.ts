@@ -26,6 +26,25 @@ const createOrderSchema = z.object({
 	totalAmount: z.number(),
 	orderItems: z.array(orderItemSchema),
 })
+const userOrderSchema = z.object({
+	id: z.string(),
+	street: z.string(),
+	addressOptional: z.string().nullable(),
+	city: z.string(),
+	state: z.string(),
+	zipCode: z.string(),
+	shippingMethod: z.string(),
+	orderDate: z.date(),
+	totalAmount: z.number(),
+	orderItems: z.array(
+		z.object({
+			id: z.string(),
+			name: z.string(),
+			price: z.number(),
+			quantity: z.number().min(1),
+		})
+	),
+})
 
 export const orderRouter = router({
 	createOrder: procedure.input(createOrderSchema).mutation(async ({ input, ctx }) => {
@@ -86,4 +105,32 @@ export const orderRouter = router({
 		})
 		return orders
 	}),
+	getOrdersByUser: procedure
+		.input(
+			z.object({
+				userId: z.string().regex(/^[0-9a-fA-F]{24}$/),
+				page: z.number().min(1),
+				limit: z.number().min(1).max(100),
+			})
+		)
+		.output(
+			z.object({
+				orders: z.array(userOrderSchema),
+				total: z.number(),
+			})
+		)
+		.query(async ({ input }) => {
+			const skip = (input.page - 1) * input.limit
+			const [orders, total] = await Promise.all([
+				prisma.userOrders.findMany({
+					where: { userId: input.userId },
+					skip,
+					take: input.limit,
+					orderBy: { orderDate: 'desc' },
+					include: { orderItems: true },
+				}),
+				prisma.userOrders.count({ where: { userId: input.userId } }),
+			])
+			return { orders, total }
+		}),
 })

@@ -5,21 +5,18 @@ import { httpLink, loggerLink } from '@trpc/client'
 import { trpc } from '~/server/client'
 
 export const TrpcProvider = ({ children }: { children: ReactNode }) => {
-  const [queryClient] = useState(() => new QueryClient())
-  const [trpcClient] = useState(() =>
-    trpc.createClient({
-      links: [
-        loggerLink(),                
-        httpLink({ url: '/api/trpc' }), 
-      ],
-    })
-  )
+	const [queryClient] = useState(() => new QueryClient())
+	const [trpcClient] = useState(() =>
+		trpc.createClient({
+			links: [httpLink({ url: '/api/trpc' })],
+		})
+	)
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <trpc.Provider client={trpcClient} queryClient={queryClient}>
-        {children}
-      </trpc.Provider>
-    </QueryClientProvider>
-  )
+	return (
+		<QueryClientProvider client={queryClient}>
+			<trpc.Provider client={trpcClient} queryClient={queryClient}>
+				{children}
+			</trpc.Provider>
+		</QueryClientProvider>
+	)
 }
