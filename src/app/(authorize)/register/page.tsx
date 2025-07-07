@@ -4,8 +4,6 @@ import Navbar from '~/components/Navbar'
 import { ToastContainer } from 'react-toastify'
 import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
-import { ThemeProvider } from '@mui/material'
-import theme from '~/lib/theme'
 import Image from 'next/image'
 import RegisterForm from '~/components/RegisterForm'
 import { SessionProvider } from 'next-auth/react'
@@ -13,22 +11,21 @@ import { SessionProvider } from 'next-auth/react'
 const Home = () => {
 	return (
 		<SessionProvider>
-			
-				<NavigationProvider>
-					<Navbar />
-					<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-					<main className='flex bg-bg '>
-						<div className='hidden md:block relative w-1/2'>
-							<Image className='object-cover' src={'/imgs/diamondCityMarket.webp'} alt='Diamond City Market' fill />
-						</div>
-						<div className='flex-1'>
-							<RegisterForm />
-						</div>
-					</main>
+			<NavigationProvider>
+				<Navbar />
+				<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
+				<main className='relative min-h-screen'>
+					<div className='absolute inset-0 -z-10 '>
+						<Image src='/imgs/authBg.png' alt='Background' fill style={{ objectFit: 'contain' }} />
+					</div>
 
-					<Footer />
-				</NavigationProvider>
-			
+					<div className='flex items-center justify-center h-full'>
+						<RegisterForm />
+					</div>
+				</main>
+
+				<Footer />
+			</NavigationProvider>
 		</SessionProvider>
 	)
 }

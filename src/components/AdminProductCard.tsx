@@ -110,7 +110,7 @@ const AdminProductCard = ({
 					</Button>
 				</CardActions>
 			</Card>
-			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
+			<TransitionsModal border='2px solid #ddd' open={modalOpen} handleClose={handleModalClose}>
 				{renderModalContent()}
 			</TransitionsModal>
 		</>

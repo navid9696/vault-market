@@ -58,14 +58,15 @@ export const productRouter = router({
 		}),
 
 	editProduct: procedure.input(trpcProductSchema).mutation(async ({ input }) => {
+		const { id, ...data } = input
 		try {
-			const updatedProduct = await prisma.products.update({
-				where: { id: input.id },
-				data: input,
+			const updated = await prisma.products.update({
+				where: { id },
+				data,
 			})
-			return updatedProduct
-		} catch (error) {
-			throw new Error('Failed to edit products: ' + (error as Error).message)
+			return updated
+		} catch (e) {
+			throw new Error('Failed to edit product: ' + (e as Error).message)
 		}
 	}),
 
