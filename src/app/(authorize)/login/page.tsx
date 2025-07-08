@@ -16,11 +16,12 @@ const Home = () => {
 			<NavigationProvider>
 				<Navbar />
 				<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-				<main className='flex bg-bg '>
-					<div className='hidden md:block relative w-1/2'>
-						<Image className='object-cover' src={'/imgs/diamondCityMarket.webp'} alt='Diamond City Market' fill />
+				<main className='relative min-h-screen'>
+					<div className='absolute inset-0 -z-10 '>
+						<Image className='object-contain' src='/imgs/authBg.png' alt='Background' fill />
 					</div>
-					<div className='flex-1'>
+
+					<div className='flex items-center justify-center h-full'>
 						<LoginForm />
 					</div>
 				</main>

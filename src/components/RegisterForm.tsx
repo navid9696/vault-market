@@ -94,18 +94,18 @@ export default function RegisterForm() {
 	}
 
 	return (
-		<div className='h-screen text-text'>
+		<div className='h-screen max-w-xl text-text'>
 			<div style={{ marginTop: `${navHeight}px` }} className='p-4 h-with-navbar'>
 				<form
 					className='h-full flex flex-col justify-center items-center text-center'
 					onSubmit={handleSubmit(onSubmit)}>
 					<h2 className='mb-5 text-3xl'>Sign up for Vault Market</h2>
 
-					<div className='flex flex-wrap justify-center gap-5'>
+					<div className='flex flex-wrap justify-center gap-1'>
 						<h3 className='text-xl'>Enter your registration details</h3>
 
 						<TextField
-							size='medium'
+							size='small'
 							className='relative w-3/4'
 							{...register('email')}
 							onFocus={() => setFocused('email')}
@@ -119,7 +119,7 @@ export default function RegisterForm() {
 							helperText={<span className='block h-4'>{errors.email?.message}</span>}
 							InputProps={{
 								startAdornment: focused === 'email' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -127,7 +127,7 @@ export default function RegisterForm() {
 						/>
 
 						<TextField
-							size='medium'
+							size='small'
 							type='password'
 							className='relative w-3/4'
 							{...register('password')}
@@ -142,7 +142,7 @@ export default function RegisterForm() {
 							helperText={<span className='block h-4'>{errors.password?.message}</span>}
 							InputProps={{
 								startAdornment: focused === 'password' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -150,7 +150,7 @@ export default function RegisterForm() {
 						/>
 
 						<TextField
-							size='medium'
+							size='small'
 							type='password'
 							className='relative w-3/4'
 							{...register('confirmPassword')}
@@ -165,7 +165,7 @@ export default function RegisterForm() {
 							helperText={<span className='block h-4'>{errors.confirmPassword?.message}</span>}
 							InputProps={{
 								startAdornment: focused === 'confirmPassword' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -173,7 +173,7 @@ export default function RegisterForm() {
 						/>
 					</div>
 
-					<div className='flex flex-col justify-center items-center mt-4 gap-4'>
+					<div className='flex flex-col justify-center items-center mt-4 gap-2'>
 						<p>
 							Already have an account?{' '}
 							<Link href='/login' className='underline'>

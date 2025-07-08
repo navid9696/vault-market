@@ -181,3 +181,20 @@ input::-webkit-inner-spin-button {
 		opacity: 1;
 	}
 }
+
+.bg-small {
+	display: block;
+}
+.bg-large {
+	display: none;
+}
+
+
+@media (min-width: 1300px) and (min-height: 730px) {
+	.bg-small {
+		display: none;
+	}
+	.bg-large {
+		display: block;
+	}
+}

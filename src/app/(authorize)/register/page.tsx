@@ -15,8 +15,11 @@ const Home = () => {
 				<Navbar />
 				<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
 				<main className='relative min-h-screen'>
-					<div className='absolute inset-0 -z-10 '>
-						<Image src='/imgs/authBg.png' alt='Background' fill style={{ objectFit: 'contain' }} />
+					<div className='absolute inset-0 -z-10'>
+						{/* wersja dla mniejszych rozmiarów */}
+						<Image src='/imgs/authBg2.jpg' alt='Background small' fill className='object-cover bg-small' />
+						{/* wersja dla dużych viewportów */}
+						<Image src='/imgs/authBg.png' alt='Background large' fill className='object-contain bg-large' />
 					</div>
 
 					<div className='flex items-center justify-center h-full'>
