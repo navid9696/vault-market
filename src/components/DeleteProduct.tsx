@@ -1,8 +1,9 @@
-import { Button } from '@mui/material'
+'use client'
 import React from 'react'
-import { ProductCardProps } from './ProductCard'
+import { Button } from '@mui/material'
 import { toast } from 'react-toastify'
 import { trpc } from '~/server/client'
+import { ProductCardProps } from './ProductCard'
 
 interface DeleteProductProps {
 	handleClose: () => void
@@ -10,25 +11,31 @@ interface DeleteProductProps {
 }
 
 const DeleteProduct = ({ handleClose, product }: DeleteProductProps) => {
-	const deleteProductMutation = trpc.product.deleteProduct.useMutation()
+	const utils = trpc.useUtils()
+	const deleteMutation = trpc.product.deleteProduct.useMutation({
+		onSuccess: () => {
+			utils.product.getProducts.invalidate()
+		},
+	})
 
-	const deleteProduct = async () => {
+	const onDelete = async () => {
 		try {
-			await toast.promise(deleteProductMutation.mutateAsync({ id: product.id }), {
-				pending: 'Deleting product... Please wait ⏳',
-				success: 'Product successfully deleted! 🗑️',
-				error: 'Failed to delete product. Something went wrong! 🚫😓',
+			await toast.promise(deleteMutation.mutateAsync({ id: product.id }), {
+				pending: 'Deleting product... ⏳',
+				success: 'Deleted! 🗑️',
+				error: 'Delete failed 🚫',
 			})
 			handleClose()
-		} catch (error) {
-			console.error('Error:', error)
+		} catch (e) {
+			console.error(e)
 		}
 	}
+
 	return (
 		<>
 			<h2 className='mb-8 text-xl'>Are you sure you want to delete this product?</h2>
 			<div className='flex justify-center gap-20'>
-				<Button color='error' variant='outlined' size='large' onClick={deleteProduct}>
+				<Button color='error' variant='outlined' size='large' onClick={onDelete}>
 					Delete
 				</Button>
 				<Button variant='contained' size='large' onClick={handleClose}>

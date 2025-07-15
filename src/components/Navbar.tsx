@@ -7,7 +7,7 @@ import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { trpc } from '~/server/client'
 import { useSession } from 'next-auth/react'
 import TransitionsModal from './TransitionModal'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import CartModal from './CartModal'
 import { useTheme as useNextTheme } from 'next-themes'
 import { Switch } from '@mui/material'
@@ -70,9 +70,9 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }))
 
 const Navbar = () => {
+	const { theme, setTheme } = useNextTheme()
 	const { navRef } = useNavigationHeight()
 	const { data: session } = useSession()
-	const { resolvedTheme, setTheme } = useNextTheme()
 	const { data: caps } = trpc.exchange.getCapsBalance.useQuery(undefined, { enabled: !!session })
 	const { data: cart } = trpc.cart.getTotalItems.useQuery(undefined, { enabled: !!session })
 	const [modalOpen, setModalOpen] = useState(false)
@@ -87,6 +87,11 @@ const Navbar = () => {
 	const totalCaps = caps?.balance ?? 0
 	const cartCount = cart?.total
 
+	const [mounted, setMounted] = useState(false)
+	useEffect(() => {
+		setMounted(true)
+	}, [])
+
 	return (
 		<>
 			<nav className='fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full md:max-w-screen-md '>
@@ -94,8 +99,14 @@ const Navbar = () => {
 					<div className='p-2 flex items-center justify-between h-14 border-2 border-border bg-gradient-to-r from-bg via-surface to-bg  md:rounded-full z-10'>
 						<div className='flex items-center '>
 							<div>
-								<Link href={'/#top'}>
-									<Image src={'/imgs/logo2.png'} width={40} height={400} alt='logo with vault boy' loading='lazy' />
+								<Link href='/#top'>
+									<Image
+										src='/imgs/logo2.png'
+										width={40}
+										height={40}
+										alt='logo with vault boy'
+										className='filter dark:hue-rotate-[-75deg]'
+									/>
 								</Link>
 							</div>
 							<div className='ml-7 flex items-center'>
@@ -104,10 +115,12 @@ const Navbar = () => {
 							</div>
 						</div>
 						<div className='flex items-center'>
-							<MaterialUISwitch
-								checked={resolvedTheme === 'dark'}
-								onChange={(_, checked) => setTheme(checked ? 'dark' : 'light')}
-							/>
+							{mounted && (
+								<MaterialUISwitch
+									checked={theme === 'dark'}
+									onChange={(_, checked) => setTheme(checked ? 'dark' : 'light')}
+								/>
+							)}
 							<div className='p-2 cursor-pointer' onClick={handleModalOpen}>
 								<Badge badgeContent={cartCount} color='warning' max={99}>
 									<ShoppingCart className=' text-text' />

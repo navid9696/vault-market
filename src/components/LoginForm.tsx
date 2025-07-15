@@ -77,18 +77,18 @@ export default function LoginForm() {
 	}
 
 	return (
-		<div className='h-screen text-text'>
+		<div className='h-screen max-w-xl text-text'>
 			<div style={{ marginTop: `${navHeight}px` }} className='p-4 h-with-navbar'>
 				<form
 					className='h-full flex flex-col justify-center items-center text-center'
 					onSubmit={handleSubmit(onSubmit)}>
 					<h2 className='mb-5 text-3xl'>Log in to Vault Market</h2>
 
-					<div className='flex flex-wrap justify-center gap-5'>
+					<div className='flex flex-wrap justify-center gap-1'>
 						<h3 className='text-xl'>Enter your login details</h3>
 
 						<TextField
-							size='medium'
+							size='small'
 							className='relative w-3/4'
 							{...register('email')}
 							onFocus={() => setFocused('email')}
@@ -102,7 +102,7 @@ export default function LoginForm() {
 							helperText={<span className='block h-4'>{errors.email?.message}</span>}
 							InputProps={{
 								startAdornment: focused === 'email' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -110,7 +110,7 @@ export default function LoginForm() {
 						/>
 
 						<TextField
-							size='medium'
+							size='small'
 							type='password'
 							className='relative w-3/4'
 							{...register('password')}
@@ -125,7 +125,7 @@ export default function LoginForm() {
 							helperText={<span className='block h-4'>{errors.password?.message}</span>}
 							InputProps={{
 								startAdornment: focused === 'password' && (
-									<InputAdornment position='start'>
+									<InputAdornment className='-ml-[14px] absolute input-adornment-enter-active' position='start'>
 										<FaAngleRight />
 									</InputAdornment>
 								),
@@ -133,7 +133,7 @@ export default function LoginForm() {
 						/>
 					</div>
 
-					<div className='flex flex-col justify-center items-center mt-4 gap-4'>
+					<div className='flex flex-col justify-center items-center mt-4 gap-2'>
 						<p>
 							Need to create an account?{' '}
 							<Link href='/register' className='underline'>
