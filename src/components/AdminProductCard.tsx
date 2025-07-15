@@ -52,7 +52,7 @@ const AdminProductCard = ({
 	const renderModalContent = () => {
 		switch (contentId) {
 			case 'edit':
-				return <AddOrEditProductForm product={productData} />
+				return <AddOrEditProductForm onSuccess={handleModalClose} product={productData} />
 			case 'delete':
 				return <DeleteProduct product={productData} handleClose={handleModalClose} />
 			default:

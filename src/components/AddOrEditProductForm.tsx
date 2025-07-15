@@ -21,11 +21,24 @@ type Product = ProductFormData & {
 
 interface AddOrEditProductFormProps {
 	product?: Product
+	onSuccess?: () => void
 }
 
-const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
-	const addProductMutation = trpc.product.addProduct.useMutation()
-	const editProductMutation = trpc.product.editProduct.useMutation()
+const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps) => {
+	const utils = trpc.useUtils()
+	const addMutation = trpc.product.addProduct.useMutation({
+		onSuccess() {
+			utils.product.getProducts.invalidate()
+			
+		},
+	})
+	const editMutation = trpc.product.editProduct.useMutation({
+		onSuccess() {
+			utils.product.getProducts.invalidate()
+			
+		},
+	})
+
 	const {
 		register,
 		handleSubmit,
@@ -48,8 +61,7 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 	})
 
 	const selectedCategory = watch('categoryName')
-	const selectedSubCategories =
-		categoriesData.categories.find(cat => cat.name === selectedCategory)?.subCategories || []
+	const selectedSubCategories = categoriesData.categories.find(c => c.name === selectedCategory)?.subCategories || []
 
 	const [preview, setPreview] = useState<string>(product?.imgURL ?? '')
 	const [uploading, setUploading] = useState(false)
@@ -81,35 +93,38 @@ const AddOrEditProductForm = ({ product }: AddOrEditProductFormProps) => {
 	}
 
 	const onSubmit: SubmitHandler<ProductFormData> = async data => {
+		const category = categoriesData.categories.find(c => c.name === data.categoryName)
+		const subCategory = category?.subCategories.find(s => s.name === data.subCategoryName)
+		const payload = {
+			...data,
+			popularity: product?.popularity ?? 0,
+			rating: product?.rating ?? 0,
+			categoryId: category?.id ?? 0,
+			subCategoryId: subCategory?.id ?? null,
+			discount: data.discount / 100,
+		}
+
 		try {
-			const category = categoriesData.categories.find(c => c.name === data.categoryName)
-			const subCategory = category?.subCategories.find(s => s.name === data.subCategoryName)
-			const payload = {
-				...data,
-				popularity: product ? product.popularity : 0,
-				rating: product ? product.rating : 0,
-				categoryId: category?.id ?? 0,
-				subCategoryId: subCategory ? subCategory.id : null,
-				discount: data.discount / 100,
+			if (product) {
+				await toast.promise(editMutation.mutateAsync({ id: product.id, ...payload }), {
+					pending: 'Editing…',
+					success: 'Updated!',
+					error: 'Update failed',
+				})
+				onSuccess?.() 
+			} else {
+				await toast.promise(addMutation.mutateAsync(payload), {
+					pending: 'Adding…',
+					success: 'Added!',
+					error: 'Add failed',
+				})
+				onSuccess?.() 
 			}
 
-			if (product) {
-				await toast.promise(editProductMutation.mutateAsync({ id: product.id, ...payload }), {
-					pending: 'Editing product... ⏳',
-					success: 'Updated! ✅',
-					error: 'Update failed 🚫',
-				})
-			} else {
-				await toast.promise(addProductMutation.mutateAsync(payload), {
-					pending: 'Adding product... ⏳',
-					success: 'Added! 🎉',
-					error: 'Add failed 🚫',
-				})
-			}
 			reset()
 			setPreview('')
-		} catch (error) {
-			console.error('Error:', error)
+		} catch (err) {
+			console.error(err)
 		}
 	}
 

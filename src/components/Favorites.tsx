@@ -7,13 +7,12 @@ import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { CircularProgress } from '@mui/material'
 
 const FavoritesList = () => {
-	const { navHeight } = useNavigationHeight()
 	const { data: favorites, isLoading, error } = trpc.favorite.getFavorites.useQuery()
 	const products = favorites?.map(fav => fav.product) ?? []
 
 	return (
 		<div className='h-screen flex flex-col'>
-			<div style={{ height: navHeight }} />
+			<div style={{ height: 56 }} />
 
 			<div className='flex-1 p-4 max-w-3xl w-screen bg-bg text-text flex flex-col min-h-0'>
 				<h1 className='p-8 text-center text-3xl font-bold mb-4 border-b border-border uppercase'>

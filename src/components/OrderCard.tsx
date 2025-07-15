@@ -7,13 +7,13 @@ interface OrderCardProps {
 
 const OrderCard = ({ order }: OrderCardProps) => (
 	<div className='w-80 border border-border bg-black text-text rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300'>
-		<div className='mb-2 text-sm text-text'>
+		<div className='mb-2 text-sm '>
 			<span className='font-semibold text-primary'>Order Date:</span> {new Date(order.orderDate).toLocaleString()}
 		</div>
-		<div className='mb-2 text-lg font-semibold text-text'>
+		<div className='mb-2 text-lg font-semibold '>
 			<span className='text-primary'>Total Amount:</span> {order.totalAmount} caps
 		</div>
-		<div className='mb-2 text-sm text-text'>
+		<div className='mb-2 text-sm '>
 			<span className='font-semibold text-primary'>Shipping Method:</span>
 			<span className='uppercase'> {order.shippingMethod}</span>
 		</div>

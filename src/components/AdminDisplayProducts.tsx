@@ -16,7 +16,7 @@ const AdminDisplayProducts = () => {
 	const handleModalOpen = () => setModalOpen(true)
 	const handleModalClose = () => setModalOpen(false)
 	const renderModalContent = () => {
-		return <AddOrEditProductForm />
+		return <AddOrEditProductForm onSuccess={handleModalClose} />
 	}
 	const {
 		data: products = [],
