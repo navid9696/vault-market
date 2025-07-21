@@ -7,8 +7,6 @@ import { ToastContainer } from 'react-toastify'
 import OnSaleList from '~/components/OnSaleList'
 import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
-import { ThemeProvider } from '@mui/material'
-import theme from '~/lib/theme'
 import { SessionProvider } from 'next-auth/react'
 
 const Home = () => {

@@ -16,7 +16,7 @@
 html.dark {
 	--bg: #0f0500;
 	--surface: #361e10;
-	--primary: #cc6d1f;
+	--primary: #ad5d1b;
 	--secondary: #d67f1b;
 	--tertiary: #ecb651;
 	--text: #ffb641;
@@ -162,6 +162,9 @@ input::-webkit-inner-spin-button {
 .rfm-child {
 	height: 100% !important;
 	margin: 0 1em;
+	display: flex;
+	justify-items: center;
+	align-items: center;
 }
 
 .input-adornment-enter-active {

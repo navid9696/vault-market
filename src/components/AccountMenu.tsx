@@ -141,33 +141,45 @@ export default function AccountMenu() {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
 				{session && [
-					<MenuItem key='favorites' onClick={handleClose}>
-						<Link href='/favorites'>
+					<Link key='favorites' href='/favorites' passHref>
+						<MenuItem component='a' onClick={handleClose}>
 							<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
-						</Link>
-					</MenuItem>,
-					<MenuItem key='orders' onClick={handleClose}>
-						<Link href='/userOrders'>
+						</MenuItem>
+					</Link>,
+
+					<Link key='orders' href='/userOrders' passHref>
+						<MenuItem component='a' onClick={handleClose}>
 							<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
-						</Link>
-					</MenuItem>,
-					<MenuItem key='exchange' onClick={() => handleModalOpen('exchange')}>
-						<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
-					</MenuItem>,
+						</MenuItem>
+					</Link>,
+
+					<Link key='exchange' href='#' passHref>
+						<MenuItem component='a' onClick={() => handleModalOpen('exchange')}>
+							<CurrencyExchangeIcon className='-ml-2 mr-2' fontSize='large' /> Caps&Cash Exchange
+						</MenuItem>
+					</Link>,
+
 					<Divider key='divider-1' />,
-					<MenuItem key='profile' onClick={() => handleModalOpen('profile')}>
-						<ListItemIcon>
-							<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
-						</ListItemIcon>
-						Profile Settings
-					</MenuItem>,
+
+					<Link key='profile' href='#' passHref>
+						<MenuItem component='a' onClick={() => handleModalOpen('profile')}>
+							<ListItemIcon>
+								<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
+							</ListItemIcon>
+							Profile Settings
+						</MenuItem>
+					</Link>,
+
 					<Divider key='divider-2' />,
-					<MenuItem key='signout' onClick={() => signOut({ callbackUrl: '/login' })}>
-						<ListItemIcon>
-							<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
-						</ListItemIcon>
-						Sign Out
-					</MenuItem>,
+
+					<Link key='signout' href='#' passHref>
+						<MenuItem component='a' onClick={() => signOut({ callbackUrl: '/login' })}>
+							<ListItemIcon>
+								<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
+							</ListItemIcon>
+							Sign Out
+						</MenuItem>
+					</Link>,
 				]}
 			</Menu>
 

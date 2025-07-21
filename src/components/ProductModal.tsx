@@ -62,7 +62,7 @@ const ProductModal = () => {
 
 	return (
 		<>
-			<div className='h-[80dvh] w-[80dvw] flex md:gap-8 gap-2'>
+			<div className=' h-[80dvh] w-[80dvw] flex md:gap-8 gap-2'>
 				<div className='hidden md:block md:w-1/2'>
 					<ReviewList productId={product.id} />
 				</div>
@@ -92,13 +92,11 @@ const ProductModal = () => {
 							)}
 						</Box>
 					</Box>
-					<div className='mt-24 w-1/2 sm:scale-100 scale-90 '>
+					<div className='mt-24 w-1/2 sm:scale-100 scale-90 cursor-pointer md:cursor-auto '>
 						<div className='flex items-center justify-center'>
 							<div
 								onClick={handleModalOpen}
-								className={`p-4 w-fit flex flex-col shadow-inset-1 border-border border rounded-2xl text-text bg-surface hover:bg-bg ${
-									window.innerWidth < 768 && 'cursor-pointer'
-								} transition-colors`}>
+								className={`p-4 w-fit flex flex-col shadow-inset-1 border-border border rounded-2xl text-text bg-surface hover:brightness-150  transition-all`}>
 								<Typography className='font-semibold text-xl'>{avgRating.toFixed(2)}</Typography>
 								<StyledRating
 									emptyIcon={<StarIcon fontSize='inherit' />}

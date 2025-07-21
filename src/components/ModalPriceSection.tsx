@@ -37,7 +37,7 @@ const PriceSection = () => {
 	return (
 		<Box className='mt-24 w-1/2 flex flex-col justify-around items-center'>
 			<Box className='sm:w-full flex flex-col items-center text-text'>
-				<Typography className='w-full text-left font-semibold text-sm'>PRICE</Typography>
+				<Typography className='w-full text-left font-semibold text-lg'>PRICE</Typography>
 				<Box className='w-full flex flex-col sm:flex-row justify-start gap-4'>
 					<Typography className='flex items-center gap-1 md:text-2xl text-xl'>
 						{(product.price * (1 - product.discount)).toFixed(0)}
@@ -58,7 +58,7 @@ const PriceSection = () => {
 					availability={product.available}
 					strictLimit
 				/>
-				<Typography className='text-xs'>in stock {product.available}</Typography>
+				<Typography className='text-xs'>on stock {product.available}</Typography>
 			</div>
 
 			<Box className='flex flex-col gap-4 items-center '>
@@ -71,11 +71,11 @@ const PriceSection = () => {
 			</Box>
 
 			<Button
-				className='text-base text-text mt-4'
+				className='sm:text-2xl text-base text-text mt-4'
 				variant='contained'
 				onClick={handleAddToCart}
 				disabled={addCartItemMutation.status === 'pending'}
-				endIcon={<AddShoppingCartTwoToneIcon />}>
+				endIcon={<AddShoppingCartTwoToneIcon fontSize='inherit' />}>
 				{addCartItemMutation.status === 'pending' ? 'Adding...' : 'add to cart'}
 			</Button>
 		</Box>

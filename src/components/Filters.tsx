@@ -25,7 +25,7 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 0.5))',
 	},
 	'& .MuiRating-iconEmpty': {
-		color: theme.palette.text.secondary,
+		color: theme.palette.background.default,
 		fill: theme.palette.background.paper,
 	},
 }))
@@ -110,7 +110,6 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 
 	return (
 		<div className='h-full px-4 py-8 flex flex-col justify-around bg-bg' style={{ color: theme.palette.text.primary }}>
-			{/* Price */}
 			<div className='p-2 px-6 border-2 border-border rounded-xl'>
 				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
@@ -127,7 +126,6 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 				/>
 			</div>
 
-			{/* Checkboxes */}
 			<FormGroup className='my-5 flex flex-col justify-center gap-2'>
 				<FormControlLabel
 					className='w-full'
@@ -160,7 +158,6 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 				/>
 			</FormGroup>
 
-			{/* Ratings */}
 			<FormControl>
 				<FormLabel
 					id='ratings-group-label'

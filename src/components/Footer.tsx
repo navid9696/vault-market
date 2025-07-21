@@ -31,7 +31,7 @@ const Footer = () => {
 					<Media greaterThanOrEqual='md'>
 						<Divider className='bg-surface' orientation='vertical' />
 					</Media>
-					<Media at='sm'>
+					<Media lessThan='md'>
 						<Divider className='bg-surface' />
 					</Media>
 					<div className='flex-1 md:w-1/2 py-2 px-8 text-center'>
