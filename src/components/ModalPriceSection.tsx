@@ -18,12 +18,25 @@ const PriceSection = () => {
 
 	const addCartItemMutation = trpc.cart.addCartItem.useMutation({
 		onSuccess: () => {
-			toast.success('Item added to cart!')
+			toast.success(
+				<div>
+					☢️ ACQUISITION QUEUED
+					<br />+ {selectedQuantity} × {product.name}
+					<br />
+					STATUS: ACCEPTED
+				</div>
+			)
 			setProduct({ ...product, available: product.available - selectedQuantity })
 			utils.cart.getTotalItems.invalidate()
 		},
 		onError: () => {
-			toast.error('Error adding item. Please try again.')
+			toast.error(
+				<div>
+					⚠️ TERMINAL ERROR
+					<br />
+					REQUEST REJECTED
+				</div>
+			)
 		},
 	})
 

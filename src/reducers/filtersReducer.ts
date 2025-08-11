@@ -22,7 +22,7 @@ interface State {
 }
 
 const initialState: State = {
-	price: [50, 5000],
+	price: [1, 9999],
 	checkedOnSale: false,
 	checkedShowedUnavailable: false,
 	checkedRating: 'Any',

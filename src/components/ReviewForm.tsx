@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -64,16 +63,41 @@ export default function ReviewForm({ productId, handleClose }: ReviewFormProps) 
 
 	const addComment = trpc.product.addComment.useMutation({
 		onSuccess: () => {
+			toast.success(
+				<div>
+					☢️ TERMINAL ENTRY STORED
+					<br />
+					COMMENT RECEIVED
+					<br />
+					STATUS: ACCEPTED
+				</div>
+			)
 			utils.product.getComments.invalidate({ productId })
 		},
 		onError: err => {
 			const data = err.data as any
-			if (data.zodError) {
+			if (data?.zodError) {
 				console.group('Zod validation errors')
 				console.table(data.zodError.fieldErrors)
 				console.groupEnd()
+				toast.error(
+					<div>
+						⚠️ VALIDATION FAULT
+						<br />
+						FIELD ERROR DETECTED
+						<br />
+						STATUS: REJECTED
+					</div>
+				)
+				return
 			}
-			toast.error(err.message)
+			toast.error(
+				<div>
+					⚠️ TRANSMISSION FAILED
+					<br />
+					{err.message}
+				</div>
+			)
 		},
 	})
 
@@ -87,7 +111,6 @@ export default function ReviewForm({ productId, handleClose }: ReviewFormProps) 
 
 	useEffect(() => {
 		if (isSubmitSuccessful && addComment.isSuccess) {
-			toast.success('Comment added successfully')
 			reset()
 			setRating(1)
 			handleClose()

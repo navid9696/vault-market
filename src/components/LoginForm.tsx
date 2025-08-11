@@ -16,6 +16,7 @@ type LoginFormValues = {
 	email: string
 	password: string
 }
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export default function LoginForm() {
 	const router = useRouter()
@@ -40,7 +41,13 @@ export default function LoginForm() {
 	}, [isSubmitSuccessful, reset])
 
 	const onSubmit: SubmitHandler<LoginFormValues> = async data => {
-		const toastId = toast.loading('📡 Connecting to Vault-Tec mainframe...')
+		const toastId = toast.loading(
+			<div>
+				☢️ INITIALIZING SECURE UPLINK
+				<br />
+				CONTACTING VAULT-TEC MAINFRAME...
+			</div>
+		)
 
 		const res = await signIn('credentials', {
 			redirect: false,
@@ -50,30 +57,38 @@ export default function LoginForm() {
 
 		if (!res || res.error) {
 			toast.update(toastId, {
-				render: '🚫 Authentication failed. Please try again.',
+				render: (
+					<div>
+						⚠️ ACCESS DENIED
+						<br />
+						AUTHENTICATION FAILED
+					</div>
+				),
 				type: 'error',
 				isLoading: false,
-				autoClose: 3000,
+				autoClose: 2500,
 			})
 			return
 		}
 
+		const isAdmin = data.email.trim().toLowerCase() === 'admin@admin.admin'
+
 		toast.update(toastId, {
-			render: '🎉 Access granted! Welcome, Vault Dweller!',
+			render: (
+				<div>
+					☢️ ACCESS GRANTED
+					<br />
+					PRIVILEGE LEVEL: {isAdmin ? 'ADMIN' : 'CITIZEN'}
+				</div>
+			),
 			type: 'success',
 			isLoading: false,
-			autoClose: 1000,
+			autoClose: 1200,
 		})
 
+		await sleep(1200)
 		router.refresh()
-
-		setTimeout(() => {
-			if (data.email.trim().toLowerCase() === 'admin@admin.admin') {
-				router.push('/admin/dashboard')
-			} else {
-				router.push('/')
-			}
-		}, 500)
+		router.push(isAdmin ? '/admin/dashboard' : '/')
 	}
 
 	return (

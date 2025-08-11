@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import GoogleButton from 'react-google-button'
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 export default function RegisterForm() {
 	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
@@ -38,18 +40,12 @@ export default function RegisterForm() {
 	}, [isSubmitSuccessful, reset])
 
 	const onSubmit: SubmitHandler<RegisterInput> = async data => {
-		const toastId = toast.loading('📡 Uploading resident data...')
+		const toastId = toast.loading('📡 Registering resident...')
 		try {
 			await registerMutation.mutateAsync(data)
+		} catch {
 			toast.update(toastId, {
-				render: '✅ Registration confirmed! Enjoy your Vault life.',
-				type: 'success',
-				isLoading: false,
-				autoClose: 1500,
-			})
-		} catch (e) {
-			toast.update(toastId, {
-				render: '❌ ERROR: Data corrupted. Please try again.',
+				render: '❌ Registration failed. Please try again.',
 				type: 'error',
 				isLoading: false,
 				autoClose: 3000,
@@ -57,16 +53,12 @@ export default function RegisterForm() {
 			return
 		}
 
-		const loginToastId = toast.loading('🔑 Logging you in...')
-		const res = await signIn('credentials', {
-			redirect: false,
-			email: data.email,
-			password: data.password,
-		})
+		toast.update(toastId, { render: '✅ Registration successful. Logging you in...', type: 'success', isLoading: true })
+		const res = await signIn('credentials', { redirect: false, email: data.email, password: data.password })
 
 		if (!res || res.error) {
-			toast.update(loginToastId, {
-				render: '🚫 Authentication failed. Please login manually.',
+			toast.update(toastId, {
+				render: '🚫 Login failed. Please log in manually.',
 				type: 'error',
 				isLoading: false,
 				autoClose: 3000,
@@ -75,22 +67,16 @@ export default function RegisterForm() {
 			return
 		}
 
-		toast.update(loginToastId, {
-			render: '🎉 Logged in successfully!',
+		toast.update(toastId, {
+			render: '🎉 Logged in successfully! Redirecting...',
 			type: 'success',
 			isLoading: false,
-			autoClose: 1000,
+			autoClose: 1500,
 		})
+		await sleep(1500)
 
 		router.refresh()
-
-		setTimeout(() => {
-			if (data.email === 'admin@admin.admin') {
-				router.push('/admin/dashboard')
-			} else {
-				router.push('/')
-			}
-		}, 500)
+		router.push(data.email === 'admin@admin.admin' ? '/admin/dashboard' : '/')
 	}
 
 	return (

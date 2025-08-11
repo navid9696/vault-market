@@ -142,19 +142,19 @@ export default function AccountMenu() {
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
 				{session && [
 					<Link key='favorites' href='/favorites' passHref>
-						<MenuItem component='a' onClick={handleClose}>
+						<MenuItem onClick={handleClose}>
 							<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
 						</MenuItem>
 					</Link>,
 
 					<Link key='orders' href='/userOrders' passHref>
-						<MenuItem component='a' onClick={handleClose}>
+						<MenuItem onClick={handleClose}>
 							<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
 						</MenuItem>
 					</Link>,
 
 					<Link key='exchange' href='#' passHref>
-						<MenuItem component='a' onClick={() => handleModalOpen('exchange')}>
+						<MenuItem onClick={() => handleModalOpen('exchange')}>
 							<CurrencyExchangeIcon className='-ml-2 mr-2' fontSize='large' /> Caps&Cash Exchange
 						</MenuItem>
 					</Link>,
@@ -162,7 +162,7 @@ export default function AccountMenu() {
 					<Divider key='divider-1' />,
 
 					<Link key='profile' href='#' passHref>
-						<MenuItem component='a' onClick={() => handleModalOpen('profile')}>
+						<MenuItem onClick={() => handleModalOpen('profile')}>
 							<ListItemIcon>
 								<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 							</ListItemIcon>
@@ -173,7 +173,7 @@ export default function AccountMenu() {
 					<Divider key='divider-2' />,
 
 					<Link key='signout' href='#' passHref>
-						<MenuItem component='a' onClick={() => signOut({ callbackUrl: '/login' })}>
+						<MenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
 							<ListItemIcon>
 								<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
 							</ListItemIcon>

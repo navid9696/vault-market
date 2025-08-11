@@ -92,7 +92,7 @@ const Checkout = () => {
 	const deliveryPrice = getDeliveryPrice(shippingMethod)
 	const totalAmount = totalProductsPrice + deliveryPrice
 
-	const submitOrder = async (address: AddressFormInput) => {
+	const submitOrder = async (address: AddressFormInput, opts?: { addressUpdated?: boolean }) => {
 		const orderItems =
 			cartData?.map(item => ({
 				productId: item.product.id,
@@ -103,6 +103,7 @@ const Checkout = () => {
 						: Math.round(item.product.price),
 				quantity: item.quantity,
 			})) || []
+
 		const payload = {
 			shippingMethod,
 			address: {
@@ -116,15 +117,43 @@ const Checkout = () => {
 			totalAmount,
 			orderItems,
 		}
+
 		try {
 			await spendCapsMutation.mutateAsync({ amount: totalAmount })
 			await createOrderMutation.mutateAsync(payload)
-			toast.success('Order placed successfully')
-			await clearCartMutation.mutateAsync()
+
+			toast.success(
+				<div>
+					☢️ TRANSACTION COMPLETE
+					{opts?.addressUpdated && (
+						<>
+							<br />
+							ADDRESS UPDATED
+						</>
+					)}
+					<br />
+					CAPS DEDUCTED: {totalAmount}
+					<br />
+					STATUS: CONFIRMED
+				</div>,
+				{ autoClose: 4000 }
+			)
+
 			refetchCart()
-			router.push('/')
+			
+			setTimeout(() => {
+				router.push('/')
+			}, 5100)
+			await clearCartMutation.mutateAsync()
 		} catch (error: any) {
-			toast.error(error.message || 'Error placing order. Please try again.')
+			toast.error(
+				<div>
+					⚠️ TRANSACTION FAILED
+					<br />
+					{error.message || 'PLEASE TRY AGAIN'}
+				</div>,
+				{ autoClose: 4000 }
+			)
 		}
 	}
 
@@ -152,15 +181,20 @@ const Checkout = () => {
 		const data = getValues()
 		try {
 			await updateAddressMutation.mutateAsync(data)
-			toast.success('Address updated successfully')
 			await refetchAddress()
 			handleModalClose()
-			submitOrder(data)
-		} catch (error) {
-			toast.error('Error updating address. Please try again.')
+			await submitOrder(data, { addressUpdated: true })
+		} catch {
+			toast.error(
+				<div>
+					⚠️ ADDRESS UPDATE FAILED
+					<br />
+					PLEASE TRY AGAIN
+				</div>,
+				{ autoClose: 3500 }
+			)
 		}
 	}
-
 	const handleModalCancel = () => {
 		handleModalClose()
 	}
