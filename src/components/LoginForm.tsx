@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { InputAdornment, TextField, Button } from '@mui/material'
+import { InputAdornment, TextField, Button, CircularProgress } from '@mui/material'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'react-toastify'
@@ -19,6 +19,7 @@ type LoginFormValues = {
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export default function LoginForm() {
+	const [isPending, setIsPending] = useState(false)
 	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [focused, setFocused] = useState<string | null>(null)
@@ -41,6 +42,8 @@ export default function LoginForm() {
 	}, [isSubmitSuccessful, reset])
 
 	const onSubmit: SubmitHandler<LoginFormValues> = async data => {
+		setIsPending(true)
+
 		const toastId = toast.loading(
 			<div>
 				☢️ INITIALIZING SECURE UPLINK
@@ -68,6 +71,7 @@ export default function LoginForm() {
 				isLoading: false,
 				autoClose: 2500,
 			})
+			setIsPending(false)
 			return
 		}
 
@@ -83,12 +87,13 @@ export default function LoginForm() {
 			),
 			type: 'success',
 			isLoading: false,
-			autoClose: 1200,
+			autoClose: 3000,
 		})
 
-		await sleep(1200)
+		await sleep(3000)
 		router.refresh()
 		router.push(isAdmin ? '/admin/dashboard' : '/')
+		setIsPending(false)
 	}
 
 	return (
@@ -155,11 +160,21 @@ export default function LoginForm() {
 								Sign up
 							</Link>
 						</p>
-
-						<Button variant='outlined' className='px-4 py-2' size='large' type='submit'>
-							Log In
+						<Button
+							variant='outlined'
+							size='large'
+							type='submit'
+							disabled={isPending}
+							endIcon={isPending ? <CircularProgress size={20} /> : null}
+							sx={{
+								'&.Mui-disabled': {
+									opacity: 0.9,
+									backgroundColor: 'primary.main',
+									color: 'primary.contrastText',
+								},
+							}}>
+							{isPending ? 'Processing...' : 'Log In'}
 						</Button>
-
 						<p>OR</p>
 
 						<GoogleButton onClick={() => signIn('google')}>Sign in with Google</GoogleButton>

@@ -1,14 +1,13 @@
-// src/components/EmailForm.tsx
-import { InputAdornment, TextField, Typography, Button } from '@mui/material'
+import { InputAdornment, TextField, Typography, Button, CircularProgress } from '@mui/material'
 import 'react-toastify/dist/ReactToastify.css'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useSession } from 'next-auth/react'
 import { trpc } from '~/server/client'
-import { SettingFormsProps } from '~/lib/types'
+import { type SettingFormsProps } from '~/lib/types'
 import { emailSchema } from '~/schemas/emailSchema'
 
 interface EmailFormInput {
@@ -20,6 +19,7 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	const currentEmail = session?.user?.email ?? ''
 
 	const [isFocusedField, setIsFocusedField] = useState(false)
+
 	const {
 		register,
 		handleSubmit,
@@ -33,12 +33,26 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 	const updateEmail = trpc.user.updateEmail.useMutation({
 		onSuccess: (_result, variables) => {
-			toast.success('Email updated successfully')
+			toast.success(
+				<div>
+					☢️ COMMUNICATIONS RECORD UPDATED
+					<br />
+					FIELD: EMAIL
+					<br />
+					STATUS: CONFIRMED
+				</div>
+			)
 			reset({ email: variables.email })
 			setIsDetailsVisible(false)
 		},
 		onError: err => {
-			toast.error(err.message)
+			toast.error(
+				<div>
+					⚠️ UPDATE FAILED
+					<br />
+					{err.message}
+				</div>
+			)
 		},
 	})
 
@@ -55,12 +69,12 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	return (
 		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
 			<Typography variant='h4' component='h3' gutterBottom>
-				Email Update
+				Communications Update
 			</Typography>
 
 			<div className='flex flex-wrap justify-center gap-x-5'>
 				<Typography gutterBottom variant='h6' component='h4'>
-					Modify Your Email
+					Modify Contact Channel
 				</Typography>
 				<TextField
 					className='relative w-3/4'
@@ -91,10 +105,22 @@ const EmailForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 			<div className='flex justify-center gap-20 mt-4'>
 				<Button size='large' onClick={() => setIsDetailsVisible(false)}>
-					Return
+					Cancel
 				</Button>
-				<Button size='large' type='submit' disabled={updateEmail.status === 'pending'}>
-					{updateEmail.status === 'pending' ? 'Saving...' : 'Submit'}
+				<Button
+					size='large'
+					type='submit'
+					disabled={updateEmail.status === 'pending'}
+					aria-busy={updateEmail.status === 'pending'}
+					endIcon={updateEmail.status === 'pending' ? <CircularProgress size={20} /> : null}
+					sx={{
+						'&.Mui-disabled': {
+							opacity: 0.9,
+							backgroundColor: 'primary.main',
+							color: 'primary.contrastText',
+						},
+					}}>
+					{updateEmail.status === 'pending' ? 'Processing…' : 'Save'}
 				</Button>
 			</div>
 		</form>

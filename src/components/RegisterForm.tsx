@@ -1,11 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { InputAdornment, TextField, Button } from '@mui/material'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { InputAdornment, TextField, Button, CircularProgress } from '@mui/material'
+import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'react-toastify'
 import { useNavigationHeight } from '~/context/NavbarHeightContext'
-import { registerSchema, RegisterInput } from '~/schemas/registerSchema'
+import { registerSchema, type RegisterInput } from '~/schemas/registerSchema'
 import { FaAngleRight } from 'react-icons/fa6'
 import Link from 'next/link'
 import { trpc } from '~/server/client'
@@ -15,11 +15,11 @@ import GoogleButton from 'react-google-button'
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-export default function RegisterForm() {
+const RegisterForm = () => {
 	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [focused, setFocused] = useState<string | null>(null)
-
+	const [isPending, setIsPending] = useState(false)
 	const registerMutation = trpc.user.registerUser.useMutation()
 
 	const {
@@ -40,43 +40,90 @@ export default function RegisterForm() {
 	}, [isSubmitSuccessful, reset])
 
 	const onSubmit: SubmitHandler<RegisterInput> = async data => {
-		const toastId = toast.loading('📡 Registering resident...')
+		setIsPending(true)
+
+		const toastId = toast.loading(
+			<div>
+				☢️ ENLISTMENT REQUEST RECEIVED
+				<br />
+				CREATING CITIZEN RECORD...
+			</div>
+		)
+
 		try {
 			await registerMutation.mutateAsync(data)
 		} catch {
 			toast.update(toastId, {
-				render: '❌ Registration failed. Please try again.',
+				render: (
+					<div>
+						⚠️ ACCESS DENIED
+						<br />
+						REGISTRATION FAILED
+					</div>
+				),
 				type: 'error',
 				isLoading: false,
 				autoClose: 3000,
 			})
-			return
-		}
-
-		toast.update(toastId, { render: '✅ Registration successful. Logging you in...', type: 'success', isLoading: true })
-		const res = await signIn('credentials', { redirect: false, email: data.email, password: data.password })
-
-		if (!res || res.error) {
-			toast.update(toastId, {
-				render: '🚫 Login failed. Please log in manually.',
-				type: 'error',
-				isLoading: false,
-				autoClose: 3000,
-			})
-			router.push('/login')
+			setIsPending(false)
 			return
 		}
 
 		toast.update(toastId, {
-			render: '🎉 Logged in successfully! Redirecting...',
+			render: (
+				<div>
+					☢️ RECORD CREATED
+					<br />
+					AUTHENTICATING...
+				</div>
+			),
+			type: 'success',
+			isLoading: true,
+		})
+
+		const res = await signIn('credentials', {
+			redirect: false,
+			email: data.email,
+			password: data.password,
+		})
+
+		if (!res || res.error) {
+			toast.update(toastId, {
+				render: (
+					<div>
+						⚠️ ACCESS DENIED
+						<br />
+						LOGIN FAILED
+					</div>
+				),
+				type: 'error',
+				isLoading: false,
+				autoClose: 3000,
+			})
+			setIsPending(false)
+			router.push('/login')
+			return
+		}
+
+		const isAdmin = data.email.trim().toLowerCase() === 'admin@admin.admin'
+
+		toast.update(toastId, {
+			render: (
+				<div>
+					☢️ ACCESS GRANTED
+					<br />
+					PRIVILEGE LEVEL: {isAdmin ? 'ADMIN' : 'CITIZEN'}
+				</div>
+			),
 			type: 'success',
 			isLoading: false,
-			autoClose: 1500,
+			autoClose: 3000,
 		})
-		await sleep(1500)
 
+		await sleep(3000)
 		router.refresh()
-		router.push(data.email === 'admin@admin.admin' ? '/admin/dashboard' : '/')
+		router.push(isAdmin ? '/admin/dashboard' : '/')
+		setIsPending(false)
 	}
 
 	return (
@@ -172,8 +219,17 @@ export default function RegisterForm() {
 							className='px-4 py-2'
 							size='large'
 							type='submit'
-							disabled={registerMutation.status === 'pending'}>
-							{registerMutation.status === 'pending' ? 'Signing up...' : 'Sign Up'}
+							disabled={isPending}
+							aria-busy={isPending}
+							endIcon={isPending ? <CircularProgress size={20} /> : null}
+							sx={{
+								'&.Mui-disabled': {
+									opacity: 0.9,
+									backgroundColor: 'primary.main',
+									color: 'primary.contrastText',
+								},
+							}}>
+							{isPending ? 'Processing...' : 'Sign Up'}
 						</Button>
 
 						<p>OR</p>
@@ -185,3 +241,5 @@ export default function RegisterForm() {
 		</div>
 	)
 }
+
+export default RegisterForm
