@@ -176,6 +176,46 @@ input::-webkit-inner-spin-button {
 	height: calc(100dvh - 56px);
 }
 
+.vault-toast .Toastify__toast {
+	background: var(--surface);
+	color: var(--text);
+	border: 1px solid var(--border);
+	box-shadow: var(--inner-shadow), 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.vault-toast .Toastify__toast--success {
+	background: var(--surface);
+	color: var(--text);
+}
+.vault-toast .Toastify__toast--error {
+	background: var(--surface);
+	color: var(--text);
+}
+.vault-toast .Toastify__toast--info {
+	background: var(--surface);
+	color: var(--text);
+}
+.vault-toast .Toastify__toast--warning {
+	background: var(--surface);
+	color: var(--text);
+}
+
+.vault-toast .Toastify__progress-bar {
+	background: var(--focus);
+}
+.vault-toast .Toastify__close-button {
+	color: var(--text);
+	opacity: 0.9;
+}
+.vault-toast .Toastify__close-button:hover {
+	opacity: 1;
+	color: var(--focus);
+}
+
+.vault-toast .Toastify__toast-icon svg {
+	fill: var(--text);
+}
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -191,7 +231,6 @@ input::-webkit-inner-spin-button {
 .bg-large {
 	display: none;
 }
-
 
 @media (min-width: 1300px) and (min-height: 730px) {
 	.bg-small {

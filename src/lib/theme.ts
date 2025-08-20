@@ -27,6 +27,12 @@ const theme = (mode: PaletteMode) => {
 			},
 		},
 		components: {
+			MuiCssBaseline: {
+				styleOverrides: {
+					'*:focus': { outline: 'none' },
+					'*:focus-visible': { outline: 'none' },
+				},
+			},
 			MuiCheckbox: {
 				styleOverrides: {
 					root: ({ theme }) => ({

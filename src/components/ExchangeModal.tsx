@@ -3,7 +3,7 @@ import { FaEquals as Equals } from 'react-icons/fa'
 import { GiBottleCap as Caps } from 'react-icons/gi'
 import ExchangeInput from './ExchangeInput'
 import Image from 'next/image'
-import { ChangeEvent, useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import { trpc } from '~/server/client'
 import { toast } from 'react-toastify'
 
@@ -20,6 +20,8 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 	const utils = trpc.useUtils()
 
 	const createOrderMutation = trpc.exchange.createCapsOrder.useMutation()
+	const isPending = createOrderMutation.status === 'pending'
+	const isReady = capsAmount !== '' && Number(capsAmount) > 0
 
 	const handleCapsChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const raw = e.target.value
@@ -37,35 +39,65 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 
 	const handleBuy = async () => {
 		const quantity = Number(capsAmount)
+		const usd = Number(usdValue)
 		if (!quantity || quantity <= 0) {
-			toast.error('Enter a positive amount.')
+			toast.error(
+				<div>
+					⚠️ INVALID INPUT
+					<br />
+					ENTER A POSITIVE AMOUNT
+				</div>
+			)
 			return
 		}
-		const toastId = toast.loading('📡 Connecting to Vault-Tec...')
+
+		const toastId = toast.loading(
+			<div>
+				☢️ INITIALIZING SECURE UPLINK
+				<br />
+				CONTACTING VAULT-TEC MAINFRAME...
+			</div>
+		)
+
 		try {
-			await createOrderMutation.mutateAsync({ quantity, usd: Number(usdValue) })
+			await createOrderMutation.mutateAsync({ quantity, usd })
 			toast.update(toastId, {
-				render: '🎉 Exchange complete! Caps credited.',
+				render: (
+					<div>
+						☢️ EXCHANGE APPROVED
+						<br />
+						CREDIT: {quantity} CAPS
+						<br />
+						DEBIT: ${usd.toFixed(2)}
+						<br />
+						STATUS: CONFIRMED
+					</div>
+				),
 				type: 'success',
 				isLoading: false,
-				autoClose: 1500,
+				autoClose: 3000,
 			})
-			await sleep(1500)
+			await sleep(3000)
 			await utils.exchange.getCapsBalance.invalidate()
 			setCapsAmount('')
 			setUsdValue('')
 			onClose()
 		} catch (err: any) {
-			const msg =
-				typeof err?.message === 'string' && err.message.trim()
-					? err.message
-					: 'ERROR: Transaction failed. Please retry.'
-			toast.update(toastId, { render: `🚫 ${msg}`, type: 'error', isLoading: false, autoClose: 3000 })
+			const msg = typeof err?.message === 'string' && err.message.trim() ? err.message : 'TRANSACTION FAILED'
+			toast.update(toastId, {
+				render: (
+					<div>
+						⚠️ OPERATION ERROR
+						<br />
+						{msg}
+					</div>
+				),
+				type: 'error',
+				isLoading: false,
+				autoClose: 3000,
+			})
 		}
 	}
-
-	const isPending = createOrderMutation.status === 'pending'
-	const isReady = capsAmount !== '' && Number(capsAmount) > 0
 
 	return (
 		<>
@@ -119,9 +151,9 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 				endIcon={isPending ? <CircularProgress size={20} /> : <Caps />}
 				sx={{
 					'&.Mui-disabled': {
-						opacity: 0.9, 
-						backgroundColor: 'primary.main', 
-						color: 'primary.contrastText', 
+						opacity: 0.9,
+						backgroundColor: 'primary.main',
+						color: 'primary.contrastText',
 					},
 				}}>
 				{isPending ? 'Processing...' : 'BUY'}

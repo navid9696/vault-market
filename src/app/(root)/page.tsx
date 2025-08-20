@@ -14,13 +14,15 @@ const Home = () => {
 		<SessionProvider>
 			<NavigationProvider>
 				<Navbar />
-				<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-				<div className='h-dvh'>
-					<Header />
-					<OnSaleList />
-				</div>
-				<main className='mx-auto flex flex-col justify-center items-center max-w-screen-xl'>
-					<ProductsBrowsing />
+				<ToastContainer className={'vault-toast'} autoClose={3000} draggablePercent={60} stacked hideProgressBar />
+				<main>
+					<section className='h-dvh'>
+						<Header />
+						<OnSaleList />
+					</section>
+					<section className='mx-auto flex flex-col justify-center items-center max-w-screen-xl'>
+						<ProductsBrowsing />
+					</section>
 				</main>
 				<Footer />
 			</NavigationProvider>
