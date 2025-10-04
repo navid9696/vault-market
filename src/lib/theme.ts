@@ -8,7 +8,7 @@ const theme = (mode: PaletteMode) => {
 		palette: {
 			mode,
 			background: {
-				default: light ? '#0b110b' : '#361e10',
+				default: light ? '#173117' : '#361e10',
 				paper: light ? '#0f180f' : '#0f0500',
 			},
 			text: {
@@ -27,6 +27,12 @@ const theme = (mode: PaletteMode) => {
 			},
 		},
 		components: {
+			MuiCssBaseline: {
+				styleOverrides: {
+					'*:focus': { outline: 'none' },
+					'*:focus-visible': { outline: 'none' },
+				},
+			},
 			MuiCheckbox: {
 				styleOverrides: {
 					root: ({ theme }) => ({

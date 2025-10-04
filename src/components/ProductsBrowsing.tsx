@@ -79,11 +79,11 @@ const ProductsBrowsing = () => {
 					<Filters setFilteredProducts={updateFilteredProducts} searchTerm={searchTerm} />
 				</Drawer>
 
-				<div className='hidden xl:block xl:border-r-8 xl:border-black xl:col-span-3 row-span-12'>
+				<div className='hidden xl:block xl:border-r-8 xl:border-black xl:col-span-2 row-span-12'>
 					<Filters setFilteredProducts={updateFilteredProducts} searchTerm={searchTerm} />
 				</div>
 
-				<div className='xl:col-span-7 col-span-10 row-span-1 bg-surface'>
+				<div className='xl:col-span-8 col-span-10 row-span-1 bg-surface'>
 					<SortAndSearch
 						setProducts={updateProducts}
 						handleDrawer={handleDrawer}
@@ -94,7 +94,7 @@ const ProductsBrowsing = () => {
 
 				<div
 					className='py-1 flex flex-wrap justify-center items-start content-start
-					xl:col-span-7 col-span-10 row-span-9
+					xl:col-span-8 col-span-10 row-span-9
 					bg-bg overflow-y-scroll'>
 					{state.visibleProducts.map(product => (
 						<ProductCard

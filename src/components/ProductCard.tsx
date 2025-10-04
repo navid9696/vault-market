@@ -96,8 +96,8 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 					<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-bg via-secondary to-bg '>
 						<h4
 							className={`${
-								discount > 0 && 'w-11/12 pl-3 rounded-tr-lg'
-							} w-full h-[36px] pl-0 flex items-center justify-center text-sm tracking-tighter rounded-t-lg bg-surface text-text font-semibold `}>
+								discount > 0 && 'pl-6 rounded-tr-lg'
+							} w-full h-[36px] pl-0 flex items-center justify-center text-sm tracking-tighter rounded-t-lg bg-surface text-text font-semibold `} style={{ wordSpacing: '-3px', lineHeight: 1.20 }}>
 							{name}
 						</h4>
 						<div className='h-full w-full p-1'>

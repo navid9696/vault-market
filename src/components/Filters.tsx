@@ -25,7 +25,7 @@ const StyledRating = styled(Rating)(({ theme }) => ({
 		filter: 'drop-shadow(1px 0.75px 0px rgb(0 0 0 / 0.5))',
 	},
 	'& .MuiRating-iconEmpty': {
-		color: theme.palette.text.secondary,
+		color: theme.palette.background.default,
 		fill: theme.palette.background.paper,
 	},
 }))
@@ -43,6 +43,12 @@ const ratingOptions = [
 	{ value: 3, label: '3+', precision: 0.5 },
 ]
 
+const effectivePrice = (price: number, discount?: number | null) => {
+	if (!discount) return price
+	if (discount > 0 && discount < 1) return Math.max(0, price * (1 - discount))
+	if (discount >= 1 && discount < 100) return Math.max(0, price * (1 - discount / 100))
+	return Math.max(0, price - discount)
+}
 interface FiltersProps {
 	searchTerm: string
 	setFilteredProducts: (filtered: ProductCardProps[]) => void
@@ -57,9 +63,11 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 	const filteredProducts = useMemo(() => {
 		return (
 			products?.filter(product => {
-				const matchesPriceRange = product.price >= state.price[0] && product.price <= state.price[1]
+				const matchesPriceRange =
+					effectivePrice(product.price, product.discount) >= state.price[0] &&
+					effectivePrice(product.price, product.discount) <= state.price[1]
 				const matchesAvailability = state.checkedShowedUnavailable || product.available > 0
-				const matchesOnSale = !state.checkedOnSale || product.discount
+				const matchesOnSale = !state.checkedOnSale || (typeof product.discount === 'number' && product.discount > 0)
 				const matchesRating = state.checkedRating === 'Any' || product.rating >= Number(state.checkedRating)
 				const matchesCategory = !activeCategory || product.categoryId === activeCategory
 				const matchesSubCategory = !activeSubCategory || product.subCategoryId === activeSubCategory
@@ -110,7 +118,6 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 
 	return (
 		<div className='h-full px-4 py-8 flex flex-col justify-around bg-bg' style={{ color: theme.palette.text.primary }}>
-			{/* Price */}
 			<div className='p-2 px-6 border-2 border-border rounded-xl'>
 				<p className='text-lg font-semibold uppercase'>Price</p>
 				<Slider
@@ -120,14 +127,13 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 					valueLabelDisplay='auto'
 					getAriaValueText={valuetext}
 					disableSwap
-					min={50}
+					min={1}
 					step={5}
-					max={5000}
+					max={9999}
 					color='primary'
 				/>
 			</div>
 
-			{/* Checkboxes */}
 			<FormGroup className='my-5 flex flex-col justify-center gap-2'>
 				<FormControlLabel
 					className='w-full'
@@ -160,7 +166,6 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 				/>
 			</FormGroup>
 
-			{/* Ratings */}
 			<FormControl>
 				<FormLabel
 					id='ratings-group-label'

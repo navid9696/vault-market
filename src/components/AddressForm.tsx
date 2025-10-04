@@ -9,15 +9,16 @@ import {
 	InputLabel,
 	FormControl,
 	FormHelperText,
+	CircularProgress,
 } from '@mui/material'
 import 'react-toastify/dist/ReactToastify.css'
-import { useForm, SubmitHandler, UseFormRegister, FieldErrors } from 'react-hook-form'
+import { useForm, type SubmitHandler, type UseFormRegister, type FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { useState, useEffect, type Dispatch, type SetStateAction } from 'react'
 import { toast } from 'react-toastify'
 import { statesOfAmerica } from '~/data/statesOfAmerica'
-import { SettingFormsProps } from '~/lib/types'
+import { type SettingFormsProps } from '~/lib/types'
 import { addressSchema } from '~/schemas/addressSchema'
 import { trpc } from '~/server/client'
 
@@ -71,6 +72,7 @@ const AddressForm = ({
 	})
 
 	const updateAddressMutation = trpc.user.updateAddress.useMutation()
+	const isPending = updateAddressMutation.status === 'pending'
 
 	useEffect(() => {
 		if (userData) {
@@ -86,28 +88,54 @@ const AddressForm = ({
 	}, [userData, reset])
 
 	const onSubmit: SubmitHandler<AddressFormInput> = async data => {
+		const toastId = toast.loading(
+			<div>
+				☢️ ADDRESS TRANSMISSION STARTED
+				<br />
+				UPDATING CITIZEN RECORD...
+			</div>
+		)
 		try {
 			await updateAddressMutation.mutateAsync(data)
-			toast.success('Address updated successfully')
-			refetch()
-			if (onSuccess) {
-				onSuccess(data)
-			}
-		} catch (error) {
-			toast.error('Error updating address. Please try again.')
+			toast.update(toastId, {
+				render: (
+					<div>
+						☢️ RECORD UPDATED
+						<br />
+						FIELD: ADDRESS
+						<br />
+						STATUS: CONFIRMED
+					</div>
+				),
+				type: 'success',
+				isLoading: false,
+				autoClose: 2000,
+			})
+			await refetch()
+			if (onSuccess) onSuccess(data)
+			if (setIsDetailsVisible && !isCheckout) setIsDetailsVisible(false)
+		} catch {
+			toast.update(toastId, {
+				render: (
+					<div>
+						⚠️ UPDATE FAILED
+						<br />
+						STATUS: TRY AGAIN
+					</div>
+				),
+				type: 'error',
+				isLoading: false,
+				autoClose: 3000,
+			})
 		}
 	}
 
 	useEffect(() => {
 		if (userLoading) return
-		if (updateAddressMutation.isSuccess) {
-			setIsFocusedField(false)
-		}
+		if (updateAddressMutation.isSuccess) setIsFocusedField(false)
 	}, [updateAddressMutation.isSuccess, userLoading])
 
-	if (userLoading) {
-		return <div>Loading user data...</div>
-	}
+	if (userLoading) return <div>Initializing terminal…</div>
 
 	const reg = externalRegister || localRegister
 	const errs = externalErrors || localErrors
@@ -116,7 +144,7 @@ const AddressForm = ({
 		<>
 			{!isCheckout && (
 				<Typography variant='h4' component='h3' gutterBottom>
-					Address Update
+					Address Records
 				</Typography>
 			)}
 			<div
@@ -127,7 +155,7 @@ const AddressForm = ({
 				className='flex flex-wrap justify-center gap-x-5'>
 				{!isCheckout && (
 					<Typography gutterBottom variant='h6' component='h4'>
-						Modify Your Address
+						Edit Location Data
 					</Typography>
 				)}
 				<TextField
@@ -220,7 +248,7 @@ const AddressForm = ({
 								setIsFocusedField(false)
 								clearErrors('state')
 							},
-							onChange: e => handleChange(e),
+							onChange: e => handleChange(e as SelectChangeEvent),
 						})}
 						onFocus={() => setIsFocusedField('state')}>
 						{statesOfAmerica.map(stateName => (
@@ -270,10 +298,22 @@ const AddressForm = ({
 						onClick={() => {
 							if (setIsDetailsVisible) setIsDetailsVisible(false)
 						}}>
-						Return
+						Cancel
 					</Button>
-					<Button size='large' type='submit'>
-						Submit
+					<Button
+						size='large'
+						type='submit'
+						disabled={isPending}
+						aria-busy={isPending}
+						endIcon={isPending ? <CircularProgress size={20} /> : null}
+						sx={{
+							'&.Mui-disabled': {
+								opacity: 0.9,
+								backgroundColor: 'primary.main',
+								color: 'primary.contrastText',
+							},
+						}}>
+						{isPending ? 'Processing…' : 'Save'}
 					</Button>
 				</div>
 			</form>

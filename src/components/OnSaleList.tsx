@@ -11,7 +11,7 @@ const DiscountList = () => {
 	const wrapperClass = 'h-full bg-gradient-to-r from-bg via-surface to-bg border-2 border-border shadow-inner-shadow'
 
 	return (
-		<section className='h-1/4'>
+		<section className=' h-1/3 sm:h-1/4'>
 			{isLoading || isError || discounted.length === 0 ? (
 				<div className={`${wrapperClass} flex items-center justify-center`}>
 					{isLoading && <CircularProgress />}
@@ -19,7 +19,7 @@ const DiscountList = () => {
 					{!isLoading && !isError && discounted.length === 0 && <p className='text-text'>No discounted products</p>}
 				</div>
 			) : (
-				<Marquee className={wrapperClass} play pauseOnHover delay={1}>
+				<Marquee className={wrapperClass} play pauseOnHover  delay={1}>
 					{discounted.map(product => (
 						<ProductCard
 							key={product.id}

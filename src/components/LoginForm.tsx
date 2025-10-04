@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { InputAdornment, TextField, Button } from '@mui/material'
+import { InputAdornment, TextField, Button, CircularProgress } from '@mui/material'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'react-toastify'
@@ -16,8 +16,10 @@ type LoginFormValues = {
 	email: string
 	password: string
 }
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export default function LoginForm() {
+	const [isPending, setIsPending] = useState(false)
 	const router = useRouter()
 	const { navHeight } = useNavigationHeight()
 	const [focused, setFocused] = useState<string | null>(null)
@@ -40,7 +42,15 @@ export default function LoginForm() {
 	}, [isSubmitSuccessful, reset])
 
 	const onSubmit: SubmitHandler<LoginFormValues> = async data => {
-		const toastId = toast.loading('📡 Connecting to Vault-Tec mainframe...')
+		setIsPending(true)
+
+		const toastId = toast.loading(
+			<div>
+				☢️ INITIALIZING SECURE UPLINK
+				<br />
+				CONTACTING VAULT-TEC MAINFRAME...
+			</div>
+		)
 
 		const res = await signIn('credentials', {
 			redirect: false,
@@ -50,30 +60,40 @@ export default function LoginForm() {
 
 		if (!res || res.error) {
 			toast.update(toastId, {
-				render: '🚫 Authentication failed. Please try again.',
+				render: (
+					<div>
+						⚠️ ACCESS DENIED
+						<br />
+						AUTHENTICATION FAILED
+					</div>
+				),
 				type: 'error',
 				isLoading: false,
-				autoClose: 3000,
+				autoClose: 2500,
 			})
+			setIsPending(false)
 			return
 		}
 
+		const isAdmin = data.email.trim().toLowerCase() === 'admin@admin.admin'
+
 		toast.update(toastId, {
-			render: '🎉 Access granted! Welcome, Vault Dweller!',
+			render: (
+				<div>
+					☢️ ACCESS GRANTED
+					<br />
+					PRIVILEGE LEVEL: {isAdmin ? 'ADMIN' : 'CITIZEN'}
+				</div>
+			),
 			type: 'success',
 			isLoading: false,
-			autoClose: 1000,
+			autoClose: 3000,
 		})
 
+		await sleep(3000)
 		router.refresh()
-
-		setTimeout(() => {
-			if (data.email.trim().toLowerCase() === 'admin@admin.admin') {
-				router.push('/admin/dashboard')
-			} else {
-				router.push('/')
-			}
-		}, 500)
+		router.push(isAdmin ? '/admin/dashboard' : '/')
+		setIsPending(false)
 	}
 
 	return (
@@ -140,11 +160,21 @@ export default function LoginForm() {
 								Sign up
 							</Link>
 						</p>
-
-						<Button variant='outlined' className='px-4 py-2' size='large' type='submit'>
-							Log In
+						<Button
+							variant='outlined'
+							size='large'
+							type='submit'
+							disabled={isPending}
+							endIcon={isPending ? <CircularProgress size={20} /> : null}
+							sx={{
+								'&.Mui-disabled': {
+									opacity: 0.9,
+									backgroundColor: 'primary.main',
+									color: 'primary.contrastText',
+								},
+							}}>
+							{isPending ? 'Processing...' : 'Log In'}
 						</Button>
-
 						<p>OR</p>
 
 						<GoogleButton onClick={() => signIn('google')}>Sign in with Google</GoogleButton>

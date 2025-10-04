@@ -18,13 +18,14 @@ const settings = {
 const Header = () => {
 	return (
 		<>
-			<header className=" h-3/4 bg-[url('/imgs/header.png')] bg-scroll bg-center bg-no-repeat bg-cover -z-10">
-				<div className='relative w-full h-full '>
+			<header className="hue-rotate-30 dark:hue-rotate-0 h-2/3 sm:h-3/4 bg-[url('/imgs/header.png')] bg-scroll bg-center bg-no-repeat bg-cover -z-10">
+				<div className='hidden sm:block relative w-full h-full '>
 					<Slider
+						draggable={false}
 						className='absolute px-10 w-1/2 h-1/3 top-3/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 text-xl lg:text-2xl text-text'
 						{...settings}>
 						{adSlogans.map(slogan => (
-							<div key={slogan}>{slogan}</div>
+							<p key={slogan}>{slogan}</p>
 						))}
 					</Slider>
 				</div>

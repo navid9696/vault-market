@@ -16,7 +16,7 @@
 html.dark {
 	--bg: #0f0500;
 	--surface: #361e10;
-	--primary: #cc6d1f;
+	--primary: #ad5d1b;
 	--secondary: #d67f1b;
 	--tertiary: #ecb651;
 	--text: #ffb641;
@@ -115,7 +115,6 @@ body.user {
 	.MuiBadge-badge {
 		background-color: var(--secondary);
 		font-weight: bold;
-		/* color: var(--text); */
 		color: black;
 		border: 1px solid var(--border);
 	}
@@ -162,6 +161,9 @@ input::-webkit-inner-spin-button {
 .rfm-child {
 	height: 100% !important;
 	margin: 0 1em;
+	display: flex;
+	justify-items: center;
+	align-items: center;
 }
 
 .input-adornment-enter-active {
@@ -171,6 +173,46 @@ input::-webkit-inner-spin-button {
 
 .h-with-navbar {
 	height: calc(100dvh - 56px);
+}
+
+.vault-toast .Toastify__toast {
+	background: var(--surface);
+	color: var(--text);
+	border: 1px solid var(--border);
+	box-shadow: var(--inner-shadow), 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.vault-toast .Toastify__toast--success {
+	background: var(--surface);
+	color: var(--text);
+}
+.vault-toast .Toastify__toast--error {
+	background: var(--surface);
+	color: var(--text);
+}
+.vault-toast .Toastify__toast--info {
+	background: var(--surface);
+	color: var(--text);
+}
+.vault-toast .Toastify__toast--warning {
+	background: var(--surface);
+	color: var(--text);
+}
+
+.vault-toast .Toastify__progress-bar {
+	background: var(--focus);
+}
+.vault-toast .Toastify__close-button {
+	color: var(--text);
+	opacity: 0.9;
+}
+.vault-toast .Toastify__close-button:hover {
+	opacity: 1;
+	color: var(--focus);
+}
+
+.vault-toast .Toastify__toast-icon svg {
+	fill: var(--text);
 }
 
 @keyframes fadeIn {
@@ -188,7 +230,6 @@ input::-webkit-inner-spin-button {
 .bg-large {
 	display: none;
 }
-
 
 @media (min-width: 1300px) and (min-height: 730px) {
 	.bg-small {

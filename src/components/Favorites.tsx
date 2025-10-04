@@ -3,7 +3,6 @@
 import React from 'react'
 import ProductCard, { ProductCardProps } from './ProductCard'
 import { trpc } from '~/server/client'
-import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { CircularProgress } from '@mui/material'
 
 const FavoritesList = () => {

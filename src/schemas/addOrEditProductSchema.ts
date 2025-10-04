@@ -1,11 +1,11 @@
 import { z } from 'zod'
 
 export const productSchema = z.object({
-	name: z.string().min(1, { message: 'Product name is required' }),
+	name: z.string().min(1, { message: 'Product name is required' }).max(18, { message: 'Product name is too long' }),
 	price: z.coerce
 		.number()
 		.positive({ message: 'Price must be a positive number' })
-		.max(9999, { message: 'Value cannot exceed a 4-digit number' }),
+		.max(9999, { message: 'Value cannot be more than 9999' }),
 	available: z.coerce
 		.number()
 		.int({ message: 'Availability must be an integer' })

@@ -14,7 +14,12 @@ import Button from '@mui/material/Button'
 import Image from 'next/image'
 import Link from 'next/link'
 import LogoutIcon from '@mui/icons-material/Logout'
+import HomeIcon from '@mui/icons-material/Home'
+import DarkModeIcon from '@mui/icons-material/DarkMode'
+import LightModeIcon from '@mui/icons-material/LightMode'
 import { signOut } from 'next-auth/react'
+import { useAdminTheme } from '~/providers/AdminThemeProvider'
+
 
 const pages = [
 	{ label: 'Dashboard', href: '/admin/dashboard' },
@@ -24,13 +29,10 @@ const pages = [
 
 export default function AdminNavbar() {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
+	const { mode, toggle } = useAdminTheme()
 
-	const handleOpenNavMenu = (e: React.MouseEvent<HTMLElement>) => {
-		setAnchorElNav(e.currentTarget)
-	}
-	const handleCloseNavMenu = () => {
-		setAnchorElNav(null)
-	}
+	const handleOpenNavMenu = (e: React.MouseEvent<HTMLElement>) => setAnchorElNav(e.currentTarget)
+	const handleCloseNavMenu = () => setAnchorElNav(null)
 
 	return (
 		<AppBar component='nav' position='fixed'>
@@ -91,10 +93,15 @@ export default function AdminNavbar() {
 						))}
 					</Box>
 
-					<Box sx={{ flexGrow: 0 }}>
-						<Button onClick={() => signOut()} color='inherit'>
-							<LogoutIcon />
-							<Typography sx={{ ml: 1 }}>Logout</Typography>
+					<Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 1 }}>
+						<IconButton color='inherit' onClick={toggle} aria-label='toggle admin theme'>
+							{mode === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+						</IconButton>
+						<Button component={Link} href='/' color='inherit' startIcon={<HomeIcon />}>
+							HOME
+						</Button>
+						<Button onClick={() => signOut({ callbackUrl: '/' })} color='inherit' startIcon={<LogoutIcon />}>
+							Logout
 						</Button>
 					</Box>
 				</Toolbar>

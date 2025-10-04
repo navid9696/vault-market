@@ -1,10 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useTheme as useNextTheme } from 'next-themes'
-import { useTheme as useMuiTheme } from '@mui/material/styles'
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
-import { signIn, signOut, useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Box from '@mui/material/Box'
@@ -15,14 +13,13 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
-import { Skeleton, Switch, Typography, useTheme } from '@mui/material'
+import { Skeleton, Typography } from '@mui/material'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchangeTwoTone'
 import LogoutIcon from '@mui/icons-material/LogoutTwoTone'
 import FavoriteIcon from '@mui/icons-material/FavoriteTwoTone'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasketTwoTone'
-import ContrastIcon from '@mui/icons-material/ContrastTwoTone'
 import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
-import LoginIcon from '@mui/icons-material/Login'
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettingsTwoTone'
 import TransitionsModal from './TransitionModal'
 import AccountSettings from './AccountSettings'
 import { trpc } from '~/server/client'
@@ -56,6 +53,7 @@ export default function AccountMenu() {
 			? rawImage
 			: `${window.location.origin}${rawImage}`
 		: undefined
+	const isAdmin = session?.user?.email?.toLowerCase() === 'admin@admin.admin'
 
 	const handleClick = (e: React.MouseEvent<HTMLElement>) => {
 		if (session) {
@@ -91,7 +89,7 @@ export default function AccountMenu() {
 
 	return (
 		<>
-			<Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+			<Box sx={{ display: 'flex', alignItems: 'center,', textAlign: 'center' }}>
 				<Tooltip title={session ? 'Account settings' : 'Register'}>
 					<IconButton
 						onClick={handleClick}
@@ -117,12 +115,7 @@ export default function AccountMenu() {
 							overflow: 'visible',
 							filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
 							mt: 1.5,
-							'& .MuiAvatar-root': {
-								width: 32,
-								height: 32,
-								ml: -0.5,
-								mr: 1,
-							},
+							'& .MuiAvatar-root': { width: 32, height: 32, ml: -0.5, mr: 1 },
 							'&::before': {
 								content: '""',
 								display: 'block',
@@ -141,33 +134,53 @@ export default function AccountMenu() {
 				transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 				anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
 				{session && [
-					<MenuItem key='favorites' onClick={handleClose}>
-						<Link href='/favorites'>
+					<Link key='favorites' href='/favorites' passHref>
+						<MenuItem onClick={handleClose}>
 							<FavoriteIcon className='-ml-2 mr-2' fontSize='large' /> Favorites
-						</Link>
-					</MenuItem>,
-					<MenuItem key='orders' onClick={handleClose}>
-						<Link href='/userOrders'>
+						</MenuItem>
+					</Link>,
+
+					<Link key='orders' href='/userOrders' passHref>
+						<MenuItem onClick={handleClose}>
 							<ShoppingBasketIcon className='-ml-2 mr-2' fontSize='large' /> Orders
+						</MenuItem>
+					</Link>,
+
+					isAdmin && (
+						<Link key='admin' href='/admin/dashboard' passHref>
+							<MenuItem onClick={handleClose}>
+								<AdminPanelSettingsIcon className='-ml-2 mr-2' fontSize='large' /> Admin Dashboard
+							</MenuItem>
 						</Link>
-					</MenuItem>,
-					<MenuItem key='exchange' onClick={() => handleModalOpen('exchange')}>
-						<CurrencyExchangeIcon className='-ml-2 mr-4' fontSize='large' /> Caps&Cash Exchange
-					</MenuItem>,
+					),
+
+					<Link key='exchange' href='#' passHref>
+						<MenuItem onClick={() => handleModalOpen('exchange')}>
+							<CurrencyExchangeIcon className='-ml-2 mr-2' fontSize='large' /> Caps&Cash Exchange
+						</MenuItem>
+					</Link>,
+
 					<Divider key='divider-1' />,
-					<MenuItem key='profile' onClick={() => handleModalOpen('profile')}>
-						<ListItemIcon>
-							<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
-						</ListItemIcon>
-						Profile Settings
-					</MenuItem>,
+
+					<Link key='profile' href='#' passHref>
+						<MenuItem onClick={() => handleModalOpen('profile')}>
+							<ListItemIcon>
+								<SettingsIcon className='-ml-2 mr-2 text-text' fontSize='large' />
+							</ListItemIcon>
+							Profile Settings
+						</MenuItem>
+					</Link>,
+
 					<Divider key='divider-2' />,
-					<MenuItem key='signout' onClick={() => signOut({ callbackUrl: '/login' })}>
-						<ListItemIcon>
-							<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
-						</ListItemIcon>
-						Sign Out
-					</MenuItem>,
+
+					<Link key='signout' href='#' passHref>
+						<MenuItem onClick={() => signOut({ callbackUrl: '/login' })}>
+							<ListItemIcon>
+								<LogoutIcon className='-ml-2 mr-2 text-text' fontSize='large' />
+							</ListItemIcon>
+							Sign Out
+						</MenuItem>
+					</Link>,
 				]}
 			</Menu>
 

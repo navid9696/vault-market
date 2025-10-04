@@ -69,22 +69,56 @@ const AccountSettings = () => {
 			const form = new FormData()
 			form.append('avatar', file)
 
-			const promise = fetch('/api/uploadAvatar', {
-				method: 'POST',
-				body: form,
-			}).then(async res => {
-				if (!res.ok) throw new Error('Upload failed')
+			const toastId = toast.loading(
+				<div>
+					☢️ INITIALIZING UPLINK
+					<br />
+					TRANSMITTING AVATAR DATA...
+				</div>
+			)
+
+			try {
+				const res = await fetch('/api/uploadAvatar', {
+					method: 'POST',
+					body: form,
+				})
+
+				if (!res.ok) {
+					throw new Error('UPLOAD FAILED')
+				}
+
 				const { url } = await res.json()
 				setAvatar(url)
+
 				await updateAvatar.mutateAsync({ avatarUrl: url })
 				await utils.user.getProfile.invalidate()
-			})
 
-			toast.promise(promise, {
-				pending: 'Uploading avatar...',
-				success: 'Avatar updated!',
-				error: 'Upload failed',
-			})
+				toast.update(toastId, {
+					render: (
+						<div>
+							☢️ AVATAR UPDATE CONFIRMED
+							<br />
+							VISUAL IDENTITY SYNCHRONIZED
+						</div>
+					),
+					type: 'success',
+					isLoading: false,
+					autoClose: 1800,
+				})
+			} catch (err: any) {
+				toast.update(toastId, {
+					render: (
+						<div>
+							⚠️ TRANSMISSION ERROR
+							<br />
+							{typeof err?.message === 'string' ? err.message : 'UPLOAD FAILED'}
+						</div>
+					),
+					type: 'error',
+					isLoading: false,
+					autoClose: 3000,
+				})
+			}
 		},
 		[updateAvatar, utils.user.getProfile]
 	)

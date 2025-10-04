@@ -8,15 +8,15 @@ interface ConfirmationModalProps {
 
 const ConfirmationModal = ({ onConfirm, onCancel }: ConfirmationModalProps) => {
 	return (
-		<div className='fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50'>
-			<div className='bg-bg p-6 rounded-lg w-11/12 max-w-md'>
+		<div className='bg-opacity-50 flex justify-center items-center z-50'>
+			<div className='bg-bg max-w-md'>
 				<h2 className='text-xl font-bold mb-4'>Confirm Update</h2>
 				<p className='mb-6'>Your address has been modified. Do you want to update your address?</p>
 				<div className='flex justify-center gap-4'>
-					<Button color='secondary' onClick={onCancel}>
+					<Button size='large' color='secondary' onClick={onCancel}>
 						Cancel
 					</Button>
-					<Button color='primary' onClick={onConfirm}>
+					<Button size='large' color='primary' onClick={onConfirm}>
 						Confirm
 					</Button>
 				</div>

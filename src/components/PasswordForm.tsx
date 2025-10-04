@@ -1,12 +1,12 @@
-import { InputAdornment, TextField, Typography, Button } from '@mui/material'
+import { InputAdornment, TextField, Typography, Button, CircularProgress } from '@mui/material'
 import 'react-toastify/dist/ReactToastify.css'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FaAngleRight } from 'react-icons/fa6'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import { trpc } from '~/server/client'
-import { SettingFormsProps } from '~/lib/types'
+import { type SettingFormsProps } from '~/lib/types'
 import { updatePasswordSchema } from '~/schemas/passwordSchema'
 
 interface PasswordFormInput {
@@ -35,12 +35,26 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 	const updatePassword = trpc.user.updatePassword.useMutation({
 		onSuccess: () => {
-			toast.success('Password updated successfully')
+			toast.success(
+				<div>
+					☢️ SECURITY RECORD UPDATED
+					<br />
+					FIELD: PASSWORD
+					<br />
+					STATUS: CONFIRMED
+				</div>
+			)
 			reset()
 			setIsDetailsVisible(false)
 		},
 		onError: err => {
-			toast.error(err.message)
+			toast.error(
+				<div>
+					⚠️ UPDATE FAILED
+					<br />
+					{err.message}
+				</div>
+			)
 		},
 	})
 
@@ -55,12 +69,12 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	return (
 		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
 			<Typography variant='h4' component='h3' gutterBottom>
-				Password Update
+				Security Update
 			</Typography>
 
 			<div className='flex flex-wrap justify-center gap-x-5'>
 				<Typography gutterBottom variant='h6' component='h4'>
-					Secure Your Account with a New Password
+					Set New Access Key
 				</Typography>
 
 				<TextField
@@ -141,10 +155,22 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 
 			<div className='flex justify-center gap-20 mt-4'>
 				<Button size='large' onClick={() => setIsDetailsVisible(false)}>
-					Return
+					Cancel
 				</Button>
-				<Button size='large' type='submit' disabled={updatePassword.status === 'pending'}>
-					{updatePassword.status === 'pending' ? 'Saving...' : 'Submit'}
+				<Button
+					size='large'
+					type='submit'
+					disabled={updatePassword.status === 'pending'}
+					aria-busy={updatePassword.status === 'pending'}
+					endIcon={updatePassword.status === 'pending' ? <CircularProgress size={20} /> : null}
+					sx={{
+						'&.Mui-disabled': {
+							opacity: 0.9,
+							backgroundColor: 'primary.main',
+							color: 'primary.contrastText',
+						},
+					}}>
+					{updatePassword.status === 'pending' ? 'Processing…' : 'Save'}
 				</Button>
 			</div>
 		</form>

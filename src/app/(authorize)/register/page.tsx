@@ -5,7 +5,6 @@ import { ToastContainer } from 'react-toastify'
 import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
 import Image from 'next/image'
-import LoginForm from '~/components/LoginForm'
 import { SessionProvider } from 'next-auth/react'
 import RegisterForm from '~/components/RegisterForm'
 
@@ -14,7 +13,7 @@ export default function Home() {
 		<SessionProvider>
 			<NavigationProvider>
 				<Navbar />
-				<ToastContainer autoClose={3000} draggablePercent={60} stacked hideProgressBar />
+				<ToastContainer className={'vault-toast'} autoClose={3000} draggablePercent={60} stacked hideProgressBar />
 				<main className='relative min-h-screen'>
 					<div className='absolute inset-0 -z-10 '>
 						<Image

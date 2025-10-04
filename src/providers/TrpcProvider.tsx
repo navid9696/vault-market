@@ -1,7 +1,7 @@
 'use client'
 import { ReactNode, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { httpLink, loggerLink } from '@trpc/client'
+import { httpLink } from '@trpc/client'
 import { trpc } from '~/server/client'
 
 export const TrpcProvider = ({ children }: { children: ReactNode }) => {

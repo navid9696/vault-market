@@ -7,7 +7,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	images: {
-		domains: ['static.wikia.nocookie.net'],
 		remotePatterns: [
 			{
 				protocol: 'https',
@@ -18,6 +17,12 @@ const nextConfig = {
 			{
 				protocol: 'https',
 				hostname: 'images.app.goo.gl',
+				port: '',
+				pathname: '/**',
+			},
+			{
+				protocol: 'https',
+				hostname: 'static.wikia.nocookie.net',
 				port: '',
 				pathname: '/**',
 			},

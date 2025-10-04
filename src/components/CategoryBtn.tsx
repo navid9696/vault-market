@@ -19,22 +19,30 @@ const CategoryBtn = ({ onClick, text, isActive, isSubCategory = false }: Categor
 		</Button>
 	) : (
 		<span className='relative z-20'>
-			<span className='border-b-2 border-b-border border-solid'>
-				<span
-					className={`mx-2 border-b-[3px] border-r-2 border-l-2 border-transparent ${
-						isActive && 'border-l-border border-r-border border-b-bg border-solid'
-					} `}>
-					<Button
-						disableRipple
-						onClick={onClick}
-						sx={{ margin: '0px -10px 19px', fontSize: '18px', fontWeight: 'bold' }}
-						className={` before:mr-2 before:w-3 before:h-[2px] after:ml-2 after:w-3 after:h-[2px] ${
-							isActive && 'before:bg-text after:bg-text text-text'
-						} `}
-						variant='text'>
-						{text}
-					</Button>
-				</span>
+			<span
+				className={` mx-2 border-b-[3px] border-r-2 border-l-2 border-transparent ${
+					isActive && 'border-l-border border-r-border border-b-bg border-solid'
+				} `}>
+				<Button
+					disableElevation
+					disableFocusRipple
+					disableRipple
+					onClick={onClick}
+					sx={{
+						margin: '0px -10px 19px',
+						fontSize: '18px',
+						fontWeight: 'bold',
+						'&:hover': {
+							backgroundColor: 'transparent',
+							boxShadow: 'none',
+						},
+					}}
+					className={`hover:text-primary before:mr-2 before:w-3 before:h-[2px] after:ml-2 after:w-3 after:h-[2px] ${
+						isActive && 'before:bg-text after:bg-text text-text'
+					} `}
+					variant='text'>
+					{text}
+				</Button>
 			</span>
 		</span>
 	)

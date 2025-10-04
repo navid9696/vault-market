@@ -112,7 +112,7 @@ const AdminUsersTable = () => {
 					))}
 				</TableBody>
 			</Table>
-			<Stack spacing={2} alignItems='center' className='mt-4'>
+			<Stack spacing={2} alignItems='center' className='mt-4 mb-4'>
 				<Pagination count={pageCount} page={page} onChange={(_, value) => setPage(value)} />
 			</Stack>
 		</TableContainer>
