@@ -1,4 +1,4 @@
-import { nullable, z } from 'zod'
+import { z } from 'zod'
 import { router, procedure } from '../trpc'
 import { PrismaClient } from '@prisma/client'
 import { TRPCError } from '@trpc/server'
@@ -27,7 +27,7 @@ export const capsOrderRouter = router({
 		.input(capsOrderInputSchema)
 		.output(capsOrderOutputSchema)
 		.mutation(async ({ input, ctx }) => {
-			const userId = ctx.session?.sub
+			const userId = ctx.session?.sub 
 			if (!userId) throw new Error('Not authenticated')
 
 			const order = await prisma.capsOrder.create({

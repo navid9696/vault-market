@@ -5,7 +5,6 @@ import { ToastContainer } from 'react-toastify'
 import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
 import Image from 'next/image'
-import LoginForm from '~/components/LoginForm'
 import { SessionProvider } from 'next-auth/react'
 import RegisterForm from '~/components/RegisterForm'
 

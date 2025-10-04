@@ -115,7 +115,6 @@ body.user {
 	.MuiBadge-badge {
 		background-color: var(--secondary);
 		font-weight: bold;
-		/* color: var(--text); */
 		color: black;
 		border: 1px solid var(--border);
 	}

@@ -3,8 +3,6 @@ import { Inter } from 'next/font/google'
 import '../globals.css'
 import AdminNavbar from '~/components/AdminNavbar'
 import { TrpcProvider } from '~/providers/TrpcProvider'
-import { CssBaseline, ThemeProvider } from '@mui/material'
-import adminTheme from '~/lib/adminTheme'
 import AdminThemeProvider from '~/providers/AdminThemeProvider'
 
 const inter = Inter({ subsets: ['latin'] })

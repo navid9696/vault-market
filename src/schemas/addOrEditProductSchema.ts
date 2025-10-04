@@ -5,7 +5,6 @@ export const productSchema = z.object({
 	price: z.coerce
 		.number()
 		.positive({ message: 'Price must be a positive number' })
-		// .min(50,{message:'Value cannot be lower than 50'})
 		.max(9999, { message: 'Value cannot be more than 9999' }),
 	available: z.coerce
 		.number()

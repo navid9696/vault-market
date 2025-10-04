@@ -3,7 +3,6 @@ import OrderCard from './OrderCard'
 import { Order } from '~/lib/types'
 import { trpc } from '~/server/client'
 import { CircularProgress } from '@mui/material'
-import { useNavigationHeight } from '~/context/NavbarHeightContext'
 
 const Orders = () => {
 	const { data, isLoading, error } = trpc.orders.getOrders.useQuery()

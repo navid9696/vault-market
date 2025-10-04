@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { trpc } from '~/server/client'
 import QuantitySelector from './QuantitySelector'
-import { Button, IconButton } from '@mui/material'
+import {  IconButton } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import Image from 'next/image'
 import { BiTrash } from 'react-icons/bi'

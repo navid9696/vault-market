@@ -4,8 +4,6 @@ import Navbar from '~/components/Navbar'
 import { ToastContainer } from 'react-toastify'
 import Footer from '~/components/Footer'
 import { NavigationProvider } from '~/context/NavbarHeightContext'
-import { ThemeProvider } from '@mui/material'
-import theme from '~/lib/theme'
 import { SessionProvider } from 'next-auth/react'
 import Favorites from '~/components/Favorites'
 
