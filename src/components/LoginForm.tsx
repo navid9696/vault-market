@@ -177,7 +177,7 @@ export default function LoginForm() {
 						</Button>
 						<p>OR</p>
 
-						<GoogleButton onClick={() => signIn('google')}>Sign in with Google</GoogleButton>
+						<GoogleButton onClick={() => signIn('google', { callbackUrl: '/' })}>Sign in with Google</GoogleButton>
 					</div>
 				</form>
 			</div>
