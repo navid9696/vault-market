@@ -46,24 +46,27 @@ const ProductList = ({ products, isLoading }: ProductListProps) => {
 
 	return (
 		<div className='w-full flex flex-wrap gap-4 justify-center'>
-			{products.slice(0, itemsToShow).map(product => (
-				<AdminProductCard
-					id={product.id}
-					key={product.id}
-					name={product.name}
-					price={product.price}
-					rating={product.rating}
-					available={product.available}
-					popularity={product.popularity}
-					discount={product.discount}
-					categoryId={product.categoryId}
-					subCategoryId={product.subCategoryId}
-					imgURL={product.imgURL}
-					description={product.description}
-					categoryName={product.categoryName}
-					subCategoryName={product.subCategoryName}
-				/>
-			))}
+			{products
+				.slice(Math.max(0, products.length - itemsToShow))
+				.reverse()
+				.map(product => (
+					<AdminProductCard
+						id={product.id}
+						key={product.id}
+						name={product.name}
+						price={product.price}
+						rating={product.rating}
+						available={product.available}
+						popularity={product.popularity}
+						discount={product.discount}
+						categoryId={product.categoryId}
+						subCategoryId={product.subCategoryId}
+						imgURL={product.imgURL}
+						description={product.description}
+						categoryName={product.categoryName}
+						subCategoryName={product.subCategoryName}
+					/>
+				))}
 			<div ref={loadMoreRef} className='h-2'></div>
 		</div>
 	)
