@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ☢️ Vault Market
 
-## Getting Started
+**Vault Market** is a full-featured Fallout-inspired e-commerce application.  
+It simulates a post-apocalyptic Vault-Tec shopping terminal, where users can register, log in, browse products, manage their cart, exchange bottle caps for USD, and place orders — all in a retro-futuristic style.  
+Admins can manage products, users, and monitor the marketplace with a separate dashboard.  
 
-First, run the development server:
+⚠️ **Important Note:**  
+Vault Market is a **fictional, non-commercial project**.  
+- No real money is involved — you don’t purchase items with actual currency.  
+- Users simply enter the amount of fictional currency they want (USD or Bottle Caps).  
+- All products, currency, and transactions are **purely imaginary**.  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This project is meant as an **artistic and technical showcase** of design, UI/UX, and development skills — not a real online store.  
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Features
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### 🔐 Authentication & Authorization
+- Secure login & registration with **NextAuth**
+- Credential login with email & password
+- OAuth with **Google**
+- Role-based access:
+  - **Citizen (User Panel)** – shopping experience
+  - **Admin (Admin Panel)** – management tools
 
-## Learn More
+### 👤 User Panel
+- Register & log in with Fallout-themed terminal feedback  
+- Browse products with categories & subcategories  
+- Add to cart, view total, and checkout  
+- Manage profile: update nickname, email, avatar, password, or delete account  
+- View order history and favorites  
+- Exchange system: convert **USD ↔ Bottle Caps** at a fixed rate (fictional, user-input only)  
 
-To learn more about Next.js, take a look at the following resources:
+### 🛠️ Admin Panel
+- Admin-only access via `admin@admin.admin`  
+- Dashboard with quick overview  
+- Manage products: create, edit, categories, discounts, availability  
+- Manage users  
+- Theme toggle: **Dark / Light**, saved in localStorage  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🎨 UI/UX
+- Built with **Next.js 13**, **React**, and **TypeScript**  
+- Styled using **MUI v5** + **TailwindCSS**  
+- **react-hook-form + zod** for validation  
+- **react-toastify** for retro Fallout-style notifications  
+- Fully responsive & mobile-friendly design  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🛠️ Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Framework:** Next.js 13 (App Router)  
+- **Language:** TypeScript  
+- **UI:** React, MUI v5, TailwindCSS  
+- **API:** tRPC  
+- **Auth:** NextAuth.js (credentials + Google OAuth)  
+- **Database:** PostgreSQL  
+- **ORM:** Prisma  
+- **Validation:** zod + react-hook-form  
+- **Notifications:** react-toastify  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+---
+
+## 🔑 Admin Access
+
+By default, any user who logs in with:  
+Email: admin@admin.admin  
+Password: Admin123!  
+will be recognized as **Admin** and gain access to `/admin/dashboard`.
+
+---
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!  
+Feel free to open a Pull Request or Issue.
+
+---
+
+## 📜 License
+
+Distributed under the **MIT License**.
+
+---
+
+### ☢️ Vault-Tec Corporation ©  
+*"Prepare for the future, citizen."*  
