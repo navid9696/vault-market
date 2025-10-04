@@ -3,6 +3,9 @@ import { Inter } from 'next/font/google'
 import '../globals.css'
 import AdminNavbar from '~/components/AdminNavbar'
 import { TrpcProvider } from '~/providers/TrpcProvider'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import adminTheme from '~/lib/adminTheme'
+import AdminThemeProvider from '~/providers/AdminThemeProvider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,14 +17,16 @@ export const metadata: Metadata = {
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
 	{
 		return (
-			<html className='scrollbar-hide scroll-smooth' lang='en'>
-				<body className={`admin ${inter.className} bg-white`}>
-					<TrpcProvider>
-						<div className='flex flex-col'>
-							<AdminNavbar />
-							{children}
-						</div>
-					</TrpcProvider>
+			<html className='scrollbar-hide scroll-smooth ' lang='en'>
+				<body className={`admin ${inter.className} `}>
+					<AdminThemeProvider>
+						<TrpcProvider>
+							<div className='flex flex-col'>
+								<AdminNavbar />
+								{children}
+							</div>
+						</TrpcProvider>
+					</AdminThemeProvider>
 				</body>
 			</html>
 		)
