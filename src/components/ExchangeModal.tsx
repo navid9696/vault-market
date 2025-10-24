@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 
 interface ExchangeModalProps {
 	onClose: () => void
+	onSuccess?: () => void
 }
 
 const rate = 0.05
@@ -75,9 +76,9 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 				),
 				type: 'success',
 				isLoading: false,
-				autoClose: 3000,
+				autoClose: 2000,
 			})
-			await sleep(3000)
+			await sleep(2000)
 			await utils.exchange.getCapsBalance.invalidate()
 			setCapsAmount('')
 			setUsdValue('')
@@ -94,7 +95,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 				),
 				type: 'error',
 				isLoading: false,
-				autoClose: 3000,
+				autoClose: 2000,
 			})
 		}
 	}
