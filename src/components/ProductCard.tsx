@@ -97,12 +97,19 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						<h4
 							className={`${
 								discount > 0 && 'pl-6 rounded-tr-lg'
-							} w-full h-[36px] pl-0 flex items-center justify-center text-sm tracking-tighter rounded-t-lg bg-surface text-text font-semibold `} style={{ wordSpacing: '-3px', lineHeight: 1.20 }}>
+							} w-full h-[36px] pl-0 flex items-center justify-center text-sm tracking-tighter rounded-t-lg bg-surface text-text font-semibold `}
+							style={{ wordSpacing: '-3px', lineHeight: 1.2 }}>
 							{name}
 						</h4>
 						<div className='h-full w-full p-1'>
 							<div className='relative h-full w-full '>
-								<Image className=' object-contain' src={imgURL} fill alt='Product Image' />
+								<Image
+									className=' object-contain'
+									src={imgURL}
+									fill
+									sizes='(max-width: 768px) 45vw, (max-width: 1200px) 25vw, 200px'
+									alt='Product Image'
+								/>
 							</div>
 						</div>
 

@@ -7,7 +7,7 @@ interface FooterLinkProps extends PropsWithChildren {
 
 const FooterLink = ({ href, children }: FooterLinkProps) => {
 	return (
-		<Link className='p-1 hover:text-focus transition-colors' href={href}>
+		<Link target='_blank' rel='noopener noreferrer' className='p-1 hover:text-focus transition-colors' href={href}>
 			{children}
 		</Link>
 	)

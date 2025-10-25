@@ -4,6 +4,7 @@ import FooterLink from './FooterLink'
 import { Media, MediaContextProvider } from '~/context/breakpointsContext'
 import { FaXTwitter } from 'react-icons/fa6'
 import React from 'react'
+import Link from 'next/link'
 
 const footerLinks = [
 	{ href: '/', icon: <FaFacebookF /> },
@@ -61,9 +62,14 @@ const Footer = () => {
 					</div>
 				</div>
 
-				<div className='flex justify-center p-2 text-sm bg-surface text-text'>
-					<small className='text-center'>
+				<div className='flex justify-center p-2 text-sm bg-surface text-text flex-col items-center text-center'>
+					<small>
 						&copy; {new Date().getFullYear()} Vault Market. All rights reserved. Designed for survivors, by survivors.
+					</small>
+					<small className='mt-1'>
+						<FooterLink href='https://res.cloudinary.com/dtsujxdxu/image/upload/v1761410251/b53a60a7-b61f-4656-8735-391d300674d1.png'>
+							Includes content © Bethesda Softworks / ZeniMax Media Inc. Used with acknowledgment.
+						</FooterLink>
 					</small>
 				</div>
 			</footer>

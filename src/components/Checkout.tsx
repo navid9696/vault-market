@@ -33,7 +33,14 @@ const Checkout = () => {
 	const [currentAddress, setCurrentAddress] = useState<AddressFormInput | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
 
-	const { handleSubmit, reset, getValues, watch, register } = useForm<AddressFormInput>({
+	const {
+		handleSubmit,
+		reset,
+		getValues,
+		watch,
+		register,
+		formState: { errors },
+	} = useForm<AddressFormInput>({
 		resolver: zodResolver(addressSchema),
 		defaultValues: { address: '', addressOptional: '', city: '', state: '', zipCode: '' },
 	})
@@ -140,7 +147,7 @@ const Checkout = () => {
 			)
 
 			refetchCart()
-			
+
 			setTimeout(() => {
 				router.push('/')
 			}, 5100)
@@ -170,11 +177,6 @@ const Checkout = () => {
 		}
 
 		submitOrder(data)
-	}
-
-	const handleCheckoutSubmit = (e: React.FormEvent) => {
-		e.preventDefault()
-		handleSubmit(onSubmit)()
 	}
 
 	const handleModalConfirm = async () => {
@@ -219,7 +221,7 @@ const Checkout = () => {
 
 	return (
 		<>
-			<form style={{ marginTop: `${navHeight}px` }} className='p-4 bg-bg text-text' onSubmit={handleCheckoutSubmit}>
+			<form style={{ marginTop: `${navHeight}px` }} className='p-4 bg-bg text-text' onSubmit={handleSubmit(onSubmit)}>
 				<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 				<div className='flex flex-col md:flex-row gap-4'>
 					<div className='flex-1 max-h-96 overflow-y-auto'>
@@ -287,7 +289,7 @@ const Checkout = () => {
 				<div className='flex flex-col sm:flex-row'>
 					<div className='sm:w-1/2 p-4'>
 						<h2 className='text-2xl font-bold mb-2'>Delivery Address</h2>
-						<AddressForm isCheckout onSuccess={data => setCurrentAddress(data)} register={register} />
+						<AddressForm isCheckout onSuccess={data => setCurrentAddress(data)} register={register} errors={errors} />
 					</div>
 					<div className='sm:w-1/2 p-4 flex flex-col'>
 						<h2 className='text-2xl font-bold mb-2'>Summary</h2>
