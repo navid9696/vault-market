@@ -80,9 +80,9 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 					showControls && `sm:flex-row flex-col`
 				} items-center justify-between gap-4`}>
 				<div
-					onClick={handleOpen}
+					onClick={() => showControls && handleOpen()}
 					className={`w-full cursor-pointer ${
-						!showControls && 'flex flex-col sm:flex-row items-center justify-start gap-x-4'
+						!showControls && 'flex flex-col sm:flex-row items-center justify-start cursor-default gap-x-4'
 					} `}>
 					<div className='relative flex justify-center items-center'>
 						<Image className='object-contain' src={product.imgURL} width={75} height={200} alt='Product Image' />
