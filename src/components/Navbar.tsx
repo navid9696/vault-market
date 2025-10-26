@@ -163,10 +163,12 @@ const Navbar = () => {
 							</div>
 							<div
 								onClick={() => {
-									setContentId('exchange')
-									handleModalOpen()
+									if (session) {
+										setContentId('exchange')
+										handleModalOpen()
+									}
 								}}
-								className='ml-7 flex items-center cursor-pointer'>
+								className={`ml-7 flex items-center ${session ? 'cursor-pointer' : 'cursor-default'}`}>
 								<GiBottleCap />
 								<span className='ml-2 text-text font-extrabold text-lg'>{totalCaps}</span>
 							</div>

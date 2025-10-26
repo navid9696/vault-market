@@ -77,7 +77,7 @@ const CartModal = () => {
 			</div>
 			<Divider className='mt-2' />
 			<div className='pt-4 flex items-center justify-between'>
-				<p className='mr-4'>Total: {totalAmount} Caps</p>
+				<p className='pt-1 mr-4 text-lg'>Total: {totalAmount} Caps</p>
 
 				{status !== 'authenticated' ? (
 					<Link href='/login'>

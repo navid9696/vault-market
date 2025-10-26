@@ -19,12 +19,22 @@ const CapsHint = ({ need }: { need: number }) => {
 
 	return (
 		<>
-			<div className='mt-2 flex items-center justify-between gap-3'>
+			<div className='mt-2 flex items-center justify-between gap-'>
 				{deficit !== 0 && (
 					<>
-						<Alert severity='warning' className='flex-1'>
+						<Alert
+							severity='warning'
+							icon={false}
+							sx={{
+								background: 'transparent',
+								boxShadow: 'none',
+								border: 'none',
+								color: 'var(--secondary)',
+							}}
+							className='flex-1'>
 							Need {deficit} more Caps
 						</Alert>
+
 						<Button variant='contained' onClick={() => setModalOpen(true)}>
 							Get Caps
 						</Button>
