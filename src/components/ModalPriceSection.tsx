@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { trpc } from '~/server/client'
 import { toast } from 'react-toastify'
 import useStore from '~/store/useStore'
+import { ensureGuestId } from '~/lib/guestId'
 
 const PriceSection = () => {
 	const utils = trpc.useUtils()
@@ -17,17 +18,23 @@ const PriceSection = () => {
 	if (!product) return null
 
 	const addCartItemMutation = trpc.cart.addCartItem.useMutation({
-		onSuccess: () => {
+		onSuccess: async (_, vars) => {
 			toast.success(
 				<div>
 					☢️ ACQUISITION QUEUED
-					<br />+ {selectedQuantity} × {product.name}
+					<br />+ {selectedQuantity} x {product.name}
 					<br />
 					STATUS: ACCEPTED
 				</div>
 			)
 			setProduct({ ...product, available: product.available - selectedQuantity })
-			utils.cart.getTotalItems.invalidate()
+			if (vars.gid) {
+				await Promise.all([
+					utils.cart.getTotalItems.invalidate({ gid: vars.gid }),
+					utils.cart.getCartItems.invalidate({ gid: vars.gid }),
+				])
+			}
+			await Promise.all([utils.cart.getTotalItems.invalidate(), utils.cart.getCartItems.invalidate()])
 		},
 		onError: () => {
 			toast.error(
@@ -41,9 +48,11 @@ const PriceSection = () => {
 	})
 
 	const handleAddToCart = () => {
+		const gid = ensureGuestId()
 		addCartItemMutation.mutate({
 			productId: product.id,
 			quantity: selectedQuantity,
+			gid,
 		})
 	}
 
@@ -73,7 +82,6 @@ const PriceSection = () => {
 				/>
 				<Typography className='text-xs'>on stock {product.available}</Typography>
 			</div>
-
 			<Box className='flex flex-col gap-4 items-center '>
 				<Typography className='text-xs'>30-day returns</Typography>
 				<Typography className='text-xs'>Manufacturer’s warranty</Typography>
@@ -82,7 +90,6 @@ const PriceSection = () => {
 					<Typography>Secure transaction</Typography>
 				</Box>
 			</Box>
-
 			<Button
 				className='sm:text-2xl text-base text-text mt-4'
 				variant='contained'

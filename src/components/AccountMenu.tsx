@@ -59,7 +59,7 @@ export default function AccountMenu() {
 		if (session) {
 			setAnchorEl(e.currentTarget)
 		} else {
-			router.push('/register')
+			router.push('/login')
 		}
 	}
 
@@ -90,7 +90,7 @@ export default function AccountMenu() {
 	return (
 		<>
 			<Box sx={{ display: 'flex', alignItems: 'center,', textAlign: 'center' }}>
-				<Tooltip title={session ? 'Account settings' : 'Register'}>
+				<Tooltip title={session ? 'Account settings' : 'Login'}>
 					<IconButton
 						onClick={handleClick}
 						size='small'

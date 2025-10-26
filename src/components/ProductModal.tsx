@@ -115,13 +115,14 @@ const ProductModal = () => {
 										className='hover:scale-110 object-contain transition-transform'
 										src={product.imgURL}
 										fill
+										sizes='(max-width: 768px) 45vw, (max-width: 1200px) 25vw, 200px'
 										alt='Product Image'
 									/>
 								</div>
 							</div>
 							<p
 								className='p-2 rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary md:text-base text-sm text-bg font-semibold tracking-tight text-left'
-								style={{ wordSpacing: '-3px', lineHeight: 1.20 }}>
+								style={{ wordSpacing: '-3px', lineHeight: 1.2 }}>
 								{product.description}
 							</p>
 						</div>

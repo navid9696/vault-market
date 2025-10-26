@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from 'react'
 import { trpc } from '~/server/client'
 import QuantitySelector from './QuantitySelector'
-import {  IconButton } from '@mui/material'
+import { IconButton } from '@mui/material'
 import { ProductCardProps } from './ProductCard'
 import Image from 'next/image'
 import { BiTrash } from 'react-icons/bi'
 import TransitionsModal from './TransitionModal'
 import ProductModal from './ProductModal'
 import useStore from '~/store/useStore'
+import { ensureGuestId } from '~/lib/guestId'
 
 interface CartItemProps {
 	product: ProductCardProps
@@ -20,6 +21,7 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 	const [modalOpen, setModalOpen] = useState(false)
 	const setProduct = useStore(state => state.setProduct)
 	const utils = trpc.useUtils()
+	const [gid] = useState(() => ensureGuestId())
 
 	const handleOpen = useCallback(async () => {
 		const updatedProduct = await utils.product.getById.fetch({ id: product.id })
@@ -33,27 +35,39 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 	}, [utils.favorite])
 
 	const updateMutation = trpc.cart.updateCartItem.useMutation({
-		onSuccess: () => {
+		onSuccess: async (_, vars) => {
 			refetchCart()
-			utils.cart.getTotalItems.invalidate()
+			if (vars?.gid) {
+				await Promise.all([
+					utils.cart.getTotalItems.invalidate({ gid: vars.gid }),
+					utils.cart.getCartItems.invalidate({ gid: vars.gid }),
+				])
+			}
+			await Promise.all([utils.cart.getTotalItems.invalidate(), utils.cart.getCartItems.invalidate()])
 		},
 	})
 
 	const removeMutation = trpc.cart.removeCartItem.useMutation({
-		onSuccess: () => {
+		onSuccess: async (_, vars) => {
 			refetchCart()
-			utils.cart.getTotalItems.invalidate()
+			if (vars?.gid) {
+				await Promise.all([
+					utils.cart.getTotalItems.invalidate({ gid: vars.gid }),
+					utils.cart.getCartItems.invalidate({ gid: vars.gid }),
+				])
+			}
+			await Promise.all([utils.cart.getTotalItems.invalidate(), utils.cart.getCartItems.invalidate()])
 		},
 	})
 
 	const handleQuantityChange = (newQuantity: number) => {
 		const maxAvailable = product.available + quantity
 		if (newQuantity < 1 || newQuantity > maxAvailable) return
-		updateMutation.mutate({ productId: product.id, quantity: newQuantity })
+		updateMutation.mutate({ productId: product.id, quantity: newQuantity, gid })
 	}
 
 	const handleRemove = () => {
-		removeMutation.mutate({ productId: product.id })
+		removeMutation.mutate({ productId: product.id, gid })
 	}
 
 	const displayPrice =
@@ -66,9 +80,9 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 					showControls && `sm:flex-row flex-col`
 				} items-center justify-between gap-4`}>
 				<div
-					onClick={handleOpen}
+					onClick={() => showControls && handleOpen()}
 					className={`w-full cursor-pointer ${
-						!showControls && 'flex flex-col sm:flex-row items-center justify-start gap-x-4'
+						!showControls && 'flex flex-col sm:flex-row items-center justify-start cursor-default gap-x-4'
 					} `}>
 					<div className='relative flex justify-center items-center'>
 						<Image className='object-contain' src={product.imgURL} width={75} height={200} alt='Product Image' />

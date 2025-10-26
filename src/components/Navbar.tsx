@@ -7,11 +7,13 @@ import { useNavigationHeight } from '~/context/NavbarHeightContext'
 import { trpc } from '~/server/client'
 import { useSession } from 'next-auth/react'
 import TransitionsModal from './TransitionModal'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import CartModal from './CartModal'
 import { useTheme as useNextTheme } from 'next-themes'
 import { Switch } from '@mui/material'
 import { GiBottleCap } from 'react-icons/gi'
+import { clearGuestId, ensureGuestId, getGuestId } from '~/lib/guestId'
+import ExchangeModal from './ExchangeModal'
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 	width: 62,
@@ -72,10 +74,28 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const Navbar = () => {
 	const { theme, setTheme } = useNextTheme()
 	const { navRef } = useNavigationHeight()
-	const { data: session } = useSession()
+	const { data: session, status } = useSession()
+	const [modalOpen, setModalOpen] = useState(false)
+	const utils = trpc.useUtils()
+	const calledRef = useRef(false)
+	const [gid, setGid] = useState('')
+	const [contentId, setContentId] = useState<string | null>(null)
 	const { data: caps } = trpc.exchange.getCapsBalance.useQuery(undefined, { enabled: !!session })
 	const { data: cart } = trpc.cart.getTotalItems.useQuery(undefined, { enabled: !!session })
-	const [modalOpen, setModalOpen] = useState(false)
+
+	useEffect(() => setGid(ensureGuestId()), [])
+
+	const merge = trpc.cart.mergeGuestCart.useMutation({
+		onSuccess: async () => {
+			clearGuestId()
+			await utils.cart.getCartItems.invalidate()
+			await utils.cart.getTotalItems.invalidate()
+		},
+		onSettled: () => {
+			calledRef.current = true
+		},
+	})
+
 	const handleModalClose = useCallback(() => {
 		setModalOpen(false)
 	}, [setModalOpen])
@@ -84,13 +104,45 @@ const Navbar = () => {
 		setModalOpen(true)
 	}, [setModalOpen])
 
+	const cartUser = trpc.cart.getTotalItems.useQuery(undefined, {
+		enabled: status === 'authenticated',
+		refetchOnWindowFocus: false,
+	})
+
+	const cartGuest = trpc.cart.getTotalItems.useQuery(
+		{ gid },
+		{
+			enabled: status !== 'authenticated' && !!gid,
+			refetchOnWindowFocus: false,
+		}
+	)
+
+	const cartCount = cart?.total ?? (status !== 'authenticated' ? cartGuest.data?.total ?? 0 : cartUser.data?.total ?? 0)
 	const totalCaps = caps?.balance ?? 0
-	const cartCount = cart?.total
+
+	const renderModalContent = () => {
+		switch (contentId) {
+			case 'exchange':
+				return <ExchangeModal onClose={handleModalClose} />
+			case 'cart':
+				return <CartModal />
+			default:
+				return null
+		}
+	}
 
 	const [mounted, setMounted] = useState(false)
 	useEffect(() => {
 		setMounted(true)
 	}, [])
+
+	useEffect(() => {
+		if (status === 'authenticated' && !calledRef.current && !merge.isPending) {
+			const gid = getGuestId()
+			if (gid) merge.mutate({ gid })
+			else calledRef.current = true
+		}
+	}, [status, merge.isPending, merge])
 
 	return (
 		<>
@@ -109,7 +161,14 @@ const Navbar = () => {
 									/>
 								</Link>
 							</div>
-							<div className='ml-7 flex items-center'>
+							<div
+								onClick={() => {
+									if (session) {
+										setContentId('exchange')
+										handleModalOpen()
+									}
+								}}
+								className={`ml-7 flex items-center ${session ? 'cursor-pointer' : 'cursor-default'}`}>
 								<GiBottleCap />
 								<span className='ml-2 text-text font-extrabold text-lg'>{totalCaps}</span>
 							</div>
@@ -121,7 +180,12 @@ const Navbar = () => {
 									onChange={(_, checked) => setTheme(checked ? 'dark' : 'light')}
 								/>
 							)}
-							<div className='p-2 cursor-pointer' onClick={handleModalOpen}>
+							<div
+								className='p-2 cursor-pointer'
+								onClick={() => {
+									setContentId('cart')
+									handleModalOpen()
+								}}>
 								<Badge badgeContent={cartCount} color='warning' max={99}>
 									<ShoppingCart className=' text-text' />
 								</Badge>
@@ -135,7 +199,7 @@ const Navbar = () => {
 				<div className='absolute hidden lg:block inset-0 bg-border w-[900px] h-2 top-11 left-1/2 -translate-x-1/2 rounded-full -z-10'></div>
 			</nav>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
-				<CartModal />
+				{renderModalContent()}
 			</TransitionsModal>
 		</>
 	)
