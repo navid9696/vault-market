@@ -89,7 +89,7 @@ const AdminUsersTable = () => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{users.map(u => (
+					{users.map((u: typeof users[number]) => (
 						<TableRow key={u.id}>
 							<TableCell>{u.id}</TableCell>
 							<TableCell>{u.email}</TableCell>

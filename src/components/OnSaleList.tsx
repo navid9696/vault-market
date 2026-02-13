@@ -6,7 +6,7 @@ import { CircularProgress } from '@mui/material'
 const DiscountList = () => {
 	const { data: products, isLoading, isError, error } = trpc.product.getProducts.useQuery({})
 
-	const discounted = products?.filter(p => p.available > 0 && p.discount > 0) ?? []
+	const discounted = products?.filter((p: { available: number; discount: number }) => p.available > 0 && p.discount > 0) ?? []
 
 	const wrapperClass = 'h-full bg-gradient-to-r from-bg via-surface to-bg border-2 border-border shadow-inner-shadow'
 
@@ -19,8 +19,8 @@ const DiscountList = () => {
 					{!isLoading && !isError && discounted.length === 0 && <p className='text-text'>No discounted products</p>}
 				</div>
 			) : (
-				<Marquee className={wrapperClass} play pauseOnHover  delay={1}>
-					{discounted.map(product => (
+				<Marquee className={wrapperClass} play pauseOnHover delay={1}>
+					{discounted.map((product: (typeof discounted)[number]) => (
 						<ProductCard
 							key={product.id}
 							id={product.id}

@@ -46,15 +46,17 @@ const ProductModal = () => {
 
 	useEffect(() => {
 		if (favorites && product) {
-			setIsFavorite(favorites.some(fav => fav.product.id === product.id))
+			setIsFavorite(favorites.some((fav: (typeof favorites)[number]) => fav.product.id === product.id))
 		}
 	}, [favorites, product])
 
 	const { data: comments = [] } = trpc.product.getComments.useQuery(
 		{ productId: product?.id ?? '' },
-		{ enabled: !!product }
+		{ enabled: !!product },
 	)
-	const avgRating = comments.length ? comments.reduce((sum, c) => sum + c.rating, 0) / comments.length : 0
+	const avgRating = comments.length
+		? comments.reduce((sum: number, c: (typeof comments)[number]) => sum + c.rating, 0) / comments.length
+		: 0
 
 	if (!product) return null
 
