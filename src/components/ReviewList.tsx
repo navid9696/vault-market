@@ -26,7 +26,7 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 
 	const { data: comments = [], isLoading } = trpc.product.getComments.useQuery(
 		{ productId },
-		{ enabled: Boolean(productId) }
+		{ enabled: Boolean(productId) },
 	)
 
 	if (showCommentForm) {
@@ -38,7 +38,11 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 			<div className='flex flex-col gap-4'>
 				<div className='flex items-center justify-between gap-4'>
 					<h3 className='w-full text-left font-semibold md:text-lg text-sm'>REVIEWS</h3>
-					<Button onClick={handleAddReview} size='small' className='min-w-36 text-base text-text' endIcon={<AddReview />}>
+					<Button
+						onClick={handleAddReview}
+						size='small'
+						className='min-w-36 text-base text-text'
+						endIcon={<AddReview />}>
 						Add Review
 					</Button>
 				</div>
@@ -56,7 +60,7 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 						</Typography>
 					) : (
 						<div className='flex flex-col gap-4'>
-							{comments.map(c => (
+							{comments.map((c: (typeof comments)[number]) => (
 								<ListItem key={c.id} component='div' disablePadding className='px-2 w-full'>
 									<Review
 										username={c.authorName}

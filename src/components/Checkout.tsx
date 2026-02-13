@@ -75,7 +75,7 @@ const Checkout = () => {
 	}, [addressData, reset])
 
 	const totalProductsPrice =
-		cartData?.reduce((sum, item) => {
+		cartData?.reduce((sum: number, item: (typeof cartData)[number]) => {
 			const price =
 				item.product.discount > 0
 					? Math.round(item.product.price * (1 - item.product.discount))
@@ -101,7 +101,7 @@ const Checkout = () => {
 
 	const submitOrder = async (address: AddressFormInput, opts?: { addressUpdated?: boolean }) => {
 		const orderItems =
-			cartData?.map(item => ({
+			cartData?.map((item: (typeof cartData)[number]) => ({
 				productId: item.product.id,
 				name: item.product.name,
 				price:
@@ -143,7 +143,7 @@ const Checkout = () => {
 					<br />
 					STATUS: CONFIRMED
 				</div>,
-				{ autoClose: 4000 }
+				{ autoClose: 4000 },
 			)
 
 			refetchCart()
@@ -159,7 +159,7 @@ const Checkout = () => {
 					<br />
 					{error.message || 'PLEASE TRY AGAIN'}
 				</div>,
-				{ autoClose: 4000 }
+				{ autoClose: 4000 },
 			)
 		}
 	}
@@ -193,7 +193,7 @@ const Checkout = () => {
 					<br />
 					PLEASE TRY AGAIN
 				</div>,
-				{ autoClose: 3500 }
+				{ autoClose: 3500 },
 			)
 		}
 	}
@@ -225,7 +225,7 @@ const Checkout = () => {
 				<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 				<div className='flex flex-col md:flex-row gap-4'>
 					<div className='flex-1 max-h-96 overflow-y-auto'>
-						{cartData.map(item => (
+						{cartData.map((item: (typeof cartData)[number]) => (
 							<CartItem
 								key={item.id}
 								product={item.product}

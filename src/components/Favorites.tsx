@@ -7,7 +7,7 @@ import { CircularProgress } from '@mui/material'
 
 const FavoritesList = () => {
 	const { data: favorites, isLoading, error } = trpc.favorite.getFavorites.useQuery()
-	const products = favorites?.map(fav => fav.product) ?? []
+	const products = favorites?.map((fav: any) => fav.product) ?? []
 
 	return (
 		<div className='h-screen flex flex-col'>
@@ -30,8 +30,8 @@ const FavoritesList = () => {
 
 				<div className='flex-1 overflow-y-auto min-h-0'>
 					<div className='h-full w-full flex flex-wrap gap-x-4 gap-y-2 justify-center items-start'>
-						{products.map(product => (
-							<ProductCard key={product.id} {...(product as ProductCardProps)} />
+						{products.map((product: ProductCardProps) => (
+							<ProductCard key={product.id} {...product} />
 						))}
 					</div>
 				</div>

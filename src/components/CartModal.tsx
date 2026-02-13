@@ -13,11 +13,11 @@ const CartModal = () => {
 	useEffect(() => setGid(ensureGuestId()), [])
 	const { data, isLoading, error, refetch } = trpc.cart.getCartItems.useQuery(
 		{ gid },
-		{ enabled: !!gid, retry: f => f < 2, refetchOnWindowFocus: false }
+		{ enabled: !!gid, retry: f => f < 2, refetchOnWindowFocus: false },
 	)
 
 	const { data: caps } = trpc.exchange.getCapsBalance.useQuery(undefined, { enabled: status === 'authenticated' })
-	const have = status === 'authenticated' ? caps?.balance ?? 0 : 0
+	const have = status === 'authenticated' ? (caps?.balance ?? 0) : 0
 
 	const utils = trpc.useUtils()
 	const refetchCart = useCallback(async () => {
@@ -58,7 +58,7 @@ const CartModal = () => {
 
 	if (!data || data.length === 0) return <div>No items in cart</div>
 
-	const totalAmount = data.reduce((sum, item) => {
+	const totalAmount = data.reduce((sum: number, item: (typeof data)[number]) => {
 		const price =
 			item.product.discount > 0
 				? Math.round(item.product.price * (1 - item.product.discount))
@@ -71,7 +71,7 @@ const CartModal = () => {
 	return (
 		<div className='p-2'>
 			<div className='max-h-96 overflow-y-auto'>
-				{data.map(item => (
+				{data.map((item: (typeof data)[number]) => (
 					<CartItem key={item.id} product={item.product} quantity={item.quantity} refetchCart={refetchCart} />
 				))}
 			</div>

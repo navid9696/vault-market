@@ -62,7 +62,7 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 
 	const filteredProducts = useMemo(() => {
 		return (
-			products?.filter(product => {
+			products?.filter((product: ProductCardProps) => {
 				const matchesPriceRange =
 					effectivePrice(product.price, product.discount) >= state.price[0] &&
 					effectivePrice(product.price, product.discount) <= state.price[1]
@@ -113,7 +113,7 @@ export default function Filters({ setFilteredProducts, searchTerm }: FiltersProp
 				dispatch({ type: 'SET_PRICE_FILTER', payload: [state.price[0], newMax] })
 			}
 		},
-		[state.price]
+		[state.price],
 	)
 
 	return (
