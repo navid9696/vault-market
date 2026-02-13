@@ -1,5 +1,7 @@
 {
 	"WillLuke.nextjs.addTypesOnSave": true,
 	"WillLuke.nextjs.hasPrompted": true,
-	"cSpell.words": ["vertibird"]
+	"cSpell.words": ["vertibird"],
+	"prisma.pinToPrisma6": true,
+	"prismaERDPreviewer.preferredTheme": "dark"
 }

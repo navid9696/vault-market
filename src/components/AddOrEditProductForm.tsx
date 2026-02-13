@@ -29,13 +29,11 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 	const addMutation = trpc.product.addProduct.useMutation({
 		onSuccess() {
 			utils.product.getProducts.invalidate()
-			
 		},
 	})
 	const editMutation = trpc.product.editProduct.useMutation({
 		onSuccess() {
 			utils.product.getProducts.invalidate()
-			
 		},
 	})
 
@@ -77,18 +75,62 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 	const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0]
 		if (!file) return
+
+		if (!file.type.startsWith('image/')) {
+			toast.error('Unsupported file type. Please select an image.')
+			e.target.value = ''
+			return
+		}
+
+		const MAX_SIZE = 8 * 1024 * 1024
+		if (file.size > MAX_SIZE) {
+			toast.error('File is too large. Maximum size is 8MB.')
+			e.target.value = ''
+			return
+		}
+
 		const formData = new FormData()
 		formData.append('file', file)
-		formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!)
+
+		const toastId = toast.loading('Uploading image...')
+
 		setUploading(true)
-		const res = await fetch('/api/uploadProductImg', { method: 'POST', body: formData })
-		const data = await res.json()
-		setUploading(false)
-		if (data.secure_url) {
-			setValue('imgURL', data.secure_url)
-			setPreview(data.secure_url)
-		} else {
-			toast.error('Upload failed')
+		try {
+			const res = await fetch('/api/uploadProductImg', {
+				method: 'POST',
+				body: formData,
+			})
+
+			if (!res.ok) {
+				const errData = await res.json().catch(() => null)
+				throw new Error(errData?.error ?? `Upload failed (${res.status})`)
+			}
+
+			const data = await res.json()
+
+			if (typeof data?.secure_url === 'string') {
+				setValue('imgURL', data.secure_url, { shouldValidate: true, shouldDirty: true })
+				setPreview(data.secure_url)
+
+				toast.update(toastId, {
+					render: 'Upload completed.',
+					type: 'success',
+					isLoading: false,
+					autoClose: 1500,
+				})
+			} else {
+				throw new Error('Upload failed. No URL returned.')
+			}
+		} catch (err: any) {
+			toast.update(toastId, {
+				render: typeof err?.message === 'string' ? err.message : 'Upload failed.',
+				type: 'error',
+				isLoading: false,
+				autoClose: 3000,
+			})
+		} finally {
+			setUploading(false)
+			e.target.value = ''
 		}
 	}
 
@@ -111,14 +153,14 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 					success: 'Updated!',
 					error: 'Update failed',
 				})
-				onSuccess?.() 
+				onSuccess?.()
 			} else {
 				await toast.promise(addMutation.mutateAsync(payload), {
 					pending: 'Adding…',
 					success: 'Added!',
 					error: 'Add failed',
 				})
-				onSuccess?.() 
+				onSuccess?.()
 			}
 
 			reset()
@@ -244,7 +286,7 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 						error={!!errors.description}
 						helperText={errors.description ? errors.description.message : ' '}
 					/>
-					<Button type='submit' size='large' variant='contained' color='primary'>
+					<Button type='submit' disabled={uploading} size='large' variant='contained' color='primary'>
 						{product ? 'Update Product' : 'Add Product'}
 					</Button>
 				</form>
@@ -365,7 +407,7 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 						error={!!errors.description}
 						helperText={errors.description ? errors.description.message : ' '}
 					/>
-					<Button type='submit' size='small' variant='contained' color='primary'>
+					<Button type='submit' disabled={uploading} size='small' variant='contained' color='primary'>
 						{product ? 'Update Product' : 'Add Product'}
 					</Button>
 				</form>

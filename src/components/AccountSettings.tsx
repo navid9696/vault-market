@@ -65,6 +65,29 @@ const AccountSettings = () => {
 		async (e: ChangeEvent<HTMLInputElement>) => {
 			const file = e.target.files?.[0]
 			if (!file) return
+			if (!file.type.startsWith('image/')) {
+				toast.error(
+					<>
+						⚠️ UNSUPPORTED DATA TYPE
+						<br />
+						ACCEPTED FORMAT: IMAGE FILES ONLY
+					</>,
+				)
+				e.target.value = ''
+				return
+			}
+
+			if (file.size > 5 * 1024 * 1024) {
+				toast.error(
+					<>
+						⚠️ PAYLOAD LIMIT EXCEEDED
+						<br />
+						MAXIMUM TRANSMISSION SIZE: 5MB
+					</>,
+				)
+				e.target.value = ''
+				return
+			}
 
 			const form = new FormData()
 			form.append('avatar', file)
@@ -74,7 +97,7 @@ const AccountSettings = () => {
 					☢️ INITIALIZING UPLINK
 					<br />
 					TRANSMITTING AVATAR DATA...
-				</div>
+				</div>,
 			)
 
 			try {
@@ -84,7 +107,8 @@ const AccountSettings = () => {
 				})
 
 				if (!res.ok) {
-					throw new Error('UPLOAD FAILED')
+					const data = await res.json().catch(() => null)
+					throw new Error(data?.error ?? 'UPLOAD FAILED')
 				}
 
 				const { url } = await res.json()
@@ -118,9 +142,11 @@ const AccountSettings = () => {
 					isLoading: false,
 					autoClose: 3000,
 				})
+			} finally {
+				e.target.value = ''
 			}
 		},
-		[updateAvatar, utils.user.getProfile]
+		[updateAvatar, utils.user.getProfile],
 	)
 
 	useEffect(() => {
