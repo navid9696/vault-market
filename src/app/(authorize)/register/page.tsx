@@ -17,10 +17,10 @@ export default function Home() {
 				<main className='relative min-h-screen'>
 					<div className='absolute inset-0 -z-10 '>
 						<Image
-							src='/imgs/authBg2.jpg'
+							src='/imgs/authBg2.png'
 							alt='Background small'
 							fill
-							className='object-cover bg-small dark:filter dark:hue-rotate-[-70deg]'
+							className='object-cover mt-6 bg-small dark:filter dark:hue-rotate-[-70deg]'
 						/>
 						<Image
 							src='/imgs/authBg.png'

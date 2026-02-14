@@ -231,7 +231,7 @@ input::-webkit-inner-spin-button {
 	display: none;
 }
 
-@media (min-width: 1300px) and (min-height: 730px) {
+@media (min-width: 900px) and (min-height: 600px) {
 	.bg-small {
 		display: none;
 	}
