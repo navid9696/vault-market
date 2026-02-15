@@ -98,7 +98,7 @@ export default function LoginForm() {
 
 	return (
 		<div className='h-screen max-w-xl text-text'>
-			<div style={{ marginTop: `${navHeight}px` }} className='p-4 h-with-navbar'>
+			<div className='p-4 h-with-navbar'>
 				<form
 					className='h-full flex flex-col justify-center items-center text-center'
 					onSubmit={handleSubmit(onSubmit)}>
