@@ -8,6 +8,8 @@ import TransitionsModal from './TransitionModal'
 import ProductModal from './ProductModal'
 import { trpc } from '~/server/client'
 import useStore from '~/store/useStore'
+import { getBackgroundTextureById } from '~/utils/cardBackgroundTextures'
+import { getBackgroundDetailsById } from '~/utils/cardBackgroundDetails'
 
 const StyledRating = styled(Rating)({
 	'& .MuiRating-iconFilled': {
@@ -38,7 +40,8 @@ export interface ProductCardProps {
 
 const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: ProductCardProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
-
+	const cardBgTextures = getBackgroundTextureById(id)
+	const cardBgDetails = getBackgroundDetailsById(id)
 	const setProduct = useStore(state => state.setProduct)
 	const utils = trpc.useUtils()
 
@@ -71,6 +74,17 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 				 shadow-inset-2 rounded-lg -z-[1] '></div>
 						{/* bagde-front */}
 						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-primary rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
+							<div className='absolute inset-0 z-10 overflow-hidden opacity-20 sepia saturation-200 pointer-events-none'>
+								<Image
+									src={cardBgTextures}
+									alt='card background texture'
+									className='sepia saturation-200'
+									style={{ transform: 'scale(2)' }}
+									objectFit='contain'
+									fill
+								/>
+							</div>
+
 							<p className='relative -top-[4px] ml-[3px] mr-[8px] my-[1px] tracking-tighter text-md '>
 								{(discount * 100).toFixed(0)}
 							</p>
@@ -81,6 +95,26 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 				)}
 				{/* box */}
 				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
+					<div className='absolute inset-0 z-10 overflow-hidden opacity-25 sepia mix-blend-overlay saturation-200 pointer-events-none'>
+						<Image
+							src={cardBgTextures}
+							alt='card background texture'
+							className='sepia mix-blend-overlay saturation-200'
+							style={{ transform: 'scale(2)' }}
+							objectFit='contain'
+							fill
+						/>
+					</div>
+					<div className='absolute inset-0 z-10 overflow-hidden opacity-50 sepia mix-blend-overlay saturation-200 pointer-events-none'>
+						<Image
+							src={cardBgDetails}
+							alt='card background details'
+							className='sepia mix-blend-overlay saturation-200'
+							style={{ transform: 'scale(2)' }}
+							objectFit='contain'
+							fill
+						/>
+					</div>
 					{/* border-covers  */}
 					{discount > 0 && (
 						<>
@@ -114,6 +148,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						</div>
 
 						{/* content-box-info */}
+
 						<div className='p-2 relative flex flex-col items-start justify-center rounded-md shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary text-white font-semibold z-0'>
 							{/* ribbon-tip */}
 							<div className='absolute h-[22px] w-[4px] -right-[2px] bottom-[7px] shadow-inset-1 rounded-md bg-primary'></div>
