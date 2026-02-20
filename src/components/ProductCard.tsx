@@ -74,12 +74,11 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 				 shadow-inset-2 rounded-lg -z-[1] '></div>
 						{/* bagde-front */}
 						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-primary rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
-							<div className='absolute inset-0 z-10 overflow-hidden opacity-20 sepia saturation-200 pointer-events-none'>
+							<div className='absolute inset-0 z-10 overflow-hidden opacity-50  pointer-events-none'>
 								<Image
 									src={cardBgTextures}
 									alt='card background texture'
-									className='sepia saturation-200'
-									style={{ transform: 'scale(2)' }}
+									style={{ transform: 'scale(5)' }}
 									objectFit='contain'
 									fill
 								/>
