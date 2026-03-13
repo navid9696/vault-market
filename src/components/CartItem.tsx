@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { trpc } from '~/server/client'
 import QuantitySelector from './QuantitySelector'
 import { IconButton } from '@mui/material'
@@ -22,6 +22,8 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 	const setProduct = useStore(state => state.setProduct)
 	const utils = trpc.useUtils()
 	const [gid] = useState(() => ensureGuestId())
+	const [localQuantity, setLocalQuantity] = useState(quantity)
+	const debounceTimeout = useRef<NodeJS.Timeout>()
 
 	const handleOpen = useCallback(async () => {
 		const updatedProduct = await utils.product.getById.fetch({ id: product.id })
@@ -34,9 +36,20 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 		utils.favorite.getFavorites.invalidate()
 	}, [utils.favorite])
 
+	useEffect(() => {
+		setLocalQuantity(quantity)
+	}, [quantity])
+
+	useEffect(() => {
+		return () => {
+			if (debounceTimeout.current) {
+				clearTimeout(debounceTimeout.current)
+			}
+		}
+	}, [])
+
 	const updateMutation = trpc.cart.updateCartItem.useMutation({
 		onSuccess: async (_, vars) => {
-			refetchCart()
 			if (vars?.gid) {
 				await Promise.all([
 					utils.cart.getTotalItems.invalidate({ gid: vars.gid }),
@@ -44,6 +57,9 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 				])
 			}
 			await Promise.all([utils.cart.getTotalItems.invalidate(), utils.cart.getCartItems.invalidate()])
+		},
+		onError: () => {
+			setLocalQuantity(quantity)
 		},
 	})
 
@@ -60,10 +76,23 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 		},
 	})
 
+	const debouncedUpdate = useCallback(() => {
+		if (debounceTimeout.current) {
+			clearTimeout(debounceTimeout.current)
+		}
+		debounceTimeout.current = setTimeout(() => {
+			updateMutation.mutate({ productId: product.id, quantity: localQuantity, gid })
+		}, 500)
+	}, [product.id, gid, updateMutation])
+
+	useEffect(() => {
+		if (localQuantity !== quantity) {
+			debouncedUpdate()
+		}
+	}, [localQuantity, quantity, debouncedUpdate])
+
 	const handleQuantityChange = (newQuantity: number) => {
-		const maxAvailable = product.available + quantity
-		if (newQuantity < 1 || newQuantity > maxAvailable) return
-		updateMutation.mutate({ productId: product.id, quantity: newQuantity, gid })
+		setLocalQuantity(newQuantity)
 	}
 
 	const handleRemove = () => {
@@ -93,9 +122,10 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 					<div className='flex flex-col sm:flex-row items-center sm:items-start gap-x-1'>
 						<div className='flex flex-col items-center justify-center'>
 							<QuantitySelector
-								selectedQuantity={quantity}
+								selectedQuantity={localQuantity}
 								setSelectedQuantity={handleQuantityChange}
-								availability={product.available}
+								availability={product.available + quantity}
+								strictLimit={true}
 							/>
 							<p>Price: {displayPrice}</p>
 						</div>
@@ -105,7 +135,7 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 					</div>
 				) : (
 					<div className='w-full flex gap-4 text-xl justify-center items-center text-center'>
-						<p>{quantity}</p>
+						<p>{localQuantity}</p>
 						<p>x</p>
 						<p>Price: {displayPrice}</p>
 					</div>
