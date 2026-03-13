@@ -45,7 +45,7 @@ body.user {
 		display: block;
 		inset: 0;
 		filter: brightness(50%);
-		background-image: url('/imgs/background.jpg');
+		background-image: url('/imgs/background.webp');
 		background-position: top;
 		background-repeat: no-repeat;
 		background-size: cover;
