@@ -18,7 +18,7 @@ const settings = {
 const Header = () => {
 	return (
 		<>
-			<header className="hue-rotate-30 dark:hue-rotate-0 h-2/3 sm:h-3/4 bg-[url('/imgs/header.png')] bg-scroll bg-center bg-no-repeat bg-cover -z-10">
+			<header className="hue-rotate-30 dark:hue-rotate-0 h-2/3 sm:h-3/4 bg-[url('/imgs/header.webp')] bg-scroll bg-center bg-no-repeat bg-cover -z-10">
 				<div className='hidden sm:block relative w-full h-full '>
 					<Slider
 						draggable={false}

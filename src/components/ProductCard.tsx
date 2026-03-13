@@ -80,6 +80,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 									alt='card background texture'
 									style={{ transform: 'scale(5)' }}
 									objectFit='contain'
+									quality={1}
 									fill
 								/>
 							</div>
@@ -101,6 +102,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 							className='sepia mix-blend-overlay saturation-200'
 							style={{ transform: 'scale(2)' }}
 							objectFit='contain'
+							quality={1}
 							fill
 						/>
 					</div>
@@ -112,6 +114,7 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 							style={{ transform: 'scale(2)' }}
 							objectFit='contain'
 							fill
+							quality={1}
 						/>
 					</div>
 					{/* border-covers  */}
