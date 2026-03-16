@@ -1,16 +1,17 @@
 # ☢️ Vault Market
 
-**Vault Market** is a full-featured Fallout-inspired e-commerce application.  
-It simulates a post-apocalyptic Vault-Tec shopping terminal, where users can register, log in, browse products, manage their cart, exchange bottle caps for USD, and place orders — all in a retro-futuristic style.  
-Admins can manage products, users, and monitor the marketplace with a separate dashboard.  
+**Vault Market** is a Fallout-inspired e-commerce web application created as a technical and artistic showcase project. It simulates a retro-futuristic shopping terminal where users can register, log in, browse products, manage their cart, add favorites, place fictional orders, and exchange imaginary currency in a post-apocalyptic setting.
 
-⚠️ **Important Note:**  
-Vault Market is a **fictional, non-commercial project**.  
-- No real money is involved — you don’t purchase items with actual currency.  
-- Users simply enter the amount of fictional currency they want (USD or Bottle Caps).  
-- All products, currency, and transactions are **purely imaginary**.  
+The application combines a distinct visual identity inspired by the Fallout universe with a structured e-commerce flow and a separate administrative panel for marketplace management.
 
-This project is meant as an **artistic and technical showcase** of design, UI/UX, and development skills — not a real online store.  
+> **Important:** Vault Market is a **fictional, non-commercial demo project**.  
+> It does **not** process real payments, sell real products, or handle real financial transactions.  
+> All items, prices, currencies, and orders are purely imaginary and are used only to demonstrate application structure, business logic, and UI/UX design.
+
+---
+
+## Preview
+
 <img width="554" height="519" alt="image" src="https://github.com/user-attachments/assets/96157a70-671a-4852-8421-b72647bcb773" />
 
 <img width="1167" height="758" alt="image" src="https://github.com/user-attachments/assets/8da5f1a5-21e4-4976-81a7-0aadd53d4d71" />
@@ -21,75 +22,279 @@ This project is meant as an **artistic and technical showcase** of design, UI/UX
 
 ---
 
-## 🚀 Features
+## Project Purpose
 
-### 🔐 Authentication & Authorization
-- Secure login & registration with **NextAuth**
-- Credential login with email & password
-- OAuth with **Google**
-- Role-based access:
-  - **Citizen (User Panel)** – shopping experience
-  - **Admin (Admin Panel)** – management tools
+The main purpose of this project was to design and implement a coherent e-commerce-style system with a distinctive visual identity inspired by the Fallout universe.
 
-### 👤 User Panel
-- Register & log in with Fallout-themed terminal feedback  
-- Browse products with categories & subcategories  
-- Add to cart, view total, and checkout  
-- Manage profile: update nickname, email, avatar, password, or delete account  
-- View order history and favorites  
-- Exchange system: convert **USD ↔ Bottle Caps** at a fixed rate (fictional, user-input only)  
+The project focuses on:
+- building a complete shopping flow,
+- implementing authentication and authorization,
+- separating user and admin functionality,
+- integrating frontend and backend logic in a practical full-stack application,
+- combining technical implementation with a strong, consistent UI/UX concept.
 
-### 🛠️ Admin Panel
-- Admin-only access via `admin@admin.admin`  
-- Dashboard with quick overview  
-- Manage products: create, edit, categories, discounts, availability  
-- Manage users  
-- Theme toggle: **Dark / Light**, saved in localStorage  
-
-### 🎨 UI/UX
-- Built with **Next.js 13**, **React**, and **TypeScript**  
-- Styled using **MUI v5** + **TailwindCSS**  
-- **react-hook-form + zod** for validation  
-- **react-toastify** for retro Fallout-style notifications  
-- Fully responsive & mobile-friendly design  
+Vault Market should be treated as a **proof-of-concept application** and portfolio project rather than a production-ready online store.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-- **Framework:** Next.js 13 (App Router)  
-- **Language:** TypeScript  
-- **UI:** React, MUI v5, TailwindCSS  
-- **API:** tRPC  
-- **Auth:** NextAuth.js (credentials + Google OAuth)  
-- **Database:** PostgreSQL  
-- **ORM:** Prisma  
-- **Validation:** zod + react-hook-form  
-- **Notifications:** react-toastify  
+### Authentication & Authorization
+- User registration and login with email and password
+- Google OAuth login
+- Session handling with NextAuth
+- Role-based access to user and admin areas
+
+### User Functionality
+- Browse products by category and subcategory
+- View product details
+- Add and remove items from cart
+- Save products to favorites
+- Place fictional orders with shipping details
+- Manage account settings
+- Update nickname, email, avatar, and password
+- View order history
+- Add product comments and ratings
+- Use a fictional exchange system for **USD ↔ Bottle Caps**
+
+### Admin Functionality
+- Separate admin dashboard
+- Product management
+- User management
+- Access to user orders and caps exchange records
+- Product editing, availability, category, and discount management
+
+### UI/UX
+- Fallout-inspired terminal aesthetic
+- Responsive layout
+- Retro-styled notifications and feedback
+- Distinct visual design across user and admin areas
 
 ---
 
-## 🔑 Admin Access
+## Tech Stack
 
-By default, any user who logs in with:  
-Email: admin@admin.admin  
-Password: Admin123!  
-will be recognized as **Admin** and gain access to `/admin/dashboard`.
-
----
-
-## 🤝 Contributing
-
-Contributions, issues, and feature requests are welcome!  
-Feel free to open a Pull Request or Issue.
-
----
-
-## 📜 License
-
-Distributed under the **MIT License**.
+- **Framework:** Next.js 15
+- **Language:** TypeScript
+- **Frontend:** React 18
+- **Styling:** Tailwind CSS, MUI v5, Bootstrap
+- **API Layer:** tRPC
+- **Authentication:** NextAuth.js
+- **ORM:** Prisma
+- **Database:** MongoDB
+- **Validation:** Zod, React Hook Form
+- **State Management:** Zustand
+- **Notifications:** React Toastify
+- **Image Handling:** Cloudinary
+- **Charts / Data Visualization:** Recharts
 
 ---
 
-### ☢️ Vault-Tec Corporation ©  
-*"Prepare for the future, citizen."*  
+## Project Structure
+
+The application is divided into two main areas.
+
+### User Side
+The public-facing part of the application allows users to:
+- browse the catalog,
+- view product details,
+- manage favorites and cart contents,
+- place fictional orders,
+- edit profile settings,
+- review previous orders.
+
+### Admin Side
+A restricted panel intended for marketplace management allows the administrator to:
+- manage products,
+- manage users,
+- inspect user orders,
+- inspect bottle-cap exchange records,
+- access marketplace overview pages.
+
+This separation reflects a role-based architecture commonly used in modern web applications.
+
+---
+
+## Requirements
+
+Before running the project locally, make sure you have:
+- **Node.js** installed,
+- **npm** installed,
+- access to a **MongoDB** database,
+- a configured **Google OAuth** application,
+- a configured **Cloudinary** account.
+
+---
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone <https://github.com/navid9696/vault-market>
+cd vault-market
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Fill in the required environment variables in the `.env` file.
+
+Generate the Prisma client:
+
+```bash
+npx prisma generate
+```
+
+Push the Prisma schema to the database:
+
+```bash
+npx prisma db push
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open the application in your browser:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## Environment Variables
+
+To run the project locally, create a `.env` file in the root directory.
+
+Example:
+
+```env
+DATABASE_URL=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=http://localhost:3000
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+### Variable Description
+
+- `DATABASE_URL` – MongoDB connection string used by Prisma
+- `GOOGLE_CLIENT_ID` – Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` – Google OAuth client secret
+- `NEXTAUTH_SECRET` – secret used by NextAuth to sign sessions and tokens
+- `NEXTAUTH_URL` – base URL of the application
+- `CLOUDINARY_CLOUD_NAME` – Cloudinary cloud name
+- `CLOUDINARY_API_KEY` – Cloudinary API key
+- `CLOUDINARY_API_SECRET` – Cloudinary API secret
+
+
+
+---
+
+## Database
+
+The project uses **MongoDB** with **Prisma** configured as the ORM layer.
+
+The Prisma schema defines, among others, the following models:
+- `User`
+- `Products`
+- `UserCart`
+- `UserOrders`
+- `OrderItem`
+- `Favorite`
+- `CapsOrder`
+- `Comment`
+- `Account`
+- `Session`
+- `VerificationToken`
+
+If the database is empty, some application areas may require manual test data creation before the interface can be demonstrated properly.
+
+---
+
+## Admin Access
+
+The application contains admin-only routes under `/admin`.
+
+Based on the project logic, administrator access is associated with the following account:
+
+```text
+Email: admin@admin.admin
+Password: Admin123!
+```
+
+---
+
+## How to Use the Application
+
+### Regular User Flow
+1. Register a new account or sign in.
+2. Browse products.
+3. Open a product page.
+4. Add products to the cart or favorites.
+5. Proceed to checkout.
+6. Submit a fictional order.
+7. Review order history and manage account settings.
+
+### Admin Flow
+1. Sign in with the admin account.
+2. Open the admin dashboard.
+3. Manage products and users.
+4. Review user orders and caps exchange entries.
+
+---
+
+## Scope and Limitations
+
+Vault Market is a showcase project and has several intentional limitations:
+- no real payment gateway integration,
+- no real product sales,
+- no real order fulfillment,
+- no real financial transactions,
+- fictional currency exchange logic,
+- project intended for demonstration, educational, and portfolio purposes.
+
+The application was designed to simulate the structure and experience of an e-commerce platform rather than function as a real commercial service.
+
+---
+
+## Contributing
+
+Contributions, issues, and suggestions are welcome.
+
+If you would like to improve the project:
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Open a pull request.
+
+---
+
+## License
+
+This project is distributed under the **MIT License**.
+
+---
+
+## Author
+
+Created as an engineering and portfolio project focused on:
+- full-stack web development,
+- UI/UX design,
+- role-based application structure,
+- practical implementation of e-commerce logic in a fictional setting.
+
+---
+
+### ☢️ Vault-Tec Corporation ©
+*"Prepare for the future, citizen."*
