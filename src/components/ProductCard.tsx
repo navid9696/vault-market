@@ -96,10 +96,10 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						{discount > 0 && (
 							<>
 								<div
-									className='absolute top-[13px] left-[44px] h-2 w-[3px] bg-orange-200
+									className='absolute top-[6.5px] left-[43.6px] h-[11px] w-[4.8px] border-0 border-r-[1px] border-gray-700 rounded-tr-full bg-orange-200
 				 z-50'></div>
 								<div
-									className='absolute top-[43.5px] left-[7px] h-[4px] w-[11px] rounded-bl-full bg-orange-200
+									className='absolute border-0 border-b-[1px] border-gray-700 top-[43px] left-[6px] h-[4.6px] w-[11.8px] rounded-bl-full bg-orange-200
 				r z-50'></div>
 							</>
 						)}
