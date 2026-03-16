@@ -79,7 +79,8 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 									src={cardBgTextures}
 									alt='card background texture'
 									style={{ transform: 'scale(5)' }}
-									objectFit='contain'
+									className='object-contain'
+									sizes='36px'
 									quality={1}
 									fill
 								/>
@@ -99,9 +100,9 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						<Image
 							src={cardBgTextures}
 							alt='card background texture'
-							className='sepia mix-blend-overlay saturation-200'
+							className='sepia mix-blend-overlay saturation-200 object-contain'
 							style={{ transform: 'scale(2)' }}
-							objectFit='contain'
+							sizes='200px'
 							quality={1}
 							fill
 						/>
@@ -110,9 +111,9 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						<Image
 							src={cardBgDetails}
 							alt='card background details'
-							className='sepia mix-blend-overlay saturation-200'
+							className='sepia mix-blend-overlay saturation-200 object-contain'
 							style={{ transform: 'scale(2)' }}
-							objectFit='contain'
+							sizes='200px'
 							fill
 							quality={1}
 						/>

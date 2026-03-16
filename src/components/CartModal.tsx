@@ -22,8 +22,8 @@ const CartModal = () => {
 	const utils = trpc.useUtils()
 	const refetchCart = useCallback(async () => {
 		await refetch()
-		await utils.cart.getTotalItems.invalidate({ gid })
-	}, [refetch, utils.cart.getTotalItems, gid])
+		await utils.cart.getTotalItems.invalidate()
+	}, [refetch, utils.cart.getTotalItems])
 
 	if (!gid || status === 'loading')
 		return (

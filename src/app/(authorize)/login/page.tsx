@@ -20,12 +20,14 @@ export default function Home() {
 							src='/imgs/authBg2.webp'
 							alt='Background small'
 							fill
+							sizes='100vw'
 							className='object-cover mt-6 bg-small dark:filter dark:hue-rotate-[-70deg]'
 						/>
 						<Image
 							src='/imgs/authBg.webp'
 							alt='Background large'
 							fill
+							sizes='100vw'
 							className='object-contain bg-large dark:filter dark:hue-rotate-[-70deg]'
 						/>
 					</div>

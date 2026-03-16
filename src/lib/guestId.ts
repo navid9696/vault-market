@@ -3,7 +3,7 @@ export const ensureGuestId = (): string => {
 	const m = document.cookie.match(/(?:^|;\s*)gid=([^;]+)/)
 	if (m?.[1]) return m[1]
 	const gid = crypto.randomUUID()
-	document.cookie = `gid=${gid}; Path=/; Max-Age=86400; SameSite=Lax`
+	document.cookie = `gid=${gid}; Path=/; Max-Age=3600; SameSite=Lax`
 	return gid
 }
 

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { router, procedure } from '../trpc'
 import { PrismaClient } from '@prisma/client'
-import { resolveCartKey } from '~/utils/resolveCartKey'
+import { CartKey, resolveCartKey } from '~/utils/resolveCartKey'
 
 const prisma = new PrismaClient()
 
@@ -16,6 +16,31 @@ const removeInputSchema = z.object({
 	gid: z.string().optional(),
 })
 const totalItemsSchema = z.object({ total: z.number() })
+
+const cleanupExpiredItems = async (key: CartKey) => {
+	const expirationMs = key.userId ? 12 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000
+	const cutoff = new Date(Date.now() - expirationMs)
+	const expiredItems = await prisma.userCart.findMany({
+		where: {
+			...(key.userId ? { userId: key.userId } : { cartId: key.cartId }),
+			createdAt: { lt: cutoff },
+		},
+	})
+	await prisma.$transaction(async tx => {
+		for (const item of expiredItems) {
+			await tx.products.update({
+				where: { id: item.productId },
+				data: { available: { increment: item.quantity } },
+			})
+		}
+		await tx.userCart.deleteMany({
+			where: {
+				...(key.userId ? { userId: key.userId } : { cartId: key.cartId }),
+				createdAt: { lt: cutoff },
+			},
+		})
+	})
+}
 
 export const userCartRouter = router({
 	addCartItem: procedure.input(cartItemInputSchema).mutation(async ({ input, ctx }) => {
@@ -34,14 +59,14 @@ export const userCartRouter = router({
 					? await tx.userCart.update({
 							where: { userId_productId_cart: { userId: key.userId, productId: input.productId } },
 							data: { quantity: existing.quantity + input.quantity },
-					  })
+						})
 					: await tx.userCart.create({
 							data: {
 								user: { connect: { id: key.userId } },
 								product: { connect: { id: input.productId } },
 								quantity: input.quantity,
 							},
-					  })
+						})
 			} else {
 				const cartId = key.cartId as string
 				const existing = await tx.userCart.findUnique({
@@ -51,10 +76,10 @@ export const userCartRouter = router({
 					? await tx.userCart.update({
 							where: { cartId_productId_cart: { cartId, productId: input.productId } },
 							data: { quantity: existing.quantity + input.quantity },
-					  })
+						})
 					: await tx.userCart.create({
 							data: { cartId, product: { connect: { id: input.productId } }, quantity: input.quantity },
-					  })
+						})
 			}
 
 			await tx.products.update({ where: { id: input.productId }, data: { available: { decrement: input.quantity } } })
@@ -69,10 +94,10 @@ export const userCartRouter = router({
 			const existing = key.userId
 				? await tx.userCart.findUnique({
 						where: { userId_productId_cart: { userId: key.userId, productId: input.productId } },
-				  })
+					})
 				: await tx.userCart.findUnique({
 						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
-				  })
+					})
 			if (!existing) throw new Error('Cart item not found')
 
 			const diff = input.quantity - existing.quantity
@@ -89,11 +114,11 @@ export const userCartRouter = router({
 				? await tx.userCart.update({
 						where: { userId_productId_cart: { userId: key.userId, productId: input.productId } },
 						data: { quantity: input.quantity },
-				  })
+					})
 				: await tx.userCart.update({
 						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
 						data: { quantity: input.quantity },
-				  })
+					})
 			return updated
 		})
 		return result
@@ -105,10 +130,10 @@ export const userCartRouter = router({
 			const cartItem = key.userId
 				? await tx.userCart.findUnique({
 						where: { userId_productId_cart: { userId: key.userId, productId: input.productId } },
-				  })
+					})
 				: await tx.userCart.findUnique({
 						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
-				  })
+					})
 			if (!cartItem) throw new Error('Cart item not found')
 
 			await tx.products.update({
@@ -119,10 +144,10 @@ export const userCartRouter = router({
 			const removed = key.userId
 				? await tx.userCart.delete({
 						where: { userId_productId_cart: { userId: key.userId, productId: input.productId } },
-				  })
+					})
 				: await tx.userCart.delete({
 						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
-				  })
+					})
 			return removed
 		})
 		return result
@@ -131,6 +156,7 @@ export const userCartRouter = router({
 	getCartItems: procedure.input(withGid.optional()).query(async ({ input, ctx }) => {
 		const key = resolveCartKey(ctx.session, input?.gid)
 		if (!key.userId && !key.cartId) return []
+		await cleanupExpiredItems(key)
 		const items = await prisma.userCart.findMany({
 			where: key.userId ? { userId: key.userId } : { cartId: key.cartId as string },
 			include: { product: true },
@@ -145,6 +171,7 @@ export const userCartRouter = router({
 		.query(async ({ input, ctx }) => {
 			const key = resolveCartKey(ctx.session, input?.gid)
 			if (!key.userId && !key.cartId) return { total: 0 }
+			await cleanupExpiredItems(key)
 			const items = await prisma.userCart.findMany({
 				where: key.userId ? { userId: key.userId } : { cartId: key.cartId as string },
 			})
@@ -161,6 +188,8 @@ export const userCartRouter = router({
 	mergeGuestCart: procedure.input(z.object({ gid: z.string().optional() })).mutation(async ({ input, ctx }) => {
 		const userId = ctx.session?.sub
 		if (!userId || !input?.gid) return { merged: 0 }
+		const guestKey = { cartId: input.gid }
+		await cleanupExpiredItems(guestKey)
 		const merged = await prisma.$transaction(async tx => {
 			const guestItems = await tx.userCart.findMany({ where: { cartId: input.gid }, include: { product: true } })
 			let count = 0
