@@ -270,7 +270,7 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 
 						{preview && (
 							<Box className='relative' style={{ width: 200, height: 200 }}>
-								<Image src={preview} alt='Preview' fill objectFit='contain' />
+								<Image src={preview} alt='Preview' fill sizes='200px' className='object-contain' />
 							</Box>
 						)}
 					</Box>
@@ -390,7 +390,7 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 
 						{preview && (
 							<Box className='relative' style={{ width: 150, height: 150 }}>
-								<Image src={preview} alt='Preview' fill objectFit='contain' />
+								<Image src={preview} alt='Preview' fill sizes='150px' className='object-contain' />
 							</Box>
 						)}
 					</Box>

@@ -64,7 +64,7 @@ const AdminProductCard = ({
 		<>
 			<Card className='p-2 flex flex-col  min-h-96 w-[350px] rounded-md overflow-hidden shadow-md border'>
 				<div className='relative h-32'>
-					<Image className='object-contain' src={imgURL} fill alt={name} />
+					<Image className='object-contain' src={imgURL} fill sizes='350px' alt={name} />
 				</div>
 				<Divider className='mt-2' />
 				<CardContent className='flex-grow'>

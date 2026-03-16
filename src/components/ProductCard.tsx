@@ -64,14 +64,14 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 				tabIndex={0}
 				className={`${
 					available ? 'grayscale-0 opacity-100' : 'grayscale opacity-90'
-				} relative max-h-60 min-h-44 h-full max-w-48 min-w-52 p-4 transition hover:scale-105 cursor-pointer z-0`}>
+				} product-card-hover relative max-h-60 min-h-44 h-full hover:scale-[1.01] max-w-48 min-w-52 p-4 transition cursor-pointer z-0`}>
 				{/* badge */}
 				{discount > 0 && (
 					<>
 						{/* badge-back */}
 						<div
-							className='absolute top-1 left-1 h-11 w-11 p-1 bg-orange-200
-				 shadow-inset-2 rounded-lg -z-[1] '></div>
+							className=' absolute top-1 left-1 h-11 w-11 p-1 bg-orange-200
+					 shadow-inset-1 rounded-lg -z-[1] product-card-hover-target-badge'></div>
 						{/* bagde-front */}
 						<div className='w-[36px] top-2 left-2 absolute flex items-center justify-center border-[3px] border-primary rounded-md bg-amber-200 font-semibold text-xl text-red-600 z-10'>
 							<div className='absolute inset-0 z-10 overflow-hidden opacity-50  pointer-events-none'>
@@ -79,7 +79,8 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 									src={cardBgTextures}
 									alt='card background texture'
 									style={{ transform: 'scale(5)' }}
-									objectFit='contain'
+									className='object-contain'
+									sizes='36px'
 									quality={1}
 									fill
 								/>
@@ -91,17 +92,28 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 							<Percent fontSize={'8px'} className='absolute bottom-[13px] right-0' />
 							<p className='absolute -bottom-[2px] text-xs'>OFF</p>
 						</div>
+						{/* border-covers  */}
+						{discount > 0 && (
+							<>
+								<div
+									className='absolute top-[13px] left-[44px] h-2 w-[3px] bg-orange-200
+				 z-50'></div>
+								<div
+									className='absolute top-[43.5px] left-[7px] h-[4px] w-[11px] rounded-bl-full bg-orange-200
+				r z-50'></div>
+							</>
+						)}
 					</>
 				)}
 				{/* box */}
-				<div className='relative p-[6px] h-full shadow-inset-2 rounded-xl bg-orange-200 z-0 overflow-hidden '>
+				<div className='relative p-[6px] h-full shadow-inset-1 rounded-xl bg-orange-200 z-0 overflow-hidden product-card-hover-target-box'>
 					<div className='absolute inset-0 z-10 overflow-hidden opacity-25 sepia mix-blend-overlay saturation-200 pointer-events-none'>
 						<Image
 							src={cardBgTextures}
 							alt='card background texture'
-							className='sepia mix-blend-overlay saturation-200'
+							className='sepia mix-blend-overlay saturation-200 object-contain'
 							style={{ transform: 'scale(2)' }}
-							objectFit='contain'
+							sizes='200px'
 							quality={1}
 							fill
 						/>
@@ -110,24 +122,14 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 						<Image
 							src={cardBgDetails}
 							alt='card background details'
-							className='sepia mix-blend-overlay saturation-200'
+							className='sepia mix-blend-overlay saturation-200 object-contain'
 							style={{ transform: 'scale(2)' }}
-							objectFit='contain'
+							sizes='200px'
 							fill
 							quality={1}
 						/>
 					</div>
-					{/* border-covers  */}
-					{discount > 0 && (
-						<>
-							<div
-								className='absolute -top-[3px] -left-[10px] h-2 w-10 p-1 bg-orange-200
-				rounded-lg z-50'></div>
-							<div
-								className='absolute -top-[10px] -left-[3px] h-10 w-2 p-1 bg-orange-200
-				rounded-lg z-50'></div>
-						</>
-					)}
+
 					{/* content */}
 					<div className='h-full flex flex-col justify-between rounded-lg bg-gradient-to-bl from-bg via-secondary to-bg '>
 						<h4
@@ -138,9 +140,9 @@ const ProductCard = ({ id, name, price, rating, discount, available, imgURL }: P
 							{name}
 						</h4>
 						<div className='h-full w-full p-1'>
-							<div className='relative h-full w-full '>
+							<div className='relative h-full w-full'>
 								<Image
-									className=' object-contain'
+									className='object-contain brightness-90 [filter:drop-shadow(1px_0_0_rgba(0,0,0,0.8))_drop-shadow(-1px_0_0_rgba(0,0,0,0.8))_drop-shadow(0_1px_0_rgba(0,0,0,0.8))_drop-shadow(0_-1px_0_rgba(0,0,0,0.8))_drop-shadow(0_0_6px_rgba(255,255,255,0.10))_drop-shadow(0_2px_3px_rgba(0,0,0,0.65))]'
 									src={imgURL}
 									fill
 									sizes='(max-width: 768px) 45vw, (max-width: 1200px) 25vw, 200px'

@@ -48,23 +48,14 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 		}
 	}, [])
 
-	const invalidateCartQueries = useCallback(
-		async (guestId?: string) => {
-			if (guestId) {
-				await Promise.all([
-					utils.cart.getTotalItems.invalidate({ gid: guestId }),
-					utils.cart.getCartItems.invalidate({ gid: guestId }),
-				])
-			} else {
-				await Promise.all([utils.cart.getTotalItems.invalidate(), utils.cart.getCartItems.invalidate()])
-			}
-		},
-		[utils.cart],
-	)
+	const invalidateCartQueries = useCallback(async () => {
+		await utils.cart.getTotalItems.invalidate()
+		await utils.cart.getCartItems.invalidate()
+	}, [utils.cart])
 
 	const updateMutation = trpc.cart.updateCartItem.useMutation({
-		onSuccess: async (_, vars) => {
-			await invalidateCartQueries(vars?.gid)
+		onSuccess: async () => {
+			await invalidateCartQueries()
 		},
 		onError: () => {
 			setLocalQuantity(quantity)
@@ -72,12 +63,12 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 	})
 
 	const removeMutation = trpc.cart.removeCartItem.useMutation({
-		onSuccess: async (_, vars) => {
+		onSuccess: async () => {
 			if (debounceTimeout.current) {
 				clearTimeout(debounceTimeout.current)
 			}
 
-			await invalidateCartQueries(vars?.gid)
+			await invalidateCartQueries()
 			refetchCart()
 		},
 		onError: () => {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { trpc } from '~/server/client'
 import CartItem from './CartItem'
 import { CircularProgress, Button, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material'
@@ -12,26 +13,39 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { addressSchema } from '~/schemas/addressSchema'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 const Checkout = () => {
 	const router = useRouter()
+	const { status } = useSession()
 	const { navHeight } = useNavigationHeight()
+
 	const {
 		data: cartData,
 		isLoading: cartLoading,
+		isFetching: cartFetching,
+		isFetched: cartFetched,
 		error: cartError,
 		refetch: refetchCart,
-	} = trpc.cart.getCartItems.useQuery()
+	} = trpc.cart.getCartItems.useQuery(undefined, {
+		enabled: status === 'authenticated',
+		retry: f => f < 2,
+		refetchOnWindowFocus: false,
+		refetchOnMount: 'always',
+	})
+
 	const { data: addressData, isLoading: addressLoading, refetch: refetchAddress } = trpc.user.getAddress.useQuery()
 	const createOrderMutation = trpc.orders.createOrder.useMutation()
 	const updateAddressMutation = trpc.user.updateAddress.useMutation()
 	const clearCartMutation = trpc.cart.clearCart.useMutation()
 	const spendCapsMutation = trpc.exchange.spendCaps.useMutation()
+	const utils = trpc.useContext()
 
 	const [shippingMethod, setShippingMethod] = useState<string>('caravan')
 	const [originalAddress, setOriginalAddress] = useState<AddressFormInput | null>(null)
 	const [currentAddress, setCurrentAddress] = useState<AddressFormInput | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
+	const [transactionSuccess, setTransactionSuccess] = useState(false)
 
 	const {
 		handleSubmit,
@@ -129,6 +143,9 @@ const Checkout = () => {
 			await spendCapsMutation.mutateAsync({ amount: totalAmount })
 			await createOrderMutation.mutateAsync(payload)
 
+			await clearCartMutation.mutateAsync({})
+			await Promise.all([refetchCart(), utils.cart.getTotalItems.invalidate()])
+
 			toast.success(
 				<div>
 					☢️ TRANSACTION COMPLETE
@@ -146,18 +163,28 @@ const Checkout = () => {
 				{ autoClose: 4000 },
 			)
 
-			refetchCart()
+			setTransactionSuccess(true)
+			window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
 			setTimeout(() => {
 				router.push('/')
 			}, 5100)
-			await clearCartMutation.mutateAsync()
 		} catch (error: any) {
+			console.error('Checkout transaction error', error)
+			const rawMessage = error?.message ?? String(error ?? '')
+			const friendlyMessage = rawMessage.includes('JSON')
+				? 'Server response was invalid. Please try again.'
+				: rawMessage.includes('Not authenticated')
+					? 'You must be logged in to complete this purchase.'
+					: rawMessage.includes('Not enough caps')
+						? 'Not enough caps available to complete this purchase.'
+						: rawMessage || 'Something went wrong. Please try again.'
+
 			toast.error(
 				<div>
 					⚠️ TRANSACTION FAILED
 					<br />
-					{error.message || 'PLEASE TRY AGAIN'}
+					{friendlyMessage}
 				</div>,
 				{ autoClose: 4000 },
 			)
@@ -209,15 +236,53 @@ const Checkout = () => {
 		setModalOpen(false)
 	}
 
-	if (cartLoading || addressLoading) {
+	if (status === 'loading') {
 		return (
 			<div className='flex justify-center mt-4'>
 				<CircularProgress />
 			</div>
 		)
 	}
+
+	if (status !== 'authenticated') {
+		return (
+			<div className='text-center p-8'>
+				<p className='text-2xl font-semibold'>Please log in to access checkout.</p>
+			</div>
+		)
+	}
+
+	const cartStillLoading = !cartFetched || cartLoading || cartFetching
+	if (cartStillLoading || addressLoading) {
+		return (
+			<div className='flex justify-center mt-4'>
+				<CircularProgress />
+			</div>
+		)
+	}
+
+	if (transactionSuccess) {
+		return (
+			<div className='relative h-screen w-screen bg-bg'>
+				<div className='flex md:hidden absolute inset-0 items-center justify-center'>
+					<CircularProgress size={80} />
+				</div>
+				<div className='hidden md:block absolute inset-0'>
+					<Image
+						src='/imgs/pleaseStandBy.webp'
+						alt='Please Stand By'
+						fill
+						sizes='(max-width: 768px) 100vw, 70vw'
+						className='object-cover xl:object-contain'
+						priority
+					/>
+				</div>
+			</div>
+		)
+	}
+
 	if (cartError) return <div>Error: {cartError.message}</div>
-	if (!cartData || cartData.length === 0) return <div>Your cart is empty.</div>
+	if (!cartData || cartData.length === 0) return <div className='text-4xl'>Your cart is empty.</div>
 
 	return (
 		<>
