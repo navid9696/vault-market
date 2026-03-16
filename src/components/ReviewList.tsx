@@ -35,7 +35,7 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 
 	return (
 		<>
-			<div className='flex flex-col gap-4'>
+			<div className='flex flex-col gap-4 p-8 pb-4 mt-6 lg:m-0 lg:p-0'>
 				<div className='flex items-center justify-between gap-4'>
 					<h3 className='w-full text-left font-semibold md:text-lg text-sm'>REVIEWS</h3>
 					<Button
@@ -52,7 +52,7 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 						width: '70dvw',
 						height: '75dvh',
 						bgcolor: 'background.paper',
-						'@media (min-width: 768px)': { width: '100%' },
+						'@media (min-width: 1024px)': { width: '100%' },
 					}}>
 					{isLoading ? (
 						<Typography align='center' sx={{ pt: 4 }}>

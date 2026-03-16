@@ -25,7 +25,7 @@ const PriceSection = () => {
 					<br />+ {selectedQuantity} x {product.name}
 					<br />
 					STATUS: ACCEPTED
-				</div>
+				</div>,
 			)
 			setProduct({ ...product, available: product.available - selectedQuantity })
 			if (vars.gid) {
@@ -42,7 +42,7 @@ const PriceSection = () => {
 					⚠️ TERMINAL ERROR
 					<br />
 					REQUEST REJECTED
-				</div>
+				</div>,
 			)
 		},
 	})
@@ -57,41 +57,47 @@ const PriceSection = () => {
 	}
 
 	return (
-		<Box className='mt-24 w-1/2 flex flex-col justify-around items-center'>
-			<Box className='sm:w-full flex flex-col items-center text-text'>
-				<Typography className='w-full text-left font-semibold text-lg'>PRICE</Typography>
-				<Box className='w-full flex flex-col sm:flex-row justify-start gap-4'>
-					<Typography className='flex items-center gap-1 md:text-2xl text-xl'>
+		<Box className='w-full sm:w-6/12  md:w-[44%] lg:w-1/2 mt-0  flex flex-col items-center justify-center md:items-start lg:items-center gap-3 md:gap-4 lg:gap-6 text-text'>
+			<Box className='w-full rounded-xl shadow-inset-1 p-3 md:p-4 lg:p-0 lg:shadow-none lg:rounded-none'>
+				<Typography className='w-full text-left font-semibold text-base md:text-lg lg:text-lg tracking-wide'>
+					PRICE
+				</Typography>
+				<Box className='w-full mt-2 flex items-end gap-x-4 justify-start sm:gap-4'>
+					<Typography className='flex items-center gap-1 lg:text-2xl text-2xl leading-none font-bold'>
 						{(product.price * (1 - product.discount)).toFixed(0)}
 						<Caps />
 					</Typography>
 					{!!product.discount && (
-						<Typography className='flex items-center gap-1 line-through md:text-base text-sm decoration-red-500 decoration-2'>
+						<Typography className='flex items-center gap-1 line-through lg:text-base text-sm decoration-red-500 decoration-2 opacity-80'>
 							{product.price}
 							<Caps />
 						</Typography>
 					)}
 				</Box>
 			</Box>
-			<div>
+			<div className='w-full rounded-xl shadow-inset-1 p-3 md:p-4 lg:p-0 lg:shadow-none lg:rounded-none flex flex-col items-center md:items-start gap-2'>
+				<Typography className='w-full text-left text-sm md:text-base lg:text-base font-semibold'>QUANTITY</Typography>
 				<QuantitySelector
 					selectedQuantity={selectedQuantity}
 					setSelectedQuantity={setSelectedQuantity}
 					availability={product.available}
 					strictLimit
 				/>
-				<Typography className='text-xs'>on stock {product.available}</Typography>
+				<Typography className='text-xs md:text-sm text-center md:text-left opacity-85'>
+					In stock: {product.available}
+				</Typography>
 			</div>
-			<Box className='flex flex-col gap-4 items-center '>
-				<Typography className='text-xs'>30-day returns</Typography>
-				<Typography className='text-xs'>Manufacturer’s warranty</Typography>
-				<Box className='flex items-center gap-1 text-xs'>
+			<Box className='w-full rounded-xl shadow-inset-1 p-3 md:p-4 lg:p-0 lg:shadow-none lg:rounded-none flex flex-col gap-2 items-center md:items-start'>
+				<Typography className='w-full text-left text-sm md:text-base lg:text-base font-semibold'>PROTECTION</Typography>
+				<Typography className='text-xs lg:text-sm w-full text-left'>30-day returns</Typography>
+				<Typography className='text-xs lg:text-sm w-full text-left'>Manufacturer warranty</Typography>
+				<Box className='w-full flex items-center gap-1 text-xs lg:text-sm'>
 					<SecurityTwoToneIcon fontSize='small' />
 					<Typography>Secure transaction</Typography>
 				</Box>
 			</Box>
 			<Button
-				className='sm:text-2xl text-base text-text mt-4'
+				className='w-full mb-4 lg:w-auto sm:text-2xl text-base text-text mt-1 md:mt-2 lg:mt-4 py-2'
 				variant='contained'
 				onClick={handleAddToCart}
 				disabled={addCartItemMutation.status === 'pending'}
