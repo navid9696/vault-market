@@ -127,7 +127,7 @@ const ProductModal = () => {
 									</div>
 								</div>
 								<p
-									className='p-2 rounded-md mb-2 md:mb-3 lg:mb-4 shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary text-sm lg:text-base text-bg font-semibold tracking-tight text-left w-2/3 md:w-full'
+									className='p-2 rounded-md mb-2 md:mb-3 lg:mb-4 shadow-inset-3 bg-gradient-to-b from-primary via-tertiary to-primary text-sm lg:text-base text-bg font-semibold tracking-tight text-left w-full sm:w-2/3 md:w-full'
 									style={{ wordSpacing: '-3px', lineHeight: 1.2 }}>
 									{product.description}
 								</p>
