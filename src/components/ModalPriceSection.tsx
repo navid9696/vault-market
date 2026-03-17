@@ -8,12 +8,15 @@ import { trpc } from '~/server/client'
 import { toast } from 'react-toastify'
 import useStore from '~/store/useStore'
 import { ensureGuestId } from '~/lib/guestId'
+import { useSession } from 'next-auth/react'
 
 const PriceSection = () => {
 	const utils = trpc.useUtils()
 	const product = useStore(state => state.product)
 	const setProduct = useStore(state => state.setProduct)
 	const [selectedQuantity, setSelectedQuantity] = useState(1)
+	const [gid] = useState(() => ensureGuestId())
+	const { status } = useSession()
 
 	if (!product) return null
 
@@ -48,11 +51,22 @@ const PriceSection = () => {
 	})
 
 	const handleAddToCart = () => {
-		const gid = ensureGuestId()
+		if (product.available < selectedQuantity) {
+			toast.error('Not enough items available')
+			return
+		}
+
+		const isGuest = status !== 'authenticated'
+		const guestId = isGuest ? gid || ensureGuestId() : undefined
+		if (isGuest && !guestId) {
+			toast.error('Could not create a guest cart. Please refresh and try again.')
+			return
+		}
+
 		addCartItemMutation.mutate({
 			productId: product.id,
 			quantity: selectedQuantity,
-			gid,
+			gid: guestId,
 		})
 	}
 
@@ -100,7 +114,7 @@ const PriceSection = () => {
 				className='w-full mb-4 lg:w-auto sm:text-2xl text-base text-text mt-1 md:mt-2 lg:mt-4 py-2'
 				variant='contained'
 				onClick={handleAddToCart}
-				disabled={addCartItemMutation.status === 'pending'}
+				disabled={addCartItemMutation.status === 'pending' || product.available < selectedQuantity}
 				endIcon={<AddShoppingCartTwoToneIcon fontSize='inherit' />}>
 				{addCartItemMutation.status === 'pending' ? 'Adding...' : 'add to cart'}
 			</Button>

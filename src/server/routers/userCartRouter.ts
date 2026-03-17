@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { router, procedure } from '../trpc'
 import { PrismaClient } from '@prisma/client'
 import { CartKey, resolveCartKey } from '~/utils/resolveCartKey'
+import { TRPCError } from '@trpc/server'
 
 const prisma = new PrismaClient()
 
@@ -16,6 +17,11 @@ const removeInputSchema = z.object({
 	gid: z.string().optional(),
 })
 const totalItemsSchema = z.object({ total: z.number() })
+
+const requireCartKey = (key: CartKey): { userId?: string; cartId?: string } => {
+	if (key.userId || key.cartId) return key
+	throw new TRPCError({ code: 'BAD_REQUEST', message: 'Missing cart identity' })
+}
 
 const cleanupExpiredItems = async (key: CartKey) => {
 	const expirationMs = key.userId ? 12 * 60 * 60 * 1000 : 1 * 60 * 60 * 1000
@@ -44,11 +50,13 @@ const cleanupExpiredItems = async (key: CartKey) => {
 
 export const userCartRouter = router({
 	addCartItem: procedure.input(cartItemInputSchema).mutation(async ({ input, ctx }) => {
-		const key = resolveCartKey(ctx.session, input.gid)
+		const key = requireCartKey(resolveCartKey(ctx.session, input.gid))
 		const result = await prisma.$transaction(async tx => {
 			const product = await tx.products.findUnique({ where: { id: input.productId } })
-			if (!product) throw new Error('Product not found')
-			if (product.available < input.quantity) throw new Error('Not enough items available')
+			if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' })
+			if (product.available < input.quantity) {
+				throw new TRPCError({ code: 'CONFLICT', message: 'Not enough items available' })
+			}
 
 			let cartItem
 			if (key.userId) {
@@ -89,7 +97,7 @@ export const userCartRouter = router({
 	}),
 
 	updateCartItem: procedure.input(cartItemInputSchema).mutation(async ({ input, ctx }) => {
-		const key = resolveCartKey(ctx.session, input.gid)
+		const key = requireCartKey(resolveCartKey(ctx.session, input.gid))
 		const result = await prisma.$transaction(async tx => {
 			const existing = key.userId
 				? await tx.userCart.findUnique({
@@ -98,13 +106,15 @@ export const userCartRouter = router({
 				: await tx.userCart.findUnique({
 						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
 					})
-			if (!existing) throw new Error('Cart item not found')
+			if (!existing) throw new TRPCError({ code: 'NOT_FOUND', message: 'Cart item not found' })
 
 			const diff = input.quantity - existing.quantity
 			if (diff > 0) {
 				const product = await tx.products.findUnique({ where: { id: input.productId } })
-				if (!product) throw new Error('Product not found')
-				if (product.available < diff) throw new Error('Not enough items available')
+				if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' })
+				if (product.available < diff) {
+					throw new TRPCError({ code: 'CONFLICT', message: 'Not enough items available' })
+				}
 				await tx.products.update({ where: { id: input.productId }, data: { available: { decrement: diff } } })
 			} else if (diff < 0) {
 				await tx.products.update({ where: { id: input.productId }, data: { available: { increment: -diff } } })
@@ -125,7 +135,7 @@ export const userCartRouter = router({
 	}),
 
 	removeCartItem: procedure.input(removeInputSchema).mutation(async ({ input, ctx }) => {
-		const key = resolveCartKey(ctx.session, input.gid)
+		const key = requireCartKey(resolveCartKey(ctx.session, input.gid))
 		const result = await prisma.$transaction(async tx => {
 			const cartItem = key.userId
 				? await tx.userCart.findUnique({
@@ -134,7 +144,7 @@ export const userCartRouter = router({
 				: await tx.userCart.findUnique({
 						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
 					})
-			if (!cartItem) throw new Error('Cart item not found')
+			if (!cartItem) throw new TRPCError({ code: 'NOT_FOUND', message: 'Cart item not found' })
 
 			await tx.products.update({
 				where: { id: input.productId },
