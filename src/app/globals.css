@@ -183,6 +183,32 @@ input::-webkit-inner-spin-button {
 	animation: fadeIn ease-in-out 0.3s forwards;
 }
 
+@keyframes slideInFromRight {
+	from {
+		transform: translateX(100%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
+@keyframes slideInFromLeft {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+
+.slide-in-right {
+	animation: slideInFromRight 0.35s ease-out;
+}
+
+.slide-in-left {
+	animation: slideInFromLeft 0.35s ease-out;
+}
+
 .h-with-navbar {
 	height: calc(100dvh - 56px);
 }

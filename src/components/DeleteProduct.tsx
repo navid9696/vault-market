@@ -32,7 +32,7 @@ const DeleteProduct = ({ handleClose, product }: DeleteProductProps) => {
 	}
 
 	return (
-		<>
+		<div className='p-12'>
 			<h2 className='mb-8 text-xl'>Are you sure you want to delete this product?</h2>
 			<div className='flex justify-center gap-20'>
 				<Button color='error' variant='outlined' size='large' onClick={onDelete}>
@@ -42,7 +42,7 @@ const DeleteProduct = ({ handleClose, product }: DeleteProductProps) => {
 					Cancel
 				</Button>
 			</div>
-		</>
+		</div>
 	)
 }
 

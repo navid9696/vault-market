@@ -118,7 +118,7 @@ export default function ReviewForm({ productId, handleClose }: ReviewFormProps) 
 	}, [isSubmitSuccessful, addComment.isSuccess, reset, handleClose])
 
 	return (
-		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
+		<form className='h-full p-6 flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
 			<Typography variant='h4' component='h3' gutterBottom>
 				Add Comment
 			</Typography>

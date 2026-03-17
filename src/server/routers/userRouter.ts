@@ -167,6 +167,7 @@ export const userRouter = router({
 					skip,
 					take: limit,
 					where,
+					orderBy: { createdAt: 'desc' },
 					select: {
 						id: true,
 						email: true,

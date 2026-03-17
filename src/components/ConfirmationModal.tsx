@@ -8,7 +8,7 @@ interface ConfirmationModalProps {
 
 const ConfirmationModal = ({ onConfirm, onCancel }: ConfirmationModalProps) => {
 	return (
-		<div className='bg-opacity-50 flex justify-center items-center z-50'>
+		<div className='bg-opacity-50 p-8 flex justify-center items-center z-50'>
 			<div className='bg-bg max-w-md'>
 				<h2 className='text-xl font-bold mb-4'>Confirm Update</h2>
 				<p className='mb-6'>Your address has been modified. Do you want to update your address?</p>

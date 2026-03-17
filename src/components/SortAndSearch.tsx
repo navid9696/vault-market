@@ -28,6 +28,13 @@ type SortOption =
 	| 'rating-asc'
 	| 'rating-desc'
 
+const effectivePrice = (price: number, discount?: number | null) => {
+	if (!discount) return price
+	if (discount > 0 && discount < 1) return Math.max(0, price * (1 - discount))
+	if (discount >= 1 && discount < 100) return Math.max(0, price * (1 - discount / 100))
+	return Math.max(0, price - discount)
+}
+
 const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchTerm }: SortAndSearchProps) => {
 	const [sortOption, setSortOption] = useState<SortOption>('popularity-desc')
 
@@ -47,10 +54,10 @@ const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchT
 				sortedProducts.sort((a, b) => b.name.localeCompare(a.name))
 				break
 			case 'price-asc':
-				sortedProducts.sort((a, b) => a.price - b.price)
+				sortedProducts.sort((a, b) => effectivePrice(a.price, a.discount) - effectivePrice(b.price, b.discount))
 				break
 			case 'price-desc':
-				sortedProducts.sort((a, b) => b.price - a.price)
+				sortedProducts.sort((a, b) => effectivePrice(b.price, b.discount) - effectivePrice(a.price, a.discount))
 				break
 			case 'rating-asc':
 				sortedProducts.sort((a, b) => a.rating - b.rating)
@@ -77,12 +84,12 @@ const SortAndSearch = ({ setProducts, handleDrawer, filteredProducts, setSearchT
 			const value = e.target.value
 			setSortOption(value as SortOption)
 		},
-		[setSortOption]
+		[setSortOption],
 	)
 
 	const handleInputChange = useCallback(
 		(e: SyntheticEvent<Element, Event>, value: string) => setSearchTerm(value),
-		[setSearchTerm]
+		[setSearchTerm],
 	)
 
 	return (

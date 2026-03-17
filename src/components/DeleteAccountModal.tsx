@@ -45,7 +45,7 @@ const DeleteAccountModal = ({ handleClose }: DeleteAccountModalProps) => {
 	const isPending = deleteAccount.status === 'pending'
 
 	return (
-		<>
+		<div className='p-8'>
 			<Typography gutterBottom variant='h4'>
 				Are you sure you want to delete your account?
 			</Typography>
@@ -70,7 +70,7 @@ const DeleteAccountModal = ({ handleClose }: DeleteAccountModalProps) => {
 					Cancel
 				</Button>
 			</div>
-		</>
+		</div>
 	)
 }
 
