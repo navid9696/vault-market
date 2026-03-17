@@ -286,7 +286,7 @@ const Checkout = () => {
 
 	return (
 		<>
-			<form style={{ marginTop: `${navHeight}px` }} className='p-4 bg-bg text-text' onSubmit={handleSubmit(onSubmit)}>
+			<form style={{ marginTop: `${navHeight}px` }} className='p-12 border-2 border-border shadow-inner-shadow bg-bg text-text' onSubmit={handleSubmit(onSubmit)}>
 				<h2 className='text-2xl font-bold mb-4'>Checkout</h2>
 				<div className='flex flex-col md:flex-row gap-4'>
 					<div className='flex-1 max-h-96 overflow-y-auto'>
