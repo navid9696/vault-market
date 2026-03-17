@@ -67,7 +67,7 @@ const PasswordForm = ({ setIsDetailsVisible }: SettingFormsProps) => {
 	}
 
 	return (
-		<form className='h-full flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
+		<form className='h-full max-w-sm flex flex-col justify-between' onSubmit={handleSubmit(onSubmit)}>
 			<Typography variant='h4' component='h3' gutterBottom>
 				Security Update
 			</Typography>

@@ -25,16 +25,20 @@ const VisuallyHiddenInput = styled('input')({
 	width: 1,
 })
 
-const renderForm = (contentId: string | null, setIsFormVisible: Dispatch<SetStateAction<boolean>>): React.ReactNode => {
+const renderForm = (contentId: string | null, onBack: () => void): React.ReactNode => {
+	const setIsDetailsVisible: Dispatch<SetStateAction<boolean>> = val => {
+		const next = typeof val === 'function' ? val(true) : val
+		if (!next) onBack()
+	}
 	switch (contentId) {
 		case 'nickname':
-			return <NicknameForm setIsDetailsVisible={setIsFormVisible} />
+			return <NicknameForm setIsDetailsVisible={setIsDetailsVisible} />
 		case 'email':
-			return <EmailForm setIsDetailsVisible={setIsFormVisible} />
+			return <EmailForm setIsDetailsVisible={setIsDetailsVisible} />
 		case 'password':
-			return <PasswordForm setIsDetailsVisible={setIsFormVisible} />
+			return <PasswordForm setIsDetailsVisible={setIsDetailsVisible} />
 		case 'address':
-			return <AddressForm setIsDetailsVisible={setIsFormVisible} />
+			return <AddressForm setIsDetailsVisible={setIsDetailsVisible} />
 		default:
 			return null
 	}
@@ -45,6 +49,7 @@ const AccountSettings = () => {
 	const [isFormVisible, setIsFormVisible] = useState(false)
 	const [contentId, setContentId] = useState<string | null>(null)
 	const [modalOpen, setModalOpen] = useState(false)
+	const [enterDir, setEnterDir] = useState<'right' | 'left' | null>(null)
 	const utils = trpc.useUtils()
 	const { data: profile } = trpc.user.getProfile.useQuery()
 	const { data: session } = useSession()
@@ -56,8 +61,14 @@ const AccountSettings = () => {
 
 	const handleOpenSettings = (id: string) => {
 		setContentId(id)
+		setEnterDir('right')
 		setIsFormVisible(true)
 	}
+
+	const handleBack = useCallback(() => {
+		setEnterDir('left')
+		setIsFormVisible(false)
+	}, [])
 
 	const updateAvatar = trpc.user.updateAvatar.useMutation()
 
@@ -159,77 +170,74 @@ const AccountSettings = () => {
 
 	return (
 		<>
-			<div
-				className={`top-0 left-0 transition-transform duration-500 ${
-					isFormVisible ? '-translate-x-[450px]' : 'translate-x-0'
-				}`}>
-				<div>
-					<Typography variant={'h4'}>Wastelander Profile</Typography>
+			<div className='overflow-hidden'>
+				{!isFormVisible ? (
+					<div className={`p-8 mt-2 ${enterDir === 'left' ? 'slide-in-left' : ''}`}>
+						<Typography variant={'h4'}>Wastelander Profile</Typography>
 
-					<Badge
-						component={'label'}
-						className='my-5 cursor-pointer'
-						overlap='circular'
-						anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-						badgeContent={<EditIcon className='text-2xl' fontSize={32} />}>
-						<Avatar className='h-32 w-32 border-4 border-bg ' src={avatar} />
-						<VisuallyHiddenInput type='file' accept='image/*' onChange={handleAvatarChange}></VisuallyHiddenInput>
-					</Badge>
-					<div>
-						<Typography variant='h5'>Modify Your Data</Typography>
-						<div className='mt-6 flex flex-col items-center gap-3'>
-							<Button
-								onClick={() => handleOpenSettings('nickname')}
-								className='md:w-1/2 w-3/4 justify-between  font-semibold'
-								endIcon={<ArrowRight />}
-								variant='outlined'>
-								Nickname
-							</Button>
-							{provider !== 'google' && (
-								<>
-									<Button
-										onClick={() => handleOpenSettings('email')}
-										className='md:w-1/2 w-3/4 justify-between font-semibold'
-										endIcon={<ArrowRight />}
-										variant='outlined'>
-										Email
-									</Button>
-									<Button
-										onClick={() => handleOpenSettings('password')}
-										className='md:w-1/2 w-3/4 justify-between font-semibold'
-										endIcon={<ArrowRight />}
-										variant='outlined'>
-										Password
-									</Button>
-								</>
-							)}
+						<Badge
+							component={'label'}
+							className='my-5 cursor-pointer'
+							overlap='circular'
+							anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+							badgeContent={<EditIcon className='text-2xl' fontSize={32} />}>
+							<Avatar className='h-32 w-32 border-4 border-bg ' src={avatar} />
+							<VisuallyHiddenInput type='file' accept='image/*' onChange={handleAvatarChange}></VisuallyHiddenInput>
+						</Badge>
+						<div>
+							<Typography variant='h5'>Modify Your Data</Typography>
+							<div className='mt-6 flex flex-col items-center gap-3'>
+								<Button
+									onClick={() => handleOpenSettings('nickname')}
+									className='md:w-1/2 w-3/4 justify-between  font-semibold'
+									endIcon={<ArrowRight />}
+									variant='outlined'>
+									Nickname
+								</Button>
+								{provider !== 'google' && (
+									<>
+										<Button
+											onClick={() => handleOpenSettings('email')}
+											className='md:w-1/2 w-3/4 justify-between font-semibold'
+											endIcon={<ArrowRight />}
+											variant='outlined'>
+											Email
+										</Button>
+										<Button
+											onClick={() => handleOpenSettings('password')}
+											className='md:w-1/2 w-3/4 justify-between font-semibold'
+											endIcon={<ArrowRight />}
+											variant='outlined'>
+											Password
+										</Button>
+									</>
+								)}
 
+								<Button
+									onClick={() => handleOpenSettings('address')}
+									className='md:w-1/2 w-3/4 justify-between  font-semibold'
+									endIcon={<ArrowRight />}
+									variant='outlined'>
+									Address
+								</Button>
+							</div>
+							<Typography className='my-2 font-semibold' variant='body1'>
+								or...
+							</Typography>
 							<Button
-								onClick={() => handleOpenSettings('address')}
-								className='md:w-1/2 w-3/4 justify-between  font-semibold'
-								endIcon={<ArrowRight />}
-								variant='outlined'>
-								Address
+								onClick={() => setModalOpen(true)}
+								className='md:w-1/2 w-3/4 justify-between font-semibold'
+								startIcon={<Trash />}
+								variant='contained'>
+								Delete Account
 							</Button>
 						</div>
-						<Typography className='my-2 font-semibold' variant='body1'>
-							or...
-						</Typography>
-						<Button
-							onClick={() => setModalOpen(true)}
-							className='md:w-1/2 w-3/4 justify-between font-semibold'
-							startIcon={<Trash />}
-							variant='contained'>
-							Delete Account
-						</Button>
 					</div>
-				</div>
-			</div>
-			<div
-				className={`text-center absolute p-10 top-0 left-full w-full h-full transition-transform duration-500 ${
-					isFormVisible ? '-translate-x-full' : 'translate-x-0'
-				}`}>
-				{renderForm(contentId, setIsFormVisible)}
+				) : (
+					<div className={`text-center p-10 ${enterDir === 'right' ? 'slide-in-right' : ''}`}>
+						{renderForm(contentId, handleBack)}
+					</div>
+				)}
 			</div>
 			<TransitionsModal open={modalOpen} handleClose={handleModalClose}>
 				<DeleteAccountModal handleClose={handleModalClose} />

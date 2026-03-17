@@ -11,11 +11,12 @@ const baseStyle = {
 	left: '50%',
 	transform: 'translate(-50%, -50%)',
 	minWidth: 300,
-	maxHeight: '100vh',
+	maxHeight: 'calc(100vh - 2rem)',
 	bgcolor: 'background.paper',
 	boxShadow: 24,
 	overflowY: 'auto',
 	overflowX: 'hidden',
+	boxSizing: 'border-box',
 	p: 0,
 	mt: 0,
 	textAlign: 'center',
@@ -47,7 +48,7 @@ export default function TransitionsModal({
 			}}>
 			<Fade in={open}>
 				<Box sx={{ ...baseStyle, border }}>
-					<div onClick={handleClose} className='absolute top-0 right-4 p-2 cursor-pointer z-10'>
+					<div onClick={handleClose} className='absolute top-0 right-2 p-2 cursor-pointer z-10'>
 						<CloseIcon fontSize='large' />
 					</div>
 					<div>{children}</div>

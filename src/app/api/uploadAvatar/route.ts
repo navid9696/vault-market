@@ -2,16 +2,19 @@ export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '~/lib/authOptions'
 import cloudinary from '~/lib/cloudinary'
 
-function uploadBufferToCloudinary(buffer: Buffer, folder: string) {
+function uploadBufferToCloudinary(buffer: Buffer, publicId: string) {
 	return new Promise<{ secure_url: string }>((resolve, reject) => {
 		const stream = cloudinary.uploader.upload_stream(
 			{
-				folder,
+				public_id: publicId,
+				folder: 'avatars',
 				resource_type: 'image',
-				use_filename: true,
-				unique_filename: false,
+				overwrite: true,
+				invalidate: true,
 			},
 			(error, result) => {
 				if (error || !result) {
@@ -27,6 +30,11 @@ function uploadBufferToCloudinary(buffer: Buffer, folder: string) {
 
 export async function POST(req: NextRequest) {
 	try {
+		const session = await getServerSession(authOptions)
+		if (!session?.user?.id) {
+			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+		}
+
 		const formData = await req.formData()
 		const file = formData.get('avatar') as File | null
 
@@ -42,7 +50,7 @@ export async function POST(req: NextRequest) {
 		const arrayBuffer = await file.arrayBuffer()
 		const buffer = Buffer.from(arrayBuffer)
 
-		const uploaded = await uploadBufferToCloudinary(buffer, 'avatars')
+		const uploaded = await uploadBufferToCloudinary(buffer, session.user.id)
 
 		return NextResponse.json({ url: uploaded.secure_url })
 	} catch (err) {

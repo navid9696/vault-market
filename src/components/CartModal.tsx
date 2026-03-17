@@ -27,7 +27,7 @@ const CartModal = () => {
 
 	if (!gid || status === 'loading')
 		return (
-			<div className='flex flex-col items-center justify-center'>
+			<div className='flex p-8 flex-col items-center justify-center'>
 				<h2 className='mb-5'>Initializing…</h2>
 				<CircularProgress />
 			</div>
@@ -35,7 +35,7 @@ const CartModal = () => {
 
 	if (isLoading)
 		return (
-			<div className='flex flex-col items-center justify-center'>
+			<div className='flex p-8 flex-col items-center justify-center'>
 				<h2 className='mb-5'>Loading cart items…</h2>
 				<CircularProgress />
 			</div>
@@ -43,7 +43,7 @@ const CartModal = () => {
 
 	if (error)
 		return (
-			<div className='flex flex-col items-center justify-center p-6 text-center'>
+			<div className='flex p-8 flex-col items-center justify-center text-center'>
 				<Typography variant='h5' gutterBottom>
 					⚠️ TERMINAL ERROR
 				</Typography>
@@ -56,7 +56,7 @@ const CartModal = () => {
 			</div>
 		)
 
-	if (!data || data.length === 0) return <div>No items in cart</div>
+	if (!data || data.length === 0) return <div className='p-8 text-center'>No items in cart</div>
 
 	const totalAmount = data.reduce((sum: number, item: (typeof data)[number]) => {
 		const price =
@@ -69,7 +69,7 @@ const CartModal = () => {
 	const canCheckout = status === 'authenticated' && have >= totalAmount
 
 	return (
-		<div className='p-2'>
+		<div className='p-12'>
 			<div className='max-h-96 overflow-y-auto'>
 				{data.map((item: (typeof data)[number]) => (
 					<CartItem key={item.id} product={item.product} quantity={item.quantity} refetchCart={refetchCart} />

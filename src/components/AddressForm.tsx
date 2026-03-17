@@ -141,7 +141,7 @@ const AddressForm = ({
 	const errs = externalErrors || localErrors
 
 	const formFields = (
-		<>
+		<div className='max-w-md'>
 			{!isCheckout && (
 				<Typography variant='h4' component='h3' gutterBottom>
 					Address Records
@@ -285,7 +285,7 @@ const AddressForm = ({
 					helperText={<span className='block h-6'>{errs.zipCode?.message}</span>}
 				/>
 			</div>
-		</>
+		</div>
 	)
 
 	if (!isCheckout) {

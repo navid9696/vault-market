@@ -172,7 +172,7 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 
 	return (
 		<MediaContextProvider>
-			<Media greaterThanOrEqual='xl'>
+			<Media className='p-8' greaterThanOrEqual='xl'>
 				<Typography variant='h3' component='h2' gutterBottom>
 					{product ? 'Edit Product' : 'Add New Product'}
 				</Typography>
@@ -269,18 +269,18 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 						</Button>
 
 						{preview && (
-							<Box className='relative' style={{ width: 200, height: 200 }}>
-								<Image src={preview} alt='Preview' fill sizes='200px' className='object-contain' />
-							</Box>
-						)}
-					</Box>
+						<Box className='relative' style={{ width: 120, height: 120 }}>
+							<Image src={preview} alt='Preview' fill sizes='120px' className='object-contain' />
+						</Box>
+					)}
+				</Box>
 
-					<TextField
-						margin='dense'
-						size='medium'
-						label='Description'
-						multiline
-						rows={4}
+				<TextField
+					margin='dense'
+					size='medium'
+					label='Description'
+					multiline
+					rows={3}
 						fullWidth
 						{...register('description')}
 						error={!!errors.description}
@@ -292,11 +292,11 @@ const AddOrEditProductForm = ({ product, onSuccess }: AddOrEditProductFormProps)
 				</form>
 			</Media>
 
-			<Media className='m-[-30px]' lessThan='xl'>
+			<Media className='p-8' lessThan='xl'>
 				<Typography variant='h5' component='h2' gutterBottom>
 					{product ? 'Edit Product' : 'Add New Product'}
 				</Typography>
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form  onSubmit={handleSubmit(onSubmit)}>
 					<div className='w-full flex flex-wrap items-center justify-between gap-x-4'>
 						<TextField
 							margin='none'

@@ -101,7 +101,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 	}
 
 	return (
-		<>
+		<div className='p-2 pt-8 md:p-8'>
 			<Typography component='h3' variant='h3' gutterBottom>
 				Caps&Cash Exchange
 			</Typography>
@@ -159,7 +159,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 				}}>
 				{isPending ? 'Processing...' : 'BUY'}
 			</Button>
-		</>
+		</div>
 	)
 }
 
