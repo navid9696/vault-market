@@ -47,7 +47,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 					⚠️ INVALID INPUT
 					<br />
 					ENTER A POSITIVE AMOUNT
-				</div>
+				</div>,
 			)
 			return
 		}
@@ -57,7 +57,7 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 				☢️ INITIALIZING SECURE UPLINK
 				<br />
 				CONTACTING VAULT-TEC MAINFRAME...
-			</div>
+			</div>,
 		)
 
 		try {
@@ -117,16 +117,8 @@ const ExchangeModal = ({ onClose }: ExchangeModalProps) => {
 			</div>
 
 			<div>
-				<Typography className='flex items-center justify-center' paragraph variant='body1' gutterBottom>
-					<Image
-						className='mr-1'
-						src={'/icons/nuka-cap-alt.png'}
-						width={15}
-						height={15}
-						alt='nuka cola bottle cap'
-						loading='lazy'
-					/>
-					1
+				<Typography className='flex items-center justify-center ' paragraph variant='body1' gutterBottom>
+					<Caps className='mr-1' />1
 				</Typography>
 				<Divider className='my-4'>
 					<Equals className='rotate-90 scale-150' />
