@@ -17,6 +17,8 @@ interface CartItemProps {
 	showControls?: boolean
 }
 
+const CART_UPDATE_DEBOUNCE_MS = 200
+
 const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartItemProps) => {
 	const [modalOpen, setModalOpen] = useState(false)
 	const setProduct = useStore(state => state.setProduct)
@@ -48,14 +50,14 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 		}
 	}, [])
 
-	const invalidateCartQueries = useCallback(async () => {
-		await utils.cart.getTotalItems.invalidate()
-		await utils.cart.getCartItems.invalidate()
-	}, [utils.cart])
+	const invalidateCartQueries = useCallback(
+		() => Promise.all([utils.cart.getTotalItems.invalidate(), utils.cart.getCartItems.invalidate()]),
+		[utils.cart],
+	)
 
 	const updateMutation = trpc.cart.updateCartItem.useMutation({
-		onSuccess: async () => {
-			await invalidateCartQueries()
+		onSuccess: () => {
+			void invalidateCartQueries()
 		},
 		onError: () => {
 			setLocalQuantity(quantity)
@@ -63,13 +65,13 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 	})
 
 	const removeMutation = trpc.cart.removeCartItem.useMutation({
-		onSuccess: async () => {
+		onSuccess: () => {
 			if (debounceTimeout.current) {
 				clearTimeout(debounceTimeout.current)
 			}
 
-			await invalidateCartQueries()
-			refetchCart()
+			void invalidateCartQueries()
+			void refetchCart()
 		},
 		onError: () => {
 			setLocalQuantity(quantity)
@@ -90,7 +92,7 @@ const CartItem = ({ product, quantity, refetchCart, showControls = true }: CartI
 					quantity: newQuantity,
 					gid,
 				})
-			}, 500)
+			}, CART_UPDATE_DEBOUNCE_MS)
 		},
 		[product.id, gid, quantity, updateMutation],
 	)

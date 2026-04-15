@@ -32,6 +32,9 @@ const cleanupExpiredItems = async (key: CartKey) => {
 			createdAt: { lt: cutoff },
 		},
 	})
+
+	if (expiredItems.length === 0) return
+
 	await prisma.$transaction(async tx => {
 		for (const item of expiredItems) {
 			await tx.products.update({
@@ -99,37 +102,38 @@ export const userCartRouter = router({
 	updateCartItem: procedure.input(cartItemInputSchema).mutation(async ({ input, ctx }) => {
 		const key = requireCartKey(resolveCartKey(ctx.session, input.gid))
 		const result = await prisma.$transaction(async tx => {
-			const existing = key.userId
-				? await tx.userCart.findUnique({
-						where: { userId_productId_cart: { userId: key.userId, productId: input.productId } },
-					})
-				: await tx.userCart.findUnique({
-						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
-					})
+			const cartWhere = key.userId
+				? { userId_productId_cart: { userId: key.userId, productId: input.productId } }
+				: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } }
+
+			const existing = await tx.userCart.findUnique({ where: cartWhere })
 			if (!existing) throw new TRPCError({ code: 'NOT_FOUND', message: 'Cart item not found' })
 
 			const diff = input.quantity - existing.quantity
+			if (diff === 0) return existing
+
 			if (diff > 0) {
-				const product = await tx.products.findUnique({ where: { id: input.productId } })
-				if (!product) throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' })
-				if (product.available < diff) {
+				const reserved = await tx.products.updateMany({
+					where: { id: input.productId, available: { gte: diff } },
+					data: { available: { decrement: diff } },
+				})
+
+				if (reserved.count === 0) {
+					const productExists = await tx.products.count({ where: { id: input.productId } })
+					if (!productExists) throw new TRPCError({ code: 'NOT_FOUND', message: 'Product not found' })
 					throw new TRPCError({ code: 'CONFLICT', message: 'Not enough items available' })
 				}
-				await tx.products.update({ where: { id: input.productId }, data: { available: { decrement: diff } } })
-			} else if (diff < 0) {
-				await tx.products.update({ where: { id: input.productId }, data: { available: { increment: -diff } } })
+			} else {
+				await tx.products.update({
+					where: { id: input.productId },
+					data: { available: { increment: Math.abs(diff) } },
+				})
 			}
 
-			const updated = key.userId
-				? await tx.userCart.update({
-						where: { userId_productId_cart: { userId: key.userId, productId: input.productId } },
-						data: { quantity: input.quantity },
-					})
-				: await tx.userCart.update({
-						where: { cartId_productId_cart: { cartId: key.cartId as string, productId: input.productId } },
-						data: { quantity: input.quantity },
-					})
-			return updated
+			return tx.userCart.update({
+				where: cartWhere,
+				data: { quantity: input.quantity },
+			})
 		})
 		return result
 	}),
@@ -182,11 +186,11 @@ export const userCartRouter = router({
 			const key = resolveCartKey(ctx.session, input?.gid)
 			if (!key.userId && !key.cartId) return { total: 0 }
 			await cleanupExpiredItems(key)
-			const items = await prisma.userCart.findMany({
+			const totals = await prisma.userCart.aggregate({
 				where: key.userId ? { userId: key.userId } : { cartId: key.cartId as string },
+				_sum: { quantity: true },
 			})
-			const total = items.reduce((s, i) => s + i.quantity, 0)
-			return { total }
+			return { total: totals._sum.quantity ?? 0 }
 		}),
 
 	clearCart: procedure.input(withGid.optional()).mutation(async ({ input, ctx }) => {

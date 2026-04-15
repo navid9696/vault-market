@@ -20,10 +20,10 @@ const CartModal = () => {
 	const have = status === 'authenticated' ? (caps?.balance ?? 0) : 0
 
 	const utils = trpc.useUtils()
-	const refetchCart = useCallback(async () => {
-		await refetch()
-		await utils.cart.getTotalItems.invalidate()
-	}, [refetch, utils.cart.getTotalItems])
+	const refetchCart = useCallback(
+		() => Promise.all([refetch(), utils.cart.getTotalItems.invalidate()]),
+		[refetch, utils.cart.getTotalItems],
+	)
 
 	if (!gid || status === 'loading')
 		return (
