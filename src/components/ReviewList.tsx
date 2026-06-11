@@ -50,7 +50,10 @@ const ReviewList = ({ productId }: ReviewListProps) => {
 					className='bg-tertiary rounded-xl overflow-y-auto p-2'
 					sx={{
 						width: '70dvw',
-						height: '75dvh',
+						height: '75vh',
+						'@supports (height: 100svh)': {
+							height: '75svh',
+						},
 						bgcolor: 'background.paper',
 						'@media (min-width: 1024px)': { width: '100%' },
 					}}>

@@ -10,7 +10,7 @@ const FavoritesList = () => {
 	const products = favorites?.map((fav: any) => fav.product) ?? []
 
 	return (
-		<div className='h-screen flex flex-col'>
+		<div className='h-stable-screen flex flex-col'>
 			<div style={{ height: 56 }} />
 
 			<div className='flex-1 p-4 max-w-3xl w-screen bg-bg text-text flex flex-col min-h-0'>

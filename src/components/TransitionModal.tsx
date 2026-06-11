@@ -12,6 +12,9 @@ const baseStyle = {
 	transform: 'translate(-50%, -50%)',
 	minWidth: 300,
 	maxHeight: 'calc(100vh - 2rem)',
+	'@supports (height: 100svh)': {
+		maxHeight: 'calc(100svh - 2rem)',
+	},
 	bgcolor: 'background.paper',
 	boxShadow: 24,
 	overflowY: 'auto',

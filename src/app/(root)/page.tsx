@@ -16,7 +16,7 @@ const Home = () => {
 				<Navbar />
 				<ToastContainer className={'vault-toast'} autoClose={3000} draggablePercent={60} stacked hideProgressBar />
 				<main>
-					<section className='h-dvh'>
+					<section className='h-stable-screen'>
 						<Header />
 						<OnSaleList />
 					</section>

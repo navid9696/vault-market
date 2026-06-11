@@ -47,7 +47,7 @@ const RegisterForm = () => {
 				☢️ ENLISTMENT REQUEST RECEIVED
 				<br />
 				CREATING CITIZEN RECORD...
-			</div>
+			</div>,
 		)
 
 		try {
@@ -127,7 +127,7 @@ const RegisterForm = () => {
 	}
 
 	return (
-		<div className='h-screen max-w-xl text-text'>
+		<div className='h-stable-screen max-w-xl text-text'>
 			<div className='p-4 h-with-navbar'>
 				<form
 					className='h-full flex flex-col justify-center items-center text-center'

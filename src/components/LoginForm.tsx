@@ -49,7 +49,7 @@ export default function LoginForm() {
 				☢️ INITIALIZING SECURE UPLINK
 				<br />
 				CONTACTING VAULT-TEC MAINFRAME...
-			</div>
+			</div>,
 		)
 
 		const res = await signIn('credentials', {
@@ -97,7 +97,7 @@ export default function LoginForm() {
 	}
 
 	return (
-		<div className='h-screen max-w-xl text-text'>
+		<div className='h-stable-screen max-w-xl text-text'>
 			<div className='p-4 h-with-navbar'>
 				<form
 					className='h-full flex flex-col justify-center items-center text-center'
