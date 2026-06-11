@@ -209,8 +209,19 @@ input::-webkit-inner-spin-button {
 	animation: slideInFromLeft 0.35s ease-out;
 }
 
+.h-stable-screen {
+	height: 100vh;
+	height: 100svh;
+}
+
+.min-h-stable-screen {
+	min-height: 100vh;
+	min-height: 100svh;
+}
+
 .h-with-navbar {
-	height: calc(100dvh - 56px);
+	height: calc(100vh - 56px);
+	height: calc(100svh - 56px);
 }
 
 .vault-toast .Toastify__toast {

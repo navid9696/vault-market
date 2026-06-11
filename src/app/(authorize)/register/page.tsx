@@ -14,7 +14,7 @@ export default function Home() {
 			<NavigationProvider>
 				<Navbar />
 				<ToastContainer className={'vault-toast'} autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-				<main className='relative min-h-screen'>
+				<main className='relative min-h-stable-screen'>
 					<div className='absolute inset-0 -z-10 '>
 						<Image
 							src='/imgs/authBg2.webp'

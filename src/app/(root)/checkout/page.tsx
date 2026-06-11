@@ -13,7 +13,7 @@ const Home = () => {
 			<NavigationProvider>
 				<Navbar />
 				<ToastContainer className={'vault-toast'} autoClose={3000} draggablePercent={60} stacked hideProgressBar />
-				<main className='min-h-dvh mx-auto flex flex-col justify-center items-center max-w-screen-xl bg-bg'>
+				<main className='min-h-stable-screen mx-auto flex flex-col justify-center items-center max-w-screen-xl bg-bg'>
 					<Checkout />
 				</main>
 				<Footer />

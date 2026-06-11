@@ -31,13 +31,11 @@ const AdminDisplayProducts = () => {
 
 	return (
 		<>
-			<div className='p-2 h-screen flex justify-center items-center  overflow-hidden'>
+			<div className='p-2 h-stable-screen flex justify-center items-center overflow-hidden'>
 				<div className='h-5/6 border  rounded-lg p-6  shadow-lg w-full max-w-screen-2xl flex flex-col'>
 					<h1 className='uppercase text-2xl font-semibold mb-4 text-center'>Total Products</h1>
 					<div className='flex justify-evenly gap-2 mb-4'>
-						<Button
-							onClick={handleModalOpen}
-							className='  font-semibold py-2 px-4 rounded'>
+						<Button onClick={handleModalOpen} className='  font-semibold py-2 px-4 rounded'>
 							Add New Product
 						</Button>
 						<ProductSearch

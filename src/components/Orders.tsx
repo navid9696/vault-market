@@ -9,7 +9,7 @@ const Orders = () => {
 	const orders: Order[] = data ?? []
 
 	return (
-		<div className='h-screen flex flex-col'>
+		<div className='h-stable-screen flex flex-col'>
 			<div style={{ height: 56 }} />
 			<div className='flex-1 p-4 max-w-3xl w-screen bg-bg text-text flex flex-col min-h-0'>
 				<h2 className='p-8 text-center text-3xl font-bold mb-4 border-b border-border uppercase'>YOUR ORDERS</h2>
